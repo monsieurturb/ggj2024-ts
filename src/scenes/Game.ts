@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { Config } from '../config';
+import { Random } from '../Random';
 
 export class Game extends Scene {
     constructor() {
@@ -8,6 +9,11 @@ export class Game extends Scene {
 
     create() {
         // this.cameras.main.setBackgroundColor(0x00ff00);
+
+        Random.getInstance().setSeed('test');
+        console.log(Random.getInstance().integerInRange(1, 6));
+        console.log(Random.getInstance().integerInRange(1, 6));
+        console.log(Random.getInstance().integerInRange(1, 6));
 
         this.add.text(
             Config.screenWidth * 0.5,
