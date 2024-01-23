@@ -3,7 +3,7 @@ import { Config } from '../config';
 
 export class MainMenu extends Scene {
     constructor() {
-        super('MainMenu');
+        super("MainMenu");
     }
 
     create() {
@@ -12,8 +12,8 @@ export class MainMenu extends Scene {
         // this.add.image(512, 300, 'logo');
 
         this.add.text(
-            Config.screenWidth * 0.5,
-            Config.screenHeight - 32, 'Main Menu', {
+            Config.screen.width * 0.5,
+            Config.screen.height - 32, 'Main Menu', {
             fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'

@@ -3,10 +3,9 @@ import * as Phaser from 'phaser';
 export class Config {
     static DEBUG: boolean = false;
 
-    static screenWidth: number = 1920;
-    static screenHeight: number = 1080;
-
-    static diceSize: number = 80;
+    static screen = { width: 1920, height: 1080 };
+    static questCard = { width: 400, height: 250 };
+    static diceSize: number = 100;
 }
 
 export class Colors {

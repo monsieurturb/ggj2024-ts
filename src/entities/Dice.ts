@@ -11,8 +11,8 @@ export class Dice extends Phaser.GameObjects.Container {
     public get currentValue(): number { return this._dice.currentValue; }
 
     // Graphics objects
-    private _background: Phaser.GameObjects.Rectangle;
-    private _text: Phaser.GameObjects.Text;
+    private _background: Phaser.GameObjects.Rectangle | undefined;
+    private _text: Phaser.GameObjects.Text | undefined;
 
     private _shiftKey: Phaser.Input.Keyboard.Key | undefined;
 
@@ -21,44 +21,62 @@ export class Dice extends Phaser.GameObjects.Container {
 
         this._dice = dice;
 
-        const color = (() => {
-            switch (this._dice.type) {
-                case CharType.TYPE_A: return Colors.DARK;
-                case CharType.TYPE_B: return Colors.LIGHT;
-                case CharType.TYPE_C: return Colors.PINK;
-                default: return 0xFFFFFF;
-            }
-        })();
+        this.createGraphics();
+        this.setupBehaviour();
+    }
 
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.diceSize, Config.diceSize, color);
-        this._background.setStrokeStyle(4, 0x000000);
-        this._background.setOrigin(0.5, 0.5);
+    getColor() {
+        switch (this._dice.type) {
+            case CharType.TYPE_A: return Colors.DARK;
+            case CharType.TYPE_B: return Colors.LIGHT;
+            case CharType.TYPE_C: return Colors.PINK;
+            default: return 0xFFFFFF;
+        }
+    }
 
-        this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, this._dice.displayValue, {
+    createGraphics() {
+        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.diceSize, Config.diceSize, this.getColor())
+            .setStrokeStyle(4, 0x000000)
+            .setOrigin(0.5, 0.5);
+
+        this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", {
             fontFamily: 'Arial Black',
             fontSize: 32,
             color: '#000000',
-            // stroke: '#FFCC00',
-            // strokeThickness: 6,
-        });
-        this._text.setOrigin(0.5, 0.5);
+        })
+            .setOrigin(0.5, 0.5);
 
         this.add([
             this._background,
             this._text,
         ]);
+    }
 
+    setupBehaviour() {
+        if (!this._background)
+            return;
+
+        // Set interactive
         this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(-this._background.width / 2, -this._background.height / 2, this._background.width, this._background.height),
+            hitArea: new Phaser.Geom.Rectangle(
+                -this._background.width * 0.5,
+                -this._background.height * 0.5,
+                this._background.width,
+                this._background.height
+            ),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
             draggable: true,
             useHandCursor: true,
         }, Phaser.Geom.Rectangle.Contains);
 
+        // Setup Shift key
         if (this.scene.input && this.scene.input.keyboard)
             this._shiftKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
+        // Click
         this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onPointerDown);
+
+        // Drag & drop
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart);
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.onDrag);
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd);
@@ -68,7 +86,8 @@ export class Dice extends Phaser.GameObjects.Container {
     }
 
     update() {
-        this._text.text = this._dice.displayValue;
+        if (this._text)
+            this._text.text = this._dice.displayValue;
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) {

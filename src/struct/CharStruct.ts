@@ -21,7 +21,7 @@ export class CharStruct {
 }
 
 export enum CharType {
-    TYPE_A = "A",
-    TYPE_B = "B",
-    TYPE_C = "C",
+    TYPE_A,
+    TYPE_B,
+    TYPE_C,
 }

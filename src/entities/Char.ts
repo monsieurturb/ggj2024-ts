@@ -7,7 +7,7 @@ export class Char extends Phaser.GameObjects.Container {
     private _char: CharStruct;
     // Expose some of the dice properties, keep the rest private
     public get uuid(): string { return this._char.uuid; }
-    public get charType(): string { return this._char.type; }
+    public get charType(): number { return this._char.type; }
 
     // Graphics objects
     private _background: Phaser.GameObjects.Rectangle;
@@ -29,9 +29,9 @@ export class Char extends Phaser.GameObjects.Container {
             }
         })();
 
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 300, 600, color, 0.35);
-        this._background.setStrokeStyle(4, 0x000000);
-        this._background.setOrigin(0.5, 1);
+        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 300, 600, color, 0.35)
+            .setStrokeStyle(4, 0x000000)
+            .setOrigin(0.5, 1);
 
         this.add([
             this._background,
