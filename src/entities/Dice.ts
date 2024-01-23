@@ -1,52 +1,61 @@
-import { Random } from "../Random";
+import { Colors, Config } from "../config";
+import { CharType } from "../struct/CharStruct";
+import { DiceStruct } from "../struct/DiceStruct";
 import { Slot } from "./Slot";
 
 export class Dice extends Phaser.GameObjects.Container {
-    readonly sides: Array<number>;
-    readonly uuid: string;
+    // Actual dice class
+    private _dice: DiceStruct;
+    // Expose some of the dice properties, keep the rest private
+    public get uuid(): string { return this._dice.uuid; }
+    public get currentValue(): number { return this._dice.currentValue; }
 
-    private currentSide: number = 0;
-    public get currentValue(): number {
-        return this.sides[this.currentSide];
-    }
+    // Graphics objects
+    private _background: Phaser.GameObjects.Rectangle;
+    private _text: Phaser.GameObjects.Text;
 
-    private background: Phaser.GameObjects.Rectangle;
-    private text: Phaser.GameObjects.Text;
+    private _shiftKey: Phaser.Input.Keyboard.Key | undefined;
 
-    private shiftKey: Phaser.Input.Keyboard.Key | undefined;
-
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, dice: DiceStruct) {
         super(scene);
 
-        this.uuid = Random.getInstance().uuid();
-        this.sides = [1, 2, 3, 4, 5, 6];
+        this._dice = dice;
 
-        this.background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 48, 48, 0xFFFFFF);
-        this.background.setStrokeStyle(4, 0x000000);
-        this.background.setOrigin(0.5, 0.5);
+        const color = (() => {
+            switch (this._dice.type) {
+                case CharType.TYPE_A: return Colors.DARK;
+                case CharType.TYPE_B: return Colors.LIGHT;
+                case CharType.TYPE_C: return Colors.PINK;
+                default: return 0xFFFFFF;
+            }
+        })();
 
-        this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, this.currentValue.toFixed(), {
+        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.diceSize, Config.diceSize, color);
+        this._background.setStrokeStyle(4, 0x000000);
+        this._background.setOrigin(0.5, 0.5);
+
+        this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, this._dice.displayValue, {
             fontFamily: 'Arial Black',
-            fontSize: '28px',
+            fontSize: 32,
             color: '#000000',
             // stroke: '#FFCC00',
             // strokeThickness: 6,
         });
-        this.text.setOrigin(0.5, 0.5);
+        this._text.setOrigin(0.5, 0.5);
         this.add([
-            this.background,
-            this.text,
+            this._background,
+            this._text,
         ]);
 
         this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(-this.background.width / 2, -this.background.height / 2, this.background.width, this.background.height),
+            hitArea: new Phaser.Geom.Rectangle(-this._background.width / 2, -this._background.height / 2, this._background.width, this._background.height),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
             draggable: true,
             useHandCursor: true,
         }, Phaser.Geom.Rectangle.Contains);
 
         if (this.scene.input && this.scene.input.keyboard)
-            this.shiftKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+            this._shiftKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
         this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onPointerDown);
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart);
@@ -57,9 +66,13 @@ export class Dice extends Phaser.GameObjects.Container {
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_LEAVE, this.onDragLeave);
     }
 
+    update() {
+        this._text.text = this._dice.displayValue;
+    }
+
     onPointerDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) {
-        if (this.shiftKey!.isDown)
-            this.throw();
+        if (this._shiftKey!.isDown)
+            this._dice.throw();
 
         event.stopPropagation();
     }
@@ -105,10 +118,4 @@ export class Dice extends Phaser.GameObjects.Container {
         const slot = target.parentContainer as Slot;
         slot.removeDice(this);
     }
-
-    throw() {
-        this.currentSide = Random.getInstance().integerInRange(0, this.sides.length - 1);
-        this.text.text = this.currentValue.toFixed();
-        return this;
-    }
-} 6
+}

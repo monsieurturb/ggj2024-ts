@@ -5,7 +5,7 @@ export class Slot extends Phaser.GameObjects.Container {
     private background: Phaser.GameObjects.Rectangle;
     private text: Phaser.GameObjects.Text;
 
-    private dice: Map<string, Dice>;
+    private diceEntities: Map<string, Dice>;
 
     private spaces: number;
 
@@ -16,7 +16,7 @@ export class Slot extends Phaser.GameObjects.Container {
         this.width = 64 * this.spaces;
         this.height = 64;
 
-        this.dice = new Map<string, Dice>();
+        this.diceEntities = new Map<string, Dice>();
 
         this.zone = new Phaser.GameObjects.Zone(this.scene, 0, 0, this.width, this.height)
             .setRectangleDropZone(this.width, this.height);
@@ -60,9 +60,9 @@ export class Slot extends Phaser.GameObjects.Container {
         console.log("DROPPED:", dice.currentValue);
     } */
 
-    addDice(dice: Dice) {
-        if (!this.dice.has(dice.uuid)) {
-            this.dice.set(dice.uuid, dice);
+    addDice(diceEntity: Dice) {
+        if (!this.diceEntities.has(diceEntity.uuid)) {
+            this.diceEntities.set(diceEntity.uuid, diceEntity);
             // console.log("Dice added to slot", dice.currentValue);
         }
         // else
@@ -71,8 +71,8 @@ export class Slot extends Phaser.GameObjects.Container {
         this.updateText();
     }
 
-    removeDice(dice: Dice) {
-        const result = this.dice.delete(dice.uuid);
+    removeDice(diceEntity: Dice) {
+        const result = this.diceEntities.delete(diceEntity.uuid);
         /* if (!result)
             console.log("Dice not in slot");
         else
@@ -82,7 +82,7 @@ export class Slot extends Phaser.GameObjects.Container {
     }
 
     private updateText() {
-        const a: Array<Dice> = Array.from(this.dice.values());
+        const a: Array<Dice> = Array.from(this.diceEntities.values());
         this.text.text = `In slot: ${a.map((d) => d.currentValue).join(",")}`;
         this.text.text += `\nTotal: ${a.reduce((total, dice) => total + dice.currentValue, 0)}`;
     }

@@ -1,10 +1,10 @@
-import './style.css'
-import { Config } from './config';
+import './style.css';
+import { Colors, Config } from './config';
 import { Boot } from './scenes/Boot';
+import { Preloader } from './scenes/Preloader';
+import { MainMenu } from './scenes/MainMenu';
 import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
-import { MainMenu } from './scenes/MainMenu';
-import { Preloader } from './scenes/Preloader';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -13,7 +13,7 @@ const config = {
   width: Config.screenWidth,
   height: Config.screenHeight,
   parent: 'game-container',
-  backgroundColor: '#222222',
+  backgroundColor: Colors.BACKGROUND_HEX,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH

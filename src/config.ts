@@ -1,26 +1,22 @@
+import * as Phaser from 'phaser';
+
 export class Config {
     static DEBUG: boolean = false;
 
-    static screenWidth: number = 1280;
-    static screenHeight: number = 720;
+    static screenWidth: number = 1920;
+    static screenHeight: number = 1080;
+
+    static diceSize: number = 80;
 }
 
-export enum Colors {
-    DARK = 0x097F89,
-    DARK_ALT = 0x00303C,
-    LIGHT = 0xFFCD96,
-    LIGHT_ALT = 0x9A7D59,
-    PINK = 0xFF7777,
-    WHITE = 0xEEE8DA,
-    DEBUG = 0x00FF00,
-}
+export class Colors {
+    static BACKGROUND_HEX: string = '#00303C';
+    static DARK_HEX: string = '#097F89';
+    static LIGHT_HEX: string = '#FFCD96';
+    static PINK_HEX: string = '#FF7777';
 
-export enum HexColors {
-    DARK = '#097F89',
-    DARK_ALT = '#00303C',
-    LIGHT = '#FFCD96',
-    LIGHT_ALT = '#9A7D59',
-    PINK = '#FF7777',
-    WHITE = '#EEE8DA',
-    DEBUG = '#00FF00',
+    static BACKGROUND: number = Phaser.Display.Color.HexStringToColor(Colors.BACKGROUND_HEX).color;
+    static DARK: number = Phaser.Display.Color.HexStringToColor(Colors.DARK_HEX).color;
+    static LIGHT: number = Phaser.Display.Color.HexStringToColor(Colors.LIGHT_HEX).color;
+    static PINK: number = Phaser.Display.Color.HexStringToColor(Colors.PINK_HEX).color;
 }

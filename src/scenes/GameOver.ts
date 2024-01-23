@@ -11,16 +11,15 @@ export class GameOver extends Scene {
 
         this.add.text(
             Config.screenWidth * 0.5,
-            Config.screenHeight * 0.5, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 24, color: '#ffffff',
+            Config.screenHeight - 32, 'Game Over', {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
-        }).setOrigin(0.5);
+        })
+            .setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-
             this.scene.start('MainMenu');
-
         });
     }
 }
