@@ -15,6 +15,7 @@ export class CharStruct {
         this._dicePool = [
             new DiceStruct(this.type),
             new DiceStruct(this.type),
+            // new DiceStruct(this.type),
         ];
     }
 }

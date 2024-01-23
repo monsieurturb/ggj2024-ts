@@ -42,6 +42,7 @@ export class Dice extends Phaser.GameObjects.Container {
             // strokeThickness: 6,
         });
         this._text.setOrigin(0.5, 0.5);
+
         this.add([
             this._background,
             this._text,
