@@ -1,12 +1,10 @@
-import { Math } from 'phaser';
-
 export class Random {
 	private static instance: Random;
 
-	private rnd: Math.RandomDataGenerator;
+	private rnd: Phaser.Math.RandomDataGenerator;
 
 	constructor() {
-		this.rnd = new Math.RandomDataGenerator();
+		this.rnd = new Phaser.Math.RandomDataGenerator();
 	}
 
 	public static getInstance(): Random {
@@ -38,6 +36,10 @@ export class Random {
 
 	public rotation() {
 		return this.rnd.rotation();
+	}
+
+	public uuid() {
+		return this.rnd.uuid();
 	}
 
 	public pick(a: Array<any>): any {
