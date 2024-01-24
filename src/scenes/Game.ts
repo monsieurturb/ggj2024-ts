@@ -5,6 +5,7 @@ import { Char } from '../entities/Char';
 import { QuestCard } from '../entities/QuestCard';
 import { CharType } from '../struct/CharStruct';
 import { QuestStruct } from '../struct/QuestStruct';
+import { QuestBook } from '../struct/QuestBook';
 
 export class Game extends Scene {
     // Entities
@@ -31,7 +32,7 @@ export class Game extends Scene {
         this._uiLayer = this.add.container();
 
         // Seed the randomizer
-        Random.getInstance().setSeed('make me laugh');
+        // Random.getInstance().setSeed('make me laugh');
 
         // Create all characters
         this.createCharAndDice(CharType.TYPE_A, 300);
@@ -39,7 +40,7 @@ export class Game extends Scene {
         this.createCharAndDice(CharType.TYPE_C, 1100);
 
         // NOTE Quest card test
-        const card = new QuestCard(this, new QuestStruct("Perfect Delivery"))
+        const card = new QuestCard(this, QuestBook.getInstance().pickOne())
             .setPosition(Config.screen.width * 0.5, 300);
         this._questsLayer.add(card);
         this._questCards.push(card);

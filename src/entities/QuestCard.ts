@@ -22,12 +22,14 @@ export class QuestCard extends Phaser.GameObjects.Container {
             .setStrokeStyle(4, 0x000000)
             .setOrigin(0.5, 0.5);
 
-        this._text = new Phaser.GameObjects.Text(this.scene, 0, -Config.questCard.height * 0.5 + 32, "", {
+        this._text = new Phaser.GameObjects.Text(this.scene, 10, -Config.questCard.height * 0.5 + 32, "", {
             fontFamily: 'Arial Black',
             fontSize: 28,
             color: '#000000',
+            wordWrap: { width: Config.questCard.width - 20 }
         })
-            .setOrigin(0.5, 0.5);
+            .setFixedSize(Config.questCard.width, Config.questCard.height)
+            .setOrigin(0.5, 0);
 
         this.add([
             this._background,
@@ -37,6 +39,6 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
     update() {
         if (this._text)
-            this._text.text = this._quest.name;
+            this._text.text = this._quest.name + "\nFail: " + this._quest.lootOnFail + "\nSuccess: " + this._quest.lootOnSuccess;
     }
 }
