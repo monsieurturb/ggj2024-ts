@@ -7,8 +7,6 @@ export class GameOver extends Scene {
     }
 
     create() {
-        // this.cameras.main.setBackgroundColor(0xff0000);
-
         this.add.text(
             Config.screen.width * 0.5,
             Config.screen.height - 32, 'Game Over', {

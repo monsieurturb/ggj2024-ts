@@ -11,14 +11,14 @@ export class LootBook {
         // Penalties
         this._penalties = [];
 
-        this._penalties.push("Next turn - One random dice will become a 1");
-        this._penalties.push("Next quest - 1 less turn to complete");
+        this._penalties.push("Next turn, One random dice will become a 1");
+        this._penalties.push("Next quest, 1 less turn to complete");
 
         // Rewards
         this._rewards = [];
 
         this._rewards.push("Next 3 dice placed in main quest will be doubled");
-        this._rewards.push("Next quest - 2 more turns to complete");
+        this._rewards.push("Next quest, 2 more turns to complete");
 
         // Permanent skills
         this._skills = [];

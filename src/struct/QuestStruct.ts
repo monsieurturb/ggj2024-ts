@@ -1,3 +1,4 @@
+import { EventManager, Events } from "../Events";
 import { Random } from "../Random";
 import { CharType } from "./CharStruct";
 
@@ -6,10 +7,11 @@ export class QuestStruct {
     readonly name: string;
 
     private _requirements: Array<QuestRequirement> = [];
-    private _turnsLeft: number = 2;
+    private _turnsRemaining: number = 2;
     private _lootOnFail: string = "";
     private _lootOnSuccess: string = "";
 
+    public get turnsRemaining(): number { return this._turnsRemaining; }
     public get lootOnFail(): string { return this._lootOnFail; }
     public get lootOnSuccess(): string { return this._lootOnSuccess; }
 
@@ -18,13 +20,33 @@ export class QuestStruct {
         this.name = name;
     }
 
+    clone() {
+        const q = new QuestStruct(this.name)
+            // Copy loot
+            .setLootOnFail(this.lootOnFail)
+            .setLootOnSuccess(this.lootOnSuccess)
+            // Copy turns
+            .setTurnsRemaining(this.turnsRemaining);
+        // Copy requirements
+        for (let i = 0; i < this._requirements.length; i++)
+            q.addRequirement(this._requirements[i]);
+
+        return q;
+    }
+
+    activate() {
+        EventManager.on(Events.END_TURN, () => {
+            this._turnsRemaining--;
+        })
+    }
+
     addRequirement(req: QuestRequirement) {
         this._requirements.push(req);
         return this;
     }
 
     setTurnsRemaining(turns: number) {
-        this._turnsLeft = turns;
+        this._turnsRemaining = turns;
         return this;
     }
 

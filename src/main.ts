@@ -4,6 +4,7 @@ import { Boot } from './scenes/Boot';
 import { Preloader } from './scenes/Preloader';
 import { MainMenu } from './scenes/MainMenu';
 import { Game } from './scenes/Game';
+import { CutScene } from './scenes/CutScene';
 import { GameOver } from './scenes/GameOver';
 
 //  Find out more information about the Game Config at:
@@ -23,6 +24,7 @@ const config = {
     Preloader,
     MainMenu,
     Game,
+    CutScene,
     GameOver
   ]
 };

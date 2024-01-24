@@ -42,11 +42,11 @@ export class Random {
 		return this.rnd.uuid();
 	}
 
-	public pick(a: Array<any>): any {
+	public pick<T>(a: Array<T>): T {
 		return this.rnd.pick(a);
 	}
 
-	public shuffle(a: Array<any>) {
+	public shuffle<T>(a: Array<T>) {
 		return this.rnd.shuffle(a);
 	}
 }

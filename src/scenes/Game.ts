@@ -1,16 +1,20 @@
 import { Scene } from 'phaser';
 import { Random } from '../Random';
-import { Config } from '../config';
+import { Colors, Config } from '../config';
 import { Char } from '../entities/Char';
 import { QuestCard } from '../entities/QuestCard';
 import { CharType } from '../struct/CharStruct';
 import { QuestStruct } from '../struct/QuestStruct';
 import { QuestBook } from '../struct/QuestBook';
+import { EventManager, Events } from '../Events';
 
 export class Game extends Scene {
     // Entities
     private _chars: Array<Char> = [];
     private _questCards: Array<QuestCard> = [];
+
+    // Data
+    private _turnsRemaining: number = 10;
 
     // Layers
     private _charsLayer: Phaser.GameObjects.Container | undefined;
@@ -18,18 +22,44 @@ export class Game extends Scene {
     private _diceLayer: Phaser.GameObjects.Container | undefined;
     private _uiLayer: Phaser.GameObjects.Container | undefined;
 
+    // UI
+    private _endTurnButton: Phaser.GameObjects.Text | undefined;
+    private _turnText: Phaser.GameObjects.Text | undefined;
+
+    public mask: Phaser.GameObjects.Rectangle | undefined;
+
+    // TODO Clean scene on exit (destroy chars and quests, kill event listeners etc.)
+
     constructor() {
         super("Game");
     }
 
+    init() {
+        console.log("init", this.scene.key);
+
+        this.cameras.main.setBackgroundColor(Colors.BACKGROUND);
+
+        // Reset data
+        this._chars = [];
+        this._questCards = [];
+        this._turnsRemaining = 10;
+    }
+
+    preload() {
+        console.log("preload", this.scene.key);
+    }
+
     create() {
-        // this.cameras.main.setBackgroundColor(0x00ff00);
+        console.log("create", this.scene.key);
 
         // Create all layers
         this._charsLayer = this.add.container();
         this._questsLayer = this.add.container();
         this._diceLayer = this.add.container();
         this._uiLayer = this.add.container();
+        this.mask = this.add.rectangle(0, 0, Config.screen.width, Config.screen.height, 0x000000)
+            .setOrigin(0, 0)
+            .removeFromDisplayList();
 
         // Seed the randomizer
         // Random.getInstance().setSeed('make me laugh');
@@ -39,25 +69,88 @@ export class Game extends Scene {
         this.createCharAndDice(CharType.TYPE_B, 700);
         this.createCharAndDice(CharType.TYPE_C, 1100);
 
+        // Turns display
+        this._turnText = this.add.text(
+            10, 10,
+            "", {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        });
+        // End turn button
+        this._endTurnButton = this.add.text(
+            Config.screen.width - 20, Config.screen.height - 20,
+            "END TURN", {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        })
+            .setOrigin(1, 1)
+            .setInteractive()
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                this._turnsRemaining--;
+                EventManager.emit(Events.END_TURN);
+            });
+        // Add to UI layer
+        this._uiLayer.add([
+            this._turnText,
+            this._endTurnButton
+        ]);
+
         // NOTE Quest card test
         const card = new QuestCard(this, QuestBook.getInstance().pickOne())
             .setPosition(Config.screen.width * 0.5, 300);
         this._questsLayer.add(card);
         this._questCards.push(card);
+        card.activate();
 
         // NOTE Debug scene name
-        const t = this.add.text(
+        let t = this.add.text(
             Config.screen.width * 0.5,
-            Config.screen.height - 32, 'Game', {
+            Config.screen.height - 32,
+            'Game', {
             fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
-            .setOrigin(0.5)
+            .setOrigin(0.5, 1)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
                 this.scene.start('GameOver');
             });
+        this._uiLayer.add(t);
+
+        // NOTE Cutscene test
+        t = this.add.text(
+            Config.screen.width * 0.5,
+            32,
+            'Launch cutscene', {
+            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        })
+            .setOrigin(0.5, 0)
+            .setInteractive()
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                console.log("transition to CutScene...");
+                this.mask?.setScale(0, 1)
+                    .addToDisplayList();
+                this.scene.transition({
+                    target: "CutScene",
+                    // moveAbove: true,
+                    moveBelow: true,
+                    duration: Config.sceneTransitionDuration,
+                    sleep: true,
+                    onUpdate: (progress: number) => {
+                        const v = Phaser.Math.Easing.Bounce.Out(progress);
+                        this.mask?.setScale(v, 1);
+                    }
+                });
+            });
+        this._uiLayer.add(t);
+
+        // Listen to shutdown event
+        this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
     }
 
     createCharAndDice(type: CharType, x: number) {
@@ -90,5 +183,13 @@ export class Game extends Scene {
             const card = this._questCards[i];
             card.update();
         }
+        // Update UI
+        if (this._turnText)
+            this._turnText.text = "Turns remaining: " + this._turnsRemaining;
+    }
+
+    shutdown() {
+        console.log("shutdown", this.scene.key);
+        this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }
 }

@@ -37,6 +37,8 @@ export class QuestBook {
     }
 
     public pickOne(): QuestStruct {
-        return Random.getInstance().pick(this._quests);
+        const q = Random.getInstance().pick(this._quests).clone();
+        // console.log("picking a random quest: " + q.name + ", " + q.turnsRemaining + ", " + q.uuid);
+        return q;
     }
 }
