@@ -55,6 +55,9 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     }
 
     getRequirementText() {
+        if (this.requirement.done)
+            return 'DONE';
+
         let s = (() => {
             switch (this.requirement.mode) {
                 case QuestRequirementMode.EVEN: return "EVEN";
@@ -125,8 +128,6 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         if (this.requirement.mode === QuestRequirementMode.SCORE) {
             // Substract dice current value from score
             this.requirement.value = Phaser.Math.Clamp(this.requirement.value - dice.currentValue, 0, this.requirement.value);
-            // Update text
-            this.text.text = this.getRequirementText();
             // If score reached, we're done
             if (this.requirement.value <= 0)
                 this.requirement.done = true
@@ -134,6 +135,9 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         // For all other modes
         else
             this.requirement.done = true;
+
+        // Update text
+        this.text.text = this.getRequirementText();
 
         // Destroy dice
         dice.destroy();
