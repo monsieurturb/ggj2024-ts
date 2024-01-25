@@ -9,6 +9,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
     // Expose some of the quest properties, keep the rest private
     public get uuid(): string { return this._quest.uuid; }
     public get turnsRemaining(): number { return this._quest.turnsRemaining; }
+    public get lootOnFail(): string { return this._quest.lootOnFail; }
+    public get lootOnSuccess(): string { return this._quest.lootOnSuccess; }
 
     // Graphics objects
     private _background: Phaser.GameObjects.Rectangle | undefined;
@@ -84,7 +86,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     destroy(fromScene?: boolean | undefined) {
-        console.log('destroying quest card');
+        // console.log('destroying quest card');
 
         EventManager.off(Events.REQUIREMENT_FILLED, this._boundOnRequirementFilled);
 

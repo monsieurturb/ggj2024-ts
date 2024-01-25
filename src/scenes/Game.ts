@@ -104,8 +104,6 @@ export class Game extends Scene {
             // this._questCards.push(card);
             this._questCards?.set(card.uuid, card);
         }
-        // console.log(Array.from(this._questCards?.keys()));
-
 
         // NOTE Debug scene name
         let t = this.add.text(
@@ -173,7 +171,7 @@ export class Game extends Scene {
     activateNextQuest() {
         if (this._questCards) {
             const card = [...this._questCards.values()].pop();
-            console.log('activating card', card?.uuid);
+            // console.log('Activating card', card?.uuid);
             card?.activate();
         }
     }
@@ -254,6 +252,9 @@ export class Game extends Scene {
 
     onQuestCompleted(uuid: string) {
         console.log('Detected quest completed!', uuid);
+        const card = this._questCards?.get(uuid);
+        console.log("Result:", card?.lootOnSuccess);
+
 
         // TODO Loot
 
@@ -262,6 +263,8 @@ export class Game extends Scene {
 
     onQuestFailed(uuid: string) {
         console.log('Detected quest failed!', uuid);
+        const card = this._questCards?.get(uuid);
+        console.log("Result:", card?.lootOnFail);
 
         // TODO Loot
 
@@ -272,7 +275,7 @@ export class Game extends Scene {
         const card = this._questCards?.get(uuid);
 
         const deleted = this._questCards?.delete(uuid);
-        console.log('Deleted?', deleted, this._questCards?.size);
+        // console.log('Deleted?', deleted, this._questCards?.size);
 
         card?.destroy();
 
