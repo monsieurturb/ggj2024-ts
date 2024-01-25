@@ -2,6 +2,7 @@ import EventEmitter = Phaser.Events.EventEmitter;
 export const EventManager = new EventEmitter()
 
 export enum Events {
-	// Custom events
-	END_TURN = 'end_turn',
+	END_TURN = 'END_TURN',
+	REQUIREMENT_FILLED = 'REQUIREMENT_FILLED',
+	QUEST_COMPLETED = 'QUEST_COMPLETED',
 }

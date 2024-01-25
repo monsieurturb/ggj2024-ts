@@ -2,6 +2,7 @@ import { Colors, Config } from "../config";
 import { CharType } from "../struct/CharStruct";
 import { DiceStruct } from "../struct/DiceStruct";
 import { QuestSlot } from "./QuestSlot";
+import { gsap, Power3 } from 'gsap';
 
 export class Dice extends Phaser.GameObjects.Container {
     // Actual dice class
@@ -81,7 +82,7 @@ export class Dice extends Phaser.GameObjects.Container {
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart);
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.onDrag);
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd);
-        // this.on(Phaser.Input.Events.GAMEOBJECT_DROP, this.onDrop);// Triggers only if dropped on a Zone
+        this.on(Phaser.Input.Events.GAMEOBJECT_DROP, this.onDrop);// Triggers only if dropped on a Zone
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_ENTER, this.onDragEnter);
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_LEAVE, this.onDragLeave);
     }
@@ -109,20 +110,54 @@ export class Dice extends Phaser.GameObjects.Container {
 
     onDragEnd(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) { }
 
+    onDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
+        if (!this.isValidTarget(target)) {
+            this.setPosition(this.input?.dragStartX, this.input?.dragStartY);
+            return;
+        }
+
+        const slot = target.parentContainer as QuestSlot;
+        const p = slot.getLocalPoint(this.x, this.y);
+
+        if (slot.isDiceValid(this)) {
+            gsap.to(this, {
+                x: `-=${p.x}`,
+                y: `-=${p.y}`,
+                duration: 0.2,
+                ease: Power3.easeOut,
+                onStart: () => {
+                    if (this.input)
+                        this.input.enabled = false;
+                },
+                onComplete: () => {
+                    slot.addDice(this);
+                },
+            });
+        }
+        else {
+            gsap.to(this, {
+                x: this.input?.dragStartX,
+                y: this.input?.dragStartY,
+                duration: 0.2,
+                ease: Power3.easeOut,
+                onStart: () => {
+                    if (this.input)
+                        this.input.enabled = false;
+                },
+                onComplete: () => {
+                    if (this.input)
+                        this.input.enabled = true;
+                },
+            });
+        }
+    }
+
     private isValidTarget(target: Phaser.GameObjects.GameObject) {
         // Check if target is a Zone, has a parent and parent is a Slot
         return target instanceof Phaser.GameObjects.Zone &&
             target.parentContainer &&
             target.parentContainer instanceof QuestSlot;
     }
-
-    /* onDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
-        if (!this.isValidTarget(target)) {
-            console.log(this.input, this.input?.dragStartX);
-            this.setPosition(this.input?.dragStartX, this.input?.dragStartY);
-            return;
-        }
-    } */
 
     /* onDragEnter(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
         if (!this.isValidTarget(target))

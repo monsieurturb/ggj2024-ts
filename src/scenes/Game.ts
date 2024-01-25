@@ -90,12 +90,13 @@ export class Game extends Scene {
         ]);
 
         // NOTE Quest card test
-        const quest = QuestBook.getInstance().pickOne();
-        const card = new QuestCard(this, quest)
-            .setPosition(Config.screen.width * 0.5, 300);
-        this._questsLayer.add(card);
-        this._questCards.push(card);
-        card.activate();
+        for (let i = 0; i < 5; i++) {
+            const quest = QuestBook.getInstance().pickOne();
+            const card = new QuestCard(this, quest)
+                .setPosition(Config.screen.width * 0.5 - i * 15, 300 + i * 15);
+            this._questsLayer.add(card);
+            this._questCards.push(card);
+        }
 
         // NOTE Debug scene name
         let t = this.add.text(
@@ -143,6 +144,13 @@ export class Game extends Scene {
 
         // Listen to shutdown event
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
+
+        // Listen to quest completed event
+        EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted);
+
+        // Activate first quest
+        const card = this._questCards[this._questCards.length - 1];
+        card.activate();
     }
 
     createCharAndDice(type: CharType, x: number) {
@@ -178,6 +186,11 @@ export class Game extends Scene {
         // Update UI
         if (this._turnText)
             this._turnText.text = "Turns remaining: " + this._turnsRemaining;
+    }
+
+    onQuestCompleted() {
+        console.log('Detected quest completed!');
+
     }
 
     shutdown() {

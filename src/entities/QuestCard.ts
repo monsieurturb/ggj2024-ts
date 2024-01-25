@@ -1,3 +1,4 @@
+import { EventManager, Events } from "../Events";
 import { Config } from "../config";
 import { QuestStruct } from "../struct/QuestStruct";
 import { QuestSlot } from "./QuestSlot";
@@ -45,7 +46,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
         for (let i = 0; i < this._quest.requirements.length; i++) {
             const req = this._quest.requirements[i];
             const slot = new QuestSlot(this.scene, req);
-            slot.x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.25 + Config.questCard.width * 0.25;
+            slot.x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.35 + Config.questCard.width * 0.25;
             this.add(slot);
         }
     }
@@ -53,6 +54,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
     activate() {
         this._quest.activate();
         this.createSlots();
+
+        EventManager.on(Events.REQUIREMENT_FILLED, this.onRequirementFilled.bind(this));
     }
 
     update() {
@@ -66,5 +69,19 @@ export class QuestCard extends Phaser.GameObjects.Container {
             s += "\nDone: " + (this._quest.isDone() ? "YES" : "NO");
             this._text.text = s;
         }
+    }
+
+    onRequirementFilled(uuid: string) {
+        console.log('Requirement filled:', uuid);
+        if (this._quest.isDone()) {
+            console.log('Quest completed!');
+            EventManager.emit(Events.QUEST_COMPLETED, this._quest.uuid);
+        }
+    }
+
+    destroy(fromScene?: boolean | undefined) {
+        console.log('destroying quest card');
+
+        EventManager.off(Events.REQUIREMENT_FILLED, undefined, this);
     }
 }

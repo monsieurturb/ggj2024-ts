@@ -21,10 +21,6 @@ export class QuestStruct {
         this.name = name;
     }
 
-    test() {
-        this._requirements[0].done = true;
-    }
-
     addRequirement(req: QuestRequirement) {
         this._requirements.push(req);
         return this;
@@ -101,6 +97,8 @@ export class QuestStruct {
 }
 
 export class QuestRequirement {
+    readonly uuid: string;
+
     private _mode: QuestRequirementMode;
     public get mode(): QuestRequirementMode { return this._mode; }
 
@@ -109,6 +107,7 @@ export class QuestRequirement {
     public done: boolean;
 
     constructor(type: CharType, mode: QuestRequirementMode, value: number) {
+        this.uuid = Random.getInstance().uuid();
         this.type = type;
         this._mode = mode;
         this.value = value;

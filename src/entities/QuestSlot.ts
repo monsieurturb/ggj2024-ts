@@ -1,3 +1,4 @@
+import { EventManager, Events } from "../Events";
 import { Colors, Config } from "../config";
 import { CharType } from "../struct/CharStruct";
 import { QuestRequirement, QuestRequirementMode } from "../struct/QuestStruct";
@@ -8,8 +9,6 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     private background: Phaser.GameObjects.Rectangle;
     private text: Phaser.GameObjects.Text;
 
-    private diceEntities: Map<string, Dice>;
-
     private requirement: QuestRequirement;
 
     constructor(scene: Phaser.Scene, requirement: QuestRequirement) {
@@ -18,8 +17,6 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         this.requirement = requirement;
         this.width = Config.diceSize * 1.25;
         this.height = Config.diceSize * 1.25;
-
-        this.diceEntities = new Map<string, Dice>();
 
         this.zone = new Phaser.GameObjects.Zone(this.scene, 0, 0, this.width, this.height)
             .setRectangleDropZone(this.width, this.height);
@@ -41,20 +38,11 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         })
             .setOrigin(0.5, 0.5);
 
-        this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(-this.background.width / 2, -this.background.height / 2, this.background.width, this.background.height),
-            hitAreaCallback: Phaser.Geom.Rectangle.Contains,
-            dropZone: true,
-        }, Phaser.Geom.Rectangle.Contains);
-
         this.add([
             this.background,
             this.text,
             this.zone,
         ]);
-
-        this.scene.input.on(Phaser.Input.Events.DROP, this.onDrop.bind(this));
-        // this.scene.input.on(Phaser.Input.Events.DRAG_ENTER, this.onDragEnter.bind(this));
     }
 
     getColor(hex: boolean = false): string | number {
@@ -82,8 +70,8 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         return s;
     }
 
-    onDrop(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject, target: Phaser.GameObjects.Zone) {
-        console.log('ON DROP pointer:', pointer, 'is Dice:', (gameObject instanceof Dice), 'is this zone:', (target === this.zone));
+    /* onDrop(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject, target: Phaser.GameObjects.Zone) {
+        // console.log('ON DROP pointer:', pointer, 'is Dice:', (gameObject instanceof Dice), 'is this zone:', (target === this.zone));
 
         // If target is not this Slot's Zone or gameObject is not a Dice, return
         if (target != this.zone || !(gameObject instanceof Dice)) {
@@ -95,10 +83,13 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         const isValid = this.isDiceValid(dice);
         if (!isValid)
             dice.setPosition(dice.input?.dragStartX, dice.input?.dragStartY);
-        console.log("DROPPED:", dice.charType, dice.currentValue, (isValid ? "IS VALID" : "IS NOT VALID"));
-    }
+        // console.log("DROPPED:", dice.charType, dice.currentValue, (isValid ? "IS VALID" : "IS NOT VALID"));
+    } */
 
     isDiceValid(dice: Dice) {
+        if (this.requirement.done)
+            return false;
+
         const isTypeValid = this.requirement.type === CharType.ANY || this.requirement.type === dice.charType;
 
         let isValueValid = false;
@@ -126,16 +117,31 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         return isTypeValid && isValueValid;
     }
 
-    /* addDice(diceEntity: Dice) {
-        if (!this.diceEntities.has(diceEntity.uuid)) {
-            this.diceEntities.set(diceEntity.uuid, diceEntity);
-            // console.log("Dice added to slot", dice.currentValue);
-        }
-        // else
-        // console.log("Dice already in slot");
+    addDice(dice: Dice) {
+        if (!this.isDiceValid(dice))
+            return false;
 
-        this.updateText();
-    } */
+        // For SCORE mode
+        if (this.requirement.mode === QuestRequirementMode.SCORE) {
+            // Substract dice current value from score
+            this.requirement.value = Phaser.Math.Clamp(this.requirement.value - dice.currentValue, 0, this.requirement.value);
+            // Update text
+            this.text.text = this.getRequirementText();
+            // If score reached, we're done
+            if (this.requirement.value <= 0)
+                this.requirement.done = true
+        }
+        // For all other modes
+        else
+            this.requirement.done = true;
+
+        // Destroy dice
+        dice.destroy();
+
+        // Emit event if done
+        if (this.requirement.done)
+            EventManager.emit(Events.REQUIREMENT_FILLED, this.requirement.uuid);
+    }
 
     /* removeDice(diceEntity: Dice) {
         const result = this.diceEntities.delete(diceEntity.uuid);
