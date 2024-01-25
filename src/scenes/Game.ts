@@ -104,7 +104,7 @@ export class Game extends Scene {
             // this._questCards.push(card);
             this._questCards?.set(card.uuid, card);
         }
-        console.log(Array.from(this._questCards?.keys()));
+        // console.log(Array.from(this._questCards?.keys()));
 
 
         // NOTE Debug scene name
