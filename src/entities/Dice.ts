@@ -1,13 +1,14 @@
 import { Colors, Config } from "../config";
 import { CharType } from "../struct/CharStruct";
 import { DiceStruct } from "../struct/DiceStruct";
-import { Slot } from "./Slot";
+import { QuestSlot } from "./QuestSlot";
 
 export class Dice extends Phaser.GameObjects.Container {
     // Actual dice class
     private _dice: DiceStruct;
     // Expose some of the dice properties, keep the rest private
     public get uuid(): string { return this._dice.uuid; }
+    public get charType(): string { return this._dice.type; }
     public get currentValue(): number { return this._dice.currentValue; }
 
     // Graphics objects
@@ -80,9 +81,9 @@ export class Dice extends Phaser.GameObjects.Container {
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart);
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.onDrag);
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd);
-        this.on(Phaser.Input.Events.GAMEOBJECT_DROP, this.onDrop);// Triggers only if dropped on a Zone
-        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_ENTER, this.onDragEnter);
-        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_LEAVE, this.onDragLeave);
+        // this.on(Phaser.Input.Events.GAMEOBJECT_DROP, this.onDrop);// Triggers only if dropped on a Zone
+        // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_ENTER, this.onDragEnter);
+        // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_LEAVE, this.onDragLeave);
     }
 
     update() {
@@ -112,30 +113,30 @@ export class Dice extends Phaser.GameObjects.Container {
         // Check if target is a Zone, has a parent and parent is a Slot
         return target instanceof Phaser.GameObjects.Zone &&
             target.parentContainer &&
-            target.parentContainer instanceof Slot;
+            target.parentContainer instanceof QuestSlot;
     }
 
-    onDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
+    /* onDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
         if (!this.isValidTarget(target)) {
             console.log(this.input, this.input?.dragStartX);
             this.setPosition(this.input?.dragStartX, this.input?.dragStartY);
             return;
         }
-    }
+    } */
 
-    onDragEnter(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
+    /* onDragEnter(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
         if (!this.isValidTarget(target))
             return;
 
-        const slot = target.parentContainer as Slot;
+        const slot = target.parentContainer as QuestSlot;
         slot.addDice(this);
-    }
+    } */
 
-    onDragLeave(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
+    /* onDragLeave(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
         if (!this.isValidTarget(target))
             return;
 
-        const slot = target.parentContainer as Slot;
+        const slot = target.parentContainer as QuestSlot;
         slot.removeDice(this);
-    }
+    } */
 }

@@ -1,7 +1,7 @@
 import { Random } from "../Random";
 import { CharType } from "./CharStruct";
 import { LootBook } from "./LootBook";
-import { QuestRequirementMode, QuestStruct } from "./QuestStruct";
+import { QuestRequirement, QuestRequirementMode, QuestStruct } from "./QuestStruct";
 
 export class QuestBook {
     private static instance: QuestBook;
@@ -12,18 +12,18 @@ export class QuestBook {
         this._quests = [];
 
         this._quests.push(new QuestStruct("Perfect Delivery")
-            .addRequirement({ type: CharType.ANY, mode: QuestRequirementMode.EXACT, value: 6 })
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.EXACT, 6))
             .setLootOnSuccess(LootBook.getInstance().pickOneReward())
             .setTurnsRemaining(2)
         );
         this._quests.push(new QuestStruct("Irresistible Duo")
-            .addRequirement({ type: CharType.TYPE_A, mode: QuestRequirementMode.MIN, value: 3 })
-            .addRequirement({ type: CharType.TYPE_B, mode: QuestRequirementMode.MIN, value: 3 })
+            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
+            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .setLootOnSuccess(LootBook.getInstance().pickOneSkill())
             .setTurnsRemaining(3)
         );
         this._quests.push(new QuestStruct("Monologue")
-            .addRequirement({ type: CharType.TYPE_C, mode: QuestRequirementMode.SCORE, value: 10 })
+            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SCORE, 9))
             .setLootOnFail(LootBook.getInstance().pickOnePenalty())
             .setTurnsRemaining(2)
         );
@@ -37,8 +37,6 @@ export class QuestBook {
     }
 
     public pickOne(): QuestStruct {
-        const q = Random.getInstance().pick(this._quests).clone();
-        // console.log("picking a random quest: " + q.name + ", " + q.turnsRemaining + ", " + q.uuid);
-        return q;
+        return Random.getInstance().pick(this._quests).clone();
     }
 }

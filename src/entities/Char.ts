@@ -7,7 +7,7 @@ export class Char extends Phaser.GameObjects.Container {
     private _char: CharStruct;
     // Expose some of the dice properties, keep the rest private
     public get uuid(): string { return this._char.uuid; }
-    public get charType(): number { return this._char.type; }
+    public get charType(): CharType { return this._char.type; }
 
     // Graphics objects
     private _background: Phaser.GameObjects.Rectangle;

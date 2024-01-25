@@ -8,29 +8,23 @@ export class CutScene extends Scene {
     }
 
     init() {
-        console.log("init", this.scene.key);
-
         this.cameras.main.setBackgroundColor(0x000000);
     }
 
-    preload() {
-        console.log("preload", this.scene.key);
-    }
+    preload() { }
 
     create() {
-        console.log("create", this.scene.key);
-
         this.add.text(
             Config.screen.width * 0.5,
-            Config.screen.height - 32, 'CutScene', {
+            Config.screen.height - 32,
+            'CutScene', {
             fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
-            .setOrigin(0.5);
+            .setOrigin(0.5, 1);
 
         setTimeout(() => {
-            console.log("transition to Game...");
             this.scene.transition({
                 target: "Game",
                 duration: Config.sceneTransitionDuration,
@@ -42,7 +36,5 @@ export class CutScene extends Scene {
         }, 3000);
     }
 
-    shutdown() {
-        console.log("shutdown", this.scene.key);
-    }
+    shutdown() { }
 }

@@ -11,6 +11,7 @@ export class QuestStruct {
     private _lootOnFail: string = "";
     private _lootOnSuccess: string = "";
 
+    public get requirements(): Array<QuestRequirement> { return this._requirements; }
     public get turnsRemaining(): number { return this._turnsRemaining; }
     public get lootOnFail(): string { return this._lootOnFail; }
     public get lootOnSuccess(): string { return this._lootOnSuccess; }
@@ -20,24 +21,8 @@ export class QuestStruct {
         this.name = name;
     }
 
-    clone() {
-        const q = new QuestStruct(this.name)
-            // Copy loot
-            .setLootOnFail(this.lootOnFail)
-            .setLootOnSuccess(this.lootOnSuccess)
-            // Copy turns
-            .setTurnsRemaining(this.turnsRemaining);
-        // Copy requirements
-        for (let i = 0; i < this._requirements.length; i++)
-            q.addRequirement(this._requirements[i]);
-
-        return q;
-    }
-
-    activate() {
-        EventManager.on(Events.END_TURN, () => {
-            this._turnsRemaining--;
-        })
+    test() {
+        this._requirements[0].done = true;
     }
 
     addRequirement(req: QuestRequirement) {
@@ -59,19 +44,87 @@ export class QuestStruct {
         this._lootOnSuccess = loot;
         return this;
     }
+
+    clone() {
+        const q = new QuestStruct(this.name)
+            // Copy loot
+            .setLootOnFail(this.lootOnFail)
+            .setLootOnSuccess(this.lootOnSuccess)
+            // Copy turns
+            .setTurnsRemaining(this.turnsRemaining);
+
+        // Copy requirements
+        for (let i = 0; i < this._requirements.length; i++)
+            q.addRequirement(this._requirements[i].clone());
+
+        return q;
+    }
+
+    activate() {
+        // Pick different random CharType for requirements that apply
+        const randomTypeReqs = [];
+        for (const req of this._requirements) {
+            if (req.type === CharType.RANDOM)
+                randomTypeReqs.push(req);
+        }
+        if (randomTypeReqs.length > 0)
+            this.pickRandomTypes(randomTypeReqs);
+
+        // Listen to END_TURN event
+        EventManager.on(Events.END_TURN, () => {
+            this._turnsRemaining--;
+        })
+    }
+
+    pickRandomTypes(reqs: Array<QuestRequirement>) {
+        let a: Array<CharType> = [];
+        for (const req of reqs) {
+            // If empty, fill the array with all the available types and shuffle it
+            if (a.length <= 0) {
+                a = [CharType.TYPE_A, CharType.TYPE_B, CharType.TYPE_C];
+                Random.getInstance().shuffle(a);
+            }
+            // @ts-ignore - Pick one type and assign to req
+            req.type = a.pop();
+        }
+    }
+
+    isDone() {
+        // Return false if one of the requirements is not done
+        for (let i = 0; i < this._requirements.length; i++) {
+            if (!this._requirements[i].done)
+                return false;
+        }
+        // Else return true
+        return true;
+    }
 }
 
-interface QuestRequirement {
-    type: CharType,
-    mode: QuestRequirementMode
-    value: number
+export class QuestRequirement {
+    private _mode: QuestRequirementMode;
+    public get mode(): QuestRequirementMode { return this._mode; }
+
+    public type: CharType;
+    public value: number;
+    public done: boolean;
+
+    constructor(type: CharType, mode: QuestRequirementMode, value: number) {
+        this.type = type;
+        this._mode = mode;
+        this.value = value;
+        this.done = false;
+    }
+
+    clone() {
+        return new QuestRequirement(this.type, this._mode, this.value);
+    }
 }
 
 export enum QuestRequirementMode {
-    SCORE,// Must reach 'value' with any number of dice
-    MIN,// Dice current value must be greater or equal than 'value'
-    MAX,// Dice current value must be lower or equal than 'value'
-    EXACT,// Dice current value must be exactly 'value'
-    EVEN,// Dice current value must be even
-    ODD,// Dice current value must be odd
+    SCORE = "QRM_SCORE",// Must reach 'value' with any number of dice
+    MIN = "QRM_MIN",// Dice current value must be greater or equal than 'value'
+    MAX = "QRM_MAX",// Dice current value must be lower or equal than 'value'
+    EXACT = "QRM_EXACT",// Dice current value must be exactly 'value'
+    EVEN = "QRM_EVEN",// Dice current value must be even
+    ODD = "QRM_ODD",// Dice current value must be odd
 }

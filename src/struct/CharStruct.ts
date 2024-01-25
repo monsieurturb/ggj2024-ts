@@ -21,8 +21,9 @@ export class CharStruct {
 }
 
 export enum CharType {
-    ANY,
-    TYPE_A,
-    TYPE_B,
-    TYPE_C,
+    ANY = "CT_ANY",
+    RANDOM = "CT_RANDOM",
+    TYPE_A = "CT_TYPE_A",
+    TYPE_B = "CT_TYPE_B",
+    TYPE_C = "CT_TYPE_C",
 }

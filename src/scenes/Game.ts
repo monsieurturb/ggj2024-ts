@@ -28,15 +28,11 @@ export class Game extends Scene {
 
     public mask: Phaser.GameObjects.Rectangle | undefined;
 
-    // TODO Clean scene on exit (destroy chars and quests, kill event listeners etc.)
-
     constructor() {
         super("Game");
     }
 
     init() {
-        console.log("init", this.scene.key);
-
         this.cameras.main.setBackgroundColor(Colors.BACKGROUND);
 
         // Reset data
@@ -45,13 +41,9 @@ export class Game extends Scene {
         this._turnsRemaining = 10;
     }
 
-    preload() {
-        console.log("preload", this.scene.key);
-    }
+    preload() { }
 
     create() {
-        console.log("create", this.scene.key);
-
         // Create all layers
         this._charsLayer = this.add.container();
         this._questsLayer = this.add.container();
@@ -98,7 +90,8 @@ export class Game extends Scene {
         ]);
 
         // NOTE Quest card test
-        const card = new QuestCard(this, QuestBook.getInstance().pickOne())
+        const quest = QuestBook.getInstance().pickOne();
+        const card = new QuestCard(this, quest)
             .setPosition(Config.screen.width * 0.5, 300);
         this._questsLayer.add(card);
         this._questCards.push(card);
@@ -132,7 +125,6 @@ export class Game extends Scene {
             .setOrigin(0.5, 0)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                console.log("transition to CutScene...");
                 this.mask?.setScale(0, 1)
                     .addToDisplayList();
                 this.scene.transition({
@@ -189,7 +181,7 @@ export class Game extends Scene {
     }
 
     shutdown() {
-        console.log("shutdown", this.scene.key);
+        // TODO Clean scene on exit (destroy chars and quests, kill event listeners etc.)
         this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }
 }
