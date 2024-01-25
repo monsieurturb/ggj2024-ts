@@ -8,6 +8,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
     private _quest: QuestStruct;
     // Expose some of the quest properties, keep the rest private
     public get uuid(): string { return this._quest.uuid; }
+    public get questName(): string { return this._quest.name; }
     public get turnsRemaining(): number { return this._quest.turnsRemaining; }
     public get lootOnFail(): string { return this._quest.lootOnFail; }
     public get lootOnSuccess(): string { return this._quest.lootOnSuccess; }
@@ -18,8 +19,12 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
     private _boundOnRequirementFilled: ((uuid: string) => void) | undefined;
 
+    public targetPosition: Phaser.Geom.Point;
+
     constructor(scene: Phaser.Scene, quest: QuestStruct) {
         super(scene);
+
+        this.targetPosition = new Phaser.Geom.Point(this.x, this.y);
 
         this._quest = quest;
 
@@ -74,6 +79,16 @@ export class QuestCard extends Phaser.GameObjects.Container {
             s += "\nTurns remaining: " + this._quest.turnsRemaining;
             s += "\nDone: " + (this._quest.isDone() ? "YES" : "NO");
             this._text.text = s;
+        }
+
+        const x = this.targetPosition.x - this.x;
+        const y = this.targetPosition.y - this.y;
+        if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+            const mult = 0.15;
+            this.setPosition(this.x + x * mult, this.y + y * mult);
+        }
+        else if (Math.abs(x) > 0 || Math.abs(y) > 0) {
+            this.setPosition(this.targetPosition.x, this.targetPosition.y);
         }
     }
 

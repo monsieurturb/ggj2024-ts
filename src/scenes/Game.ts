@@ -12,8 +12,7 @@ import { gsap, Power3 } from 'gsap';
 export class Game extends Scene {
     // Entities
     private _chars: Array<Char> = [];
-    // private _questCards: Array<QuestCard> = [];
-    private _questCards: Map<string, QuestCard> | undefined;
+    private _questCards: Array<QuestCard> = [];
 
     // Data
     private _turnsRemaining: number = 10;
@@ -42,8 +41,7 @@ export class Game extends Scene {
 
         // Reset data
         this._chars = [];
-        // this._questCards = [];
-        this._questCards = new Map<string, QuestCard>();
+        this._questCards = [];
         this._turnsRemaining = 10;
     }
 
@@ -61,11 +59,6 @@ export class Game extends Scene {
 
         // Seed the randomizer
         // Random.getInstance().setSeed('make me laugh');
-
-        // Create all characters
-        this.createCharAndDice(CharType.TYPE_A, 300);
-        this.createCharAndDice(CharType.TYPE_B, 700);
-        this.createCharAndDice(CharType.TYPE_C, 1100);
 
         // Turns display
         this._turnText = this.add.text(
@@ -95,15 +88,6 @@ export class Game extends Scene {
             this._endTurnButton
         ]);
 
-        // NOTE Quest cards test
-        for (let i = 0; i < 5; i++) {
-            const quest = QuestBook.getInstance().pickOne();
-            const card = new QuestCard(this, quest)
-                .setPosition(Config.screen.width * 0.5 - i * 15, 300 + i * 15);
-            this._questsLayer.add(card);
-            // this._questCards.push(card);
-            this._questCards?.set(card.uuid, card);
-        }
 
         // NOTE Debug scene name
         let t = this.add.text(
@@ -162,21 +146,44 @@ export class Game extends Scene {
         this._boundOnEndTurn = this.onEndTurn.bind(this);
         EventManager.on(Events.END_TURN, this._boundOnEndTurn);
 
+        // Create all characters
+        this.createCharAndDice(CharType.TYPE_A, 300);
+        this.createCharAndDice(CharType.TYPE_B, 700);
+        this.createCharAndDice(CharType.TYPE_C, 1100);
+
+        // Queue quests
+        for (let i = 0; i < 5; i++) {
+            this.queueAnotherQuest();
+        }
+        // console.log(this._questCards.map((q) => q.questName));
+
         // Activate first quest
         this.activateNextQuest();
 
+        // Throw and show
         this.throwAllDice();
     }
 
-    activateNextQuest() {
-        if (this._questCards) {
-            const card = [...this._questCards.values()].pop();
-            // console.log('Activating card', card?.uuid);
-            card?.activate();
-        }
+    private queueAnotherQuest() {
+        const i = this._questCards.length;
+        const quest = QuestBook.getInstance().pickOne();
+        const card = new QuestCard(this, quest)
+            .setPosition(Config.screen.width * 0.5 + i * 15, 300 - i * 15);
+        this._questsLayer?.addAt(card, 0);
+        this._questCards.push(card);
     }
 
-    createCharAndDice(type: CharType, x: number) {
+    private activateNextQuest() {
+        while (this._questCards.length < 5) {
+            this.queueAnotherQuest();
+        }
+
+        const card = this._questCards[0];
+        // console.log('Activating card', card?.uuid);
+        card?.activate();
+    }
+
+    private createCharAndDice(type: CharType, x: number) {
         const char = new Char(this, type);
         char.setPosition(x, Config.screen.height);
         if (this._charsLayer)
@@ -190,7 +197,7 @@ export class Game extends Scene {
         }
     }
 
-    throwAllDice() {
+    private throwAllDice() {
         let d = 0;
         for (const char of this._chars) {
             char.throwAllDice();
@@ -233,26 +240,38 @@ export class Game extends Scene {
         }
 
         // Update all quest cards
-        /* for (let i = 0; i < this._questCards.length; i++) {
+        for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
+            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.5 + i * 15, 300 - i * 15);
             card.update();
-        } */
-        this._questCards?.forEach((card) => {
-            card.update();
-        });
+        }
 
         // Update UI
         if (this._turnText)
             this._turnText.text = "Turns remaining: " + this._turnsRemaining;
     }
 
-    onEndTurn() {
+    private getQuestCardFromUUID(uuid: string): QuestCard | undefined {
+        for (const card of this._questCards) {
+            if (card.uuid === uuid)
+                return card;
+        }
+        return undefined;
+    }
+
+    private deleteQuestCardFromUUID(uuid: string): QuestCard | undefined {
+        const card = this.getQuestCardFromUUID(uuid);
+        this._questCards = this._questCards.filter((card) => card.uuid !== uuid);
+        return card;
+    }
+
+    private onEndTurn() {
         this.throwAllDice();
     }
 
-    onQuestCompleted(uuid: string) {
+    private onQuestCompleted(uuid: string) {
         console.log('Detected quest completed!', uuid);
-        const card = this._questCards?.get(uuid);
+        const card = this.getQuestCardFromUUID(uuid);
         console.log("Result:", card?.lootOnSuccess);
 
 
@@ -261,9 +280,9 @@ export class Game extends Scene {
         this.deleteQuestAndActivateNext(uuid);
     }
 
-    onQuestFailed(uuid: string) {
+    private onQuestFailed(uuid: string) {
         console.log('Detected quest failed!', uuid);
-        const card = this._questCards?.get(uuid);
+        const card = this.getQuestCardFromUUID(uuid);
         console.log("Result:", card?.lootOnFail);
 
         // TODO Loot
@@ -272,19 +291,15 @@ export class Game extends Scene {
     }
 
     private deleteQuestAndActivateNext(uuid: string) {
-        const card = this._questCards?.get(uuid);
-
-        const deleted = this._questCards?.delete(uuid);
-        // console.log('Deleted?', deleted, this._questCards?.size);
+        const card = this.deleteQuestCardFromUUID(uuid);
+        // console.log('Deleted?', card?.uuid, this._questCards.map((q) => q.questName));
 
         card?.destroy();
 
         this.activateNextQuest();
     }
 
-    shutdown() {
-        // TODO Clean scene on exit (destroy chars and quests, kill event listeners etc.)
-
+    private shutdown() {
         EventManager.off(Events.QUEST_COMPLETED, this._boundOnQuestCompleted);
         EventManager.off(Events.QUEST_FAILED, this._boundOnQuestFailed);
         EventManager.off(Events.END_TURN, this._boundOnEndTurn);
