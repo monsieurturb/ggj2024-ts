@@ -11,7 +11,8 @@ import { EventManager, Events } from '../Events';
 export class Game extends Scene {
     // Entities
     private _chars: Array<Char> = [];
-    private _questCards: Array<QuestCard> = [];
+    // private _questCards: Array<QuestCard> = [];
+    private _questCards: Map<string, QuestCard> | undefined;
 
     // Data
     private _turnsRemaining: number = 10;
@@ -37,7 +38,8 @@ export class Game extends Scene {
 
         // Reset data
         this._chars = [];
-        this._questCards = [];
+        // this._questCards = [];
+        this._questCards = new Map<string, QuestCard>();
         this._turnsRemaining = 10;
     }
 
@@ -89,14 +91,16 @@ export class Game extends Scene {
             this._endTurnButton
         ]);
 
-        // NOTE Quest card test
+        // NOTE Quest cards test
         for (let i = 0; i < 5; i++) {
             const quest = QuestBook.getInstance().pickOne();
             const card = new QuestCard(this, quest)
                 .setPosition(Config.screen.width * 0.5 - i * 15, 300 + i * 15);
             this._questsLayer.add(card);
-            this._questCards.push(card);
+            // this._questCards.push(card);
+            this._questCards?.set(card.uuid, card);
         }
+
 
         // NOTE Debug scene name
         let t = this.add.text(
@@ -146,11 +150,21 @@ export class Game extends Scene {
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
 
         // Listen to quest completed event
-        EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted);
+        EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted.bind(this));
+
+        // Listen to end turn event
+        EventManager.on(Events.END_TURN, this.onEndTurn.bind(this));
 
         // Activate first quest
-        const card = this._questCards[this._questCards.length - 1];
-        card.activate();
+        this.activateNextQuest();
+    }
+
+    activateNextQuest() {
+        if (this._questCards) {
+            const card = [...this._questCards.values()].pop();
+            console.log('activating card', card?.uuid);
+            card?.activate();
+        }
     }
 
     createCharAndDice(type: CharType, x: number) {
@@ -178,23 +192,54 @@ export class Game extends Scene {
             const char = this._chars[i];
             char.update();
         }
+
         // Update all quest cards
-        for (let i = 0; i < this._questCards.length; i++) {
+        /* for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
             card.update();
-        }
+        } */
+        this._questCards?.forEach((card) => {
+            card.update();
+        })
+
         // Update UI
         if (this._turnText)
             this._turnText.text = "Turns remaining: " + this._turnsRemaining;
     }
 
-    onQuestCompleted() {
-        console.log('Detected quest completed!');
+    onEndTurn() {
+        for (const char of this._chars) {
+            char.throwAllDice();
 
+            let diceWidth = Config.diceSize * char.diceEntities.length + Config.diceSize * 0.25 * (char.diceEntities.length - 1);
+            let startX = char.x + Config.diceSize / 2 - diceWidth / 2;
+            for (let i = 0; i < char.diceEntities.length; i++) {
+                const dice = char.diceEntities[i];
+                dice.setPosition(startX + i * Config.diceSize * 1.25, char.y - Config.diceSize * 0.75);
+                dice.setVisible(true);
+                dice.setInteractive();
+            }
+        }
+    }
+
+    onQuestCompleted(uuid: string) {
+        console.log('Detected quest completed!', uuid);
+
+        const card = this._questCards?.get(uuid);
+        console.log(card);
+
+        const deleted = this._questCards?.delete(uuid);
+        console.log(deleted, this._questCards?.size);
+
+        card?.destroy();
+
+        this.activateNextQuest();
     }
 
     shutdown() {
         // TODO Clean scene on exit (destroy chars and quests, kill event listeners etc.)
+
+        EventManager.off(Events.QUEST_COMPLETED, undefined, this);
         this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }
 }

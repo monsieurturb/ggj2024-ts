@@ -139,8 +139,10 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         // Update text
         this.text.text = this.getRequirementText();
 
-        // Destroy dice
-        dice.destroy();
+        // Hide dice
+        dice.setVisible(false);
+
+        dice.removeFromDisplayList();
 
         // Emit event if done
         if (this.requirement.done)

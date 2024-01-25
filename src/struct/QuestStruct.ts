@@ -69,7 +69,7 @@ export class QuestStruct {
         // Listen to END_TURN event
         EventManager.on(Events.END_TURN, () => {
             this._turnsRemaining--;
-        })
+        });
     }
 
     pickRandomTypes(reqs: Array<QuestRequirement>) {
