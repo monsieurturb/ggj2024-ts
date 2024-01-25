@@ -10,6 +10,7 @@ export class QuestStruct {
     private _turnsRemaining: number = 2;
     private _lootOnFail: string = "";
     private _lootOnSuccess: string = "";
+    private _boundOnEndTurn: (() => void) | undefined;
 
     public get requirements(): Array<QuestRequirement> { return this._requirements; }
     public get turnsRemaining(): number { return this._turnsRemaining; }
@@ -67,9 +68,15 @@ export class QuestStruct {
             this.pickRandomTypes(randomTypeReqs);
 
         // Listen to END_TURN event
-        EventManager.on(Events.END_TURN, () => {
-            this._turnsRemaining--;
-        });
+        this._boundOnEndTurn = this.onEndTurn.bind(this)
+        EventManager.on(Events.END_TURN, this._boundOnEndTurn);
+    }
+
+    onEndTurn() {
+        this._turnsRemaining--;
+
+        if (this.turnsRemaining <= 0)
+            EventManager.emit(Events.QUEST_FAILED, this.uuid);
     }
 
     pickRandomTypes(reqs: Array<QuestRequirement>) {
@@ -93,6 +100,10 @@ export class QuestStruct {
         }
         // Else return true
         return true;
+    }
+
+    destroy() {
+        EventManager.off(Events.END_TURN, this._boundOnEndTurn);
     }
 }
 

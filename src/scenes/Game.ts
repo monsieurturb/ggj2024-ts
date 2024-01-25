@@ -7,6 +7,7 @@ import { CharType } from '../struct/CharStruct';
 import { QuestStruct } from '../struct/QuestStruct';
 import { QuestBook } from '../struct/QuestBook';
 import { EventManager, Events } from '../Events';
+import { gsap, Power3 } from 'gsap';
 
 export class Game extends Scene {
     // Entities
@@ -16,6 +17,9 @@ export class Game extends Scene {
 
     // Data
     private _turnsRemaining: number = 10;
+    private _boundOnEndTurn: (() => void) | undefined;
+    private _boundOnQuestCompleted: ((uuid: string) => void) | undefined;
+    private _boundOnQuestFailed: ((uuid: string) => void) | undefined;
 
     // Layers
     private _charsLayer: Phaser.GameObjects.Container | undefined;
@@ -100,6 +104,7 @@ export class Game extends Scene {
             // this._questCards.push(card);
             this._questCards?.set(card.uuid, card);
         }
+        console.log(Array.from(this._questCards?.keys()));
 
 
         // NOTE Debug scene name
@@ -149,14 +154,20 @@ export class Game extends Scene {
         // Listen to shutdown event
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
 
-        // Listen to quest completed event
-        EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted.bind(this));
+        // Listen to quest events
+        this._boundOnQuestCompleted = this.onQuestCompleted.bind(this);
+        this._boundOnQuestFailed = this.onQuestFailed.bind(this);
+        EventManager.on(Events.QUEST_COMPLETED, this._boundOnQuestCompleted);
+        EventManager.on(Events.QUEST_FAILED, this._boundOnQuestFailed);
 
         // Listen to end turn event
-        EventManager.on(Events.END_TURN, this.onEndTurn.bind(this));
+        this._boundOnEndTurn = this.onEndTurn.bind(this);
+        EventManager.on(Events.END_TURN, this._boundOnEndTurn);
 
         // Activate first quest
         this.activateNextQuest();
+
+        this.throwAllDice();
     }
 
     activateNextQuest() {
@@ -174,15 +185,45 @@ export class Game extends Scene {
             this._charsLayer.add(char);
         this._chars.push(char);
 
-        char.throwAllDice();
-
-        let diceWidth = Config.diceSize * char.diceEntities.length + Config.diceSize * 0.25 * (char.diceEntities.length - 1);
-        let startX = char.x + Config.diceSize / 2 - diceWidth / 2;
         for (let i = 0; i < char.diceEntities.length; i++) {
             const dice = char.diceEntities[i];
-            dice.setPosition(startX + i * Config.diceSize * 1.25, char.y - Config.diceSize * 0.75);
             if (this._diceLayer)
                 this._diceLayer.add(dice);
+        }
+    }
+
+    throwAllDice() {
+        let d = 0;
+        for (const char of this._chars) {
+            char.throwAllDice();
+
+            let diceWidth = Config.diceSize * char.diceEntities.length + Config.diceSize * 0.25 * (char.diceEntities.length - 1);
+            let startX = char.x + Config.diceSize / 2 - diceWidth / 2;
+            for (let i = 0; i < char.diceEntities.length; i++) {
+                const dice = char.diceEntities[i];
+                // Place just outside the screen
+                dice.setPosition(startX + i * Config.diceSize * 1.25, Config.screen.height + Config.diceSize * 0.75);
+                dice.setRotation(Math.PI);
+                // Move into view
+                gsap.to(dice, {
+                    y: char.y - Config.diceSize * 0.75,
+                    rotation: 0,
+                    duration: 0.4,
+                    delay: 0.05 * d,
+                    ease: Power3.easeOut,
+                    onStart: () => {
+                        dice.setVisible(true);
+                        if (dice.input)
+                            dice.input.enabled = false;
+                    },
+                    onComplete: () => {
+                        if (dice.input)
+                            dice.input.enabled = true;
+                    },
+                });
+
+                d++;
+            }
         }
     }
 
@@ -200,7 +241,7 @@ export class Game extends Scene {
         } */
         this._questCards?.forEach((card) => {
             card.update();
-        })
+        });
 
         // Update UI
         if (this._turnText)
@@ -208,28 +249,30 @@ export class Game extends Scene {
     }
 
     onEndTurn() {
-        for (const char of this._chars) {
-            char.throwAllDice();
-
-            let diceWidth = Config.diceSize * char.diceEntities.length + Config.diceSize * 0.25 * (char.diceEntities.length - 1);
-            let startX = char.x + Config.diceSize / 2 - diceWidth / 2;
-            for (let i = 0; i < char.diceEntities.length; i++) {
-                const dice = char.diceEntities[i];
-                dice.setPosition(startX + i * Config.diceSize * 1.25, char.y - Config.diceSize * 0.75);
-                dice.setVisible(true);
-                dice.setInteractive();
-            }
-        }
+        this.throwAllDice();
     }
 
     onQuestCompleted(uuid: string) {
         console.log('Detected quest completed!', uuid);
 
+        // TODO Loot
+
+        this.deleteQuestAndActivateNext(uuid);
+    }
+
+    onQuestFailed(uuid: string) {
+        console.log('Detected quest failed!', uuid);
+
+        // TODO Loot
+
+        this.deleteQuestAndActivateNext(uuid);
+    }
+
+    private deleteQuestAndActivateNext(uuid: string) {
         const card = this._questCards?.get(uuid);
-        console.log(card);
 
         const deleted = this._questCards?.delete(uuid);
-        console.log(deleted, this._questCards?.size);
+        console.log('Deleted?', deleted, this._questCards?.size);
 
         card?.destroy();
 
@@ -239,7 +282,10 @@ export class Game extends Scene {
     shutdown() {
         // TODO Clean scene on exit (destroy chars and quests, kill event listeners etc.)
 
-        EventManager.off(Events.QUEST_COMPLETED, undefined, this);
+        EventManager.off(Events.QUEST_COMPLETED, this._boundOnQuestCompleted);
+        EventManager.off(Events.QUEST_FAILED, this._boundOnQuestFailed);
+        EventManager.off(Events.END_TURN, this._boundOnEndTurn);
+
         this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }
 }

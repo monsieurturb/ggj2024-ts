@@ -142,8 +142,6 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         // Hide dice
         dice.setVisible(false);
 
-        dice.removeFromDisplayList();
-
         // Emit event if done
         if (this.requirement.done)
             EventManager.emit(Events.REQUIREMENT_FILLED, this.requirement.uuid);

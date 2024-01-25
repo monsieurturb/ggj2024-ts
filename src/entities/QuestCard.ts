@@ -14,6 +14,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
     private _background: Phaser.GameObjects.Rectangle | undefined;
     private _text: Phaser.GameObjects.Text | undefined;
 
+    private _boundOnRequirementFilled: ((uuid: string) => void) | undefined;
+
     constructor(scene: Phaser.Scene, quest: QuestStruct) {
         super(scene);
 
@@ -56,7 +58,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
         this._quest.activate();
         this.createSlots();
 
-        EventManager.on(Events.REQUIREMENT_FILLED, this.onRequirementFilled.bind(this));
+        this._boundOnRequirementFilled = this.onRequirementFilled.bind(this);
+        EventManager.on(Events.REQUIREMENT_FILLED, this._boundOnRequirementFilled);
     }
 
     update() {
@@ -73,16 +76,19 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     onRequirementFilled(uuid: string) {
-        console.log('Requirement filled:', uuid);
+        // console.log('Requirement filled:', uuid);
         if (this._quest.isDone()) {
-            console.log('Quest completed!');
+            // console.log('Quest completed!');
             EventManager.emit(Events.QUEST_COMPLETED, this._quest.uuid);
         }
     }
 
     destroy(fromScene?: boolean | undefined) {
         console.log('destroying quest card');
-        EventManager.off(Events.REQUIREMENT_FILLED, undefined, this);
+
+        EventManager.off(Events.REQUIREMENT_FILLED, this._boundOnRequirementFilled);
+
+        this._quest.destroy();
 
         super.destroy();
     }
