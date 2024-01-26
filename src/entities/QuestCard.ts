@@ -89,7 +89,6 @@ export class QuestCard extends Phaser.GameObjects.Container {
         if (this._text) {
             let s = this._quest.name;
             s += "\nTurns remaining: " + this._quest.turnsRemaining;
-            s += "\nDone: " + (this._quest.isDone() ? "YES" : "NO");
             this._text.text = s;
         }
 
