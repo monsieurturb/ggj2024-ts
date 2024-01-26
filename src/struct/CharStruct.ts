@@ -23,7 +23,10 @@ export class CharStruct {
 export enum CharType {
     ANY = "CT_ANY",
     RANDOM = "CT_RANDOM",
-    TYPE_A = "CT_TYPE_A",
-    TYPE_B = "CT_TYPE_B",
-    TYPE_C = "CT_TYPE_C",
+    BARD = "CT_BARD",
+    POET = "CT_POET",
+    MIMO = "CT_MIMO",
+    FIRST = "CT_FIRST",
+    SECOND = "CT_SECOND",
+    THIRD = "CT_THIRD",
 }

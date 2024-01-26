@@ -50,9 +50,9 @@ export class QuestSlot extends Phaser.GameObjects.Container {
 
     getColor(hex: boolean = false): string | number {
         switch (this._requirement.type) {
-            case CharType.TYPE_A: return hex ? Colors.DARK_HEX : Colors.DARK;
-            case CharType.TYPE_B: return hex ? Colors.LIGHT_HEX : Colors.LIGHT;
-            case CharType.TYPE_C: return hex ? Colors.PINK_HEX : Colors.PINK;
+            case CharType.BARD: return hex ? Colors.DARK_HEX : Colors.DARK;
+            case CharType.POET: return hex ? Colors.LIGHT_HEX : Colors.LIGHT;
+            case CharType.MIMO: return hex ? Colors.PINK_HEX : Colors.PINK;
             default: return hex ? '#FFFFFF' : 0xFFFFFF;
         }
     }
@@ -134,6 +134,8 @@ export class QuestSlot extends Phaser.GameObjects.Container {
 
         // Emit event if done
         if (this._requirement.done)
-            EventManager.emit(Events.REQUIREMENT_FILLED, this._requirement.uuid);
+            EventManager.emit(Events.REQUIREMENT_COMPLETED, this._requirement.uuid);
+        else
+            EventManager.emit(Events.REQUIREMENT_PROGRESS, this._requirement.uuid);
     }
 }

@@ -161,9 +161,9 @@ export class Game extends Scene {
         EventManager.on(Events.END_TURN, this._boundOnEndTurn);
 
         // Create all characters
-        this.createCharAndDice(CharType.TYPE_A, 300);
-        this.createCharAndDice(CharType.TYPE_B, 700);
-        this.createCharAndDice(CharType.TYPE_C, 1100);
+        this.createCharAndDice(CharType.BARD, 300);
+        this.createCharAndDice(CharType.POET, 700);
+        this.createCharAndDice(CharType.MIMO, 1100);
 
         // Setup the animation timeline for the dice throw
         this.setupThrowDiceTimeline();

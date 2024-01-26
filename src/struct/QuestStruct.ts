@@ -6,6 +6,8 @@ export class QuestStruct {
     readonly uuid: string;
     readonly name: string;
 
+    public isPrimed: boolean = false;
+
     protected _requirements: Array<QuestRequirement> = [];
     protected _turnsRemaining: number = 2;
     protected _lootOnFail: string = "";
@@ -20,6 +22,7 @@ export class QuestStruct {
     constructor(name: string) {
         this.uuid = Random.getInstance().uuid();
         this.name = name;
+        this.isPrimed = false;
     }
 
     addRequirement(req: QuestRequirement) {
@@ -73,7 +76,10 @@ export class QuestStruct {
     }
 
     onEndTurn() {
-        this._turnsRemaining--;
+        if (this.isPrimed)
+            this._turnsRemaining--;
+        else
+            this.isPrimed = true;
 
         if (this.turnsRemaining <= 0)
             EventManager.emit(Events.QUEST_FAILED, this.uuid);
@@ -84,7 +90,7 @@ export class QuestStruct {
         for (const req of reqs) {
             // If empty, fill the array with all the available types and shuffle it
             if (a.length <= 0) {
-                a = [CharType.TYPE_A, CharType.TYPE_B, CharType.TYPE_C];
+                a = [CharType.BARD, CharType.POET, CharType.MIMO];
                 Random.getInstance().shuffle(a);
             }
             // @ts-ignore - Pick one type and assign to req
@@ -143,6 +149,7 @@ export enum QuestRequirementMode {
     MIN = "QRM_MIN",// Dice current value must be greater or equal than 'value'
     MAX = "QRM_MAX",// Dice current value must be lower or equal than 'value'
     EXACT = "QRM_EXACT",// Dice current value must be exactly 'value'
+    EXCEPT = "QRM_EXCEPT",// Dice current value must NOT be 'value'// TODO
     EVEN = "QRM_EVEN",// Dice current value must be even
     ODD = "QRM_ODD",// Dice current value must be odd
 }

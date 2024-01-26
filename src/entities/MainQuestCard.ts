@@ -30,7 +30,7 @@ export class MainQuestCard extends QuestCard {
         }
     }
 
-    onRequirementFilled(uuid: string) {
+    onRequirementCompleted(uuid: string) {
         if (this._quest.isOwnRequirement(uuid)) {
             console.log('MAIN QUEST Requirement filled:', uuid);
             this._quest.undoRequirements();

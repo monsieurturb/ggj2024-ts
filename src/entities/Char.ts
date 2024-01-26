@@ -22,9 +22,9 @@ export class Char extends Phaser.GameObjects.Container {
 
         const color = (() => {
             switch (this.charType) {
-                case CharType.TYPE_A: return Colors.DARK;
-                case CharType.TYPE_B: return Colors.LIGHT;
-                case CharType.TYPE_C: return Colors.PINK;
+                case CharType.BARD: return Colors.DARK;
+                case CharType.POET: return Colors.LIGHT;
+                case CharType.MIMO: return Colors.PINK;
                 default: return 0xFFFFFF;
             }
         })();

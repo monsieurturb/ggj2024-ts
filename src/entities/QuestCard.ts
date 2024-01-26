@@ -17,7 +17,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
     protected _background: Phaser.GameObjects.Rectangle | undefined;
     protected _text: Phaser.GameObjects.Text | undefined;
 
-    protected _boundOnRequirementFilled: ((uuid: string) => void) | undefined;
+    protected _boundOnRequirementProgress: ((uuid: string) => void) | undefined;
+    protected _boundOnRequirementCompleted: ((uuid: string) => void) | undefined;
 
     public targetPosition: Phaser.Geom.Point;
 
@@ -64,8 +65,10 @@ export class QuestCard extends Phaser.GameObjects.Container {
         this._quest.activate();
         this.createSlots();
 
-        this._boundOnRequirementFilled = this.onRequirementFilled.bind(this);
-        EventManager.on(Events.REQUIREMENT_FILLED, this._boundOnRequirementFilled);
+        this._boundOnRequirementProgress = this.onRequirementProgress.bind(this);
+        this._boundOnRequirementCompleted = this.onRequirementCompleted.bind(this);
+        EventManager.on(Events.REQUIREMENT_PROGRESS, this._boundOnRequirementProgress);
+        EventManager.on(Events.REQUIREMENT_COMPLETED, this._boundOnRequirementCompleted);
     }
 
     setPosition(x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined): this {
@@ -100,18 +103,29 @@ export class QuestCard extends Phaser.GameObjects.Container {
         }
     }
 
-    onRequirementFilled(uuid: string) {
-        // console.log('Requirement filled:', uuid);
-        if (this._quest.isOwnRequirement(uuid) && this._quest.isDone()) {
-            // console.log('Quest completed!');
-            EventManager.emit(Events.QUEST_COMPLETED, this._quest.uuid);
+    onRequirementProgress(uuid: string) {
+        console.log('Requirement progress:', uuid);
+
+        if (this._quest.isOwnRequirement(uuid) && !this._quest.isPrimed)
+            this._quest.isPrimed = true;
+    }
+
+    onRequirementCompleted(uuid: string) {
+        console.log('Requirement completed:', uuid);
+
+        if (this._quest.isOwnRequirement(uuid)) {
+            if (this._quest.isDone())
+                EventManager.emit(Events.QUEST_COMPLETED, this._quest.uuid);
+            else if (!this._quest.isPrimed)
+                this._quest.isPrimed = true
         }
     }
 
     destroy(fromScene?: boolean | undefined) {
         // console.log('destroying quest card');
 
-        EventManager.off(Events.REQUIREMENT_FILLED, this._boundOnRequirementFilled);
+        EventManager.off(Events.REQUIREMENT_PROGRESS, this._boundOnRequirementProgress);
+        EventManager.off(Events.REQUIREMENT_COMPLETED, this._boundOnRequirementCompleted);
 
         this._quest.destroy();
 
