@@ -11,31 +11,37 @@ export class QuestBook {
     constructor() {
         this._quests = [];
 
-        this._quests.push(new QuestStruct("Test Random Exact")
+        /* this._quests.push(new QuestStruct("Reading The Crowd")
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
+            .setTurnsRemaining(2)
+        ); */
+        /* this._quests.push(new QuestStruct("Test Random Exact")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.EXACT, -1))
             .setTurnsRemaining(2)
-        );
-        this._quests.push(new QuestStruct("Test ANY Pair")
+        ); */
+        /* this._quests.push(new QuestStruct("Test ANY Pair")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SAME, -1))
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SAME, -1))
             .setTurnsRemaining(2)
-        );
-        /* this._quests.push(new QuestStruct("Perfect Delivery")
+        ); */
+        this._quests.push(new QuestStruct("Perfect Delivery")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.EXACT, 6))
             .setLootOnSuccess(LootBook.getInstance().pickOneReward())
             .setTurnsRemaining(2)
-        ); */
-        /* this._quests.push(new QuestStruct("Irresistible Duo")
+        );
+        this._quests.push(new QuestStruct("Irresistible Duo")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .setLootOnSuccess(LootBook.getInstance().pickOneSkill())
             .setTurnsRemaining(3)
-        ); */
-        /* this._quests.push(new QuestStruct("Monologue")
-            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SCORE, 9))
+        );
+        this._quests.push(new QuestStruct("Inspiring Monologue")
+            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SCORE, 13))
             .setLootOnFail(LootBook.getInstance().pickOnePenalty())
             .setTurnsRemaining(2)
-        ); */
+        );
     }
 
     public static getInstance(): QuestBook {
@@ -57,33 +63,37 @@ Perfect Delivery
 Req: EXACT 6
 Success: Next quest +1 turn
 Turns: 2
+P: 0.17
 
 Reading The Crowd
-Req: ANY MIN 4 | ANY MIN 5
+Req: ANY MIN 5 | ANY MIN 5 | ANY MIN 5
 Fail: Discard next quests and pick new ones (color hidden)
 Turns: 2
+P: 0.63
 
 Irresistible Duo
 Req: COLORED MIN 3 | COLORED MIN 3
 Success: Main Quest Boost x2 for 4 dice
 Turns: 1
+P: 0.89 * 0.89 = 0.79
 
-[ADJECTIVE] Monologue
-Req: COLORED SCORE 12
+Inspiring Monologue
+Req: COLORED SCORE 13
 Success: Both other chars get +1 dice next turn
-Turns: 3
+Turns: 2
+P: 0 (1 turn, 2 dice), 0.66 (2 turns, 4 dice)
 
 Drawing a Blank
 Req: COLORED EXACT 1
 Fail: This char's dice are hidden next turn
 Turns: 1
-
-
+P: 0.30
 
 Great Punchline
 Req: ANY MIN 5
 Success: Next quest is easier
 Turns: 1
+P: 0.91
 
     One-Liner
     Req: ANY EXACT 1
@@ -148,7 +158,7 @@ P: 0.027
 
 
 
-PROBABILITIES :
+//NOTE: PROBABILITIES
 
 For two independant events: P(A u B) = P(A) + P(B) - (P(A) * P(B))
 

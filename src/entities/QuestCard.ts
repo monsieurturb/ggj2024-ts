@@ -55,11 +55,16 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
     createSlots() {
         for (let i = 0; i < this._quest.requirements.length; i++) {
-            const req = this._quest.requirements[i];
-            const slot = new QuestSlot(this.scene, req, this._quest.requirements);
-            slot.x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.35 + Config.questCard.width * 0.25;
-            this.add(slot);
+            const slot = new QuestSlot(this.scene, this._quest.requirements[i], this._quest.requirements);
             this._slots.push(slot);
+        }
+        this.placeSlots();
+    }
+
+    placeSlots() {
+        for (let i = 0; i < this._slots.length; i++) {
+            this._slots[i].x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.35 + Config.questCard.width * 0.25;
+            this.add(this._slots[i]);
         }
     }
 
@@ -110,14 +115,16 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     onRequirementProgress(uuid: string) {
-        console.log('Requirement progress:', uuid);
+        if (this._quest.isOwnRequirement(uuid))
+            console.log('Requirement progress:', uuid);
 
         if (this._quest.isOwnRequirement(uuid) && !this._quest.isPrimed)
             this._quest.isPrimed = true;
     }
 
     onRequirementCompleted(uuid: string) {
-        console.log('Requirement completed:', uuid);
+        if (this._quest.isOwnRequirement(uuid))
+            console.log('Requirement completed:', uuid);
 
         if (this._quest.isOwnRequirement(uuid)) {
             if (this._quest.isDone())

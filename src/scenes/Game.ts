@@ -23,6 +23,7 @@ export class Game extends Scene {
     private _turnsRemaining: number = 10;
     private _throwDiceTimeline: gsap.core.Timeline | undefined;
     private _boundOnEndTurn: (() => void) | undefined;
+    private _boundOnUseRemainingDice: (() => void) | undefined;
     private _boundOnQuestCompleted: ((uuid: string) => void) | undefined;
     private _boundOnQuestFailed: ((uuid: string) => void) | undefined;
 
@@ -147,8 +148,13 @@ export class Game extends Scene {
             });
         this._uiLayer.add(t);
 
-        // Listen to shutdown event
-        this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
+        // Listen to "use remaining dice" event
+        this._boundOnUseRemainingDice = this.onUseRemainingDice.bind(this);
+        EventManager.on(Events.USE_REMAINING_DICE, this._boundOnUseRemainingDice);
+
+        // Listen to "end turn" event
+        this._boundOnEndTurn = this.onEndTurn.bind(this);
+        EventManager.on(Events.END_TURN, this._boundOnEndTurn);
 
         // Listen to quest events
         this._boundOnQuestCompleted = this.onQuestCompleted.bind(this);
@@ -156,9 +162,8 @@ export class Game extends Scene {
         EventManager.on(Events.QUEST_COMPLETED, this._boundOnQuestCompleted);
         EventManager.on(Events.QUEST_FAILED, this._boundOnQuestFailed);
 
-        // Listen to end turn event
-        this._boundOnEndTurn = this.onEndTurn.bind(this);
-        EventManager.on(Events.END_TURN, this._boundOnEndTurn);
+        // Listen to shutdown event
+        this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
 
         // Create all characters
         this.createCharAndDice(CharType.BARD, 300);
@@ -234,13 +239,11 @@ export class Game extends Scene {
                 ease: Power3.easeOut,
             },
             onStart: () => {
-                console.log('onStart');
                 // Deactivate end turn button
                 if (this._endTurnButton && this._endTurnButton.input)
                     this._endTurnButton.input.enabled = false;
             },
             onComplete: () => {
-                console.log('onComplete');
                 // Activate end turn button
                 if (this._endTurnButton && this._endTurnButton.input)
                     this._endTurnButton.input.enabled = true;
@@ -328,6 +331,60 @@ export class Game extends Scene {
         return card;
     }
 
+    private onUseRemainingDice() {
+        const slot = this._mainQuestCard?.getSlot();
+        if (!slot)
+            return;
+
+        const timeline = gsap.timeline({
+            // paused: true,
+            defaults: {
+                rotation: Math.PI * 2,
+                duration: 0.4,
+                ease: Power3.easeOut,
+            },
+            onStart: () => {
+                // console.log('onStart');
+                // Deactivate end turn button
+                if (this._endTurnButton && this._endTurnButton.input)
+                    this._endTurnButton.input.enabled = false;
+            },
+            onComplete: () => {
+                // console.log('onComplete');
+                // Automatically end turn
+                this.onEndTurn();
+            },
+        });
+
+        for (const char of this._chars) {
+            for (let i = 0; i < char.diceEntities.length; i++) {
+                const dice = char.diceEntities[i];
+
+                // If dice was used already, skip it
+                if (!dice.visible || !slot.isDiceValid(dice))
+                    continue;
+
+                // Animate towards slot
+                timeline.to(
+                    dice,
+                    {
+                        x: (this._mainQuestCard ? this._mainQuestCard.x : 0) + slot.x,
+                        y: (this._mainQuestCard ? this._mainQuestCard.y : 0) + slot.y,
+                        onStart: () => {
+                            // Deactivate dice
+                            if (dice.input)
+                                dice.input.enabled = false;
+                        },
+                        onComplete: () => {
+                            slot.addDice(dice);
+                        },
+                    },
+                    "<0.1"
+                );
+            }
+        }
+    }
+
     private onEndTurn() {
         this.throwAllDice();
     }
@@ -335,7 +392,7 @@ export class Game extends Scene {
     private onQuestCompleted(uuid: string) {
         console.log('Detected quest completed!', uuid);
         const card = this.getQuestCardFromUUID(uuid);
-        console.log("Result:", card?.lootOnSuccess);
+        // console.log("Result:", card?.lootOnSuccess);
 
 
         // TODO Loot
@@ -346,7 +403,7 @@ export class Game extends Scene {
     private onQuestFailed(uuid: string) {
         console.log('Detected quest failed!', uuid);
         const card = this.getQuestCardFromUUID(uuid);
-        console.log("Result:", card?.lootOnFail);
+        // console.log("Result:", card?.lootOnFail);
 
         // TODO Loot
 
@@ -363,9 +420,10 @@ export class Game extends Scene {
     }
 
     private shutdown() {
+        EventManager.off(Events.USE_REMAINING_DICE, this._boundOnUseRemainingDice);
+        EventManager.off(Events.END_TURN, this._boundOnEndTurn);
         EventManager.off(Events.QUEST_COMPLETED, this._boundOnQuestCompleted);
         EventManager.off(Events.QUEST_FAILED, this._boundOnQuestFailed);
-        EventManager.off(Events.END_TURN, this._boundOnEndTurn);
 
         this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }
