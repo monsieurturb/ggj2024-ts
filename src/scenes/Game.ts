@@ -87,8 +87,7 @@ export class Game extends Scene {
             .setOrigin(1, 1)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                this._turnsRemaining--;
-                EventManager.emit(Events.END_TURN);
+                this.endTurn();
             });
 
         // Boss bar
@@ -190,10 +189,15 @@ export class Game extends Scene {
         // Activate main quest
         this._mainQuestCard.activate();
         // Activate first quest
-        this.activateNextQuest();
+        this.activateNextQuest(true);
 
         // Throw and show
         this.throwAllDice();
+    }
+
+    private endTurn() {
+        this._turnsRemaining--;
+        EventManager.emit(Events.END_TURN);
     }
 
     private queueAnotherQuest() {
@@ -205,14 +209,14 @@ export class Game extends Scene {
         this._questCards.push(card);
     }
 
-    private activateNextQuest() {
+    private activateNextQuest(primed: boolean = false) {
         while (this._questCards.length < 5) {
             this.queueAnotherQuest();
         }
 
         const card = this._questCards[0];
         // console.log('Activating card', card?.uuid);
-        card?.activate();
+        card?.activate(primed);
     }
 
     private createCharAndDice(type: CharType, x: number) {
@@ -339,7 +343,7 @@ export class Game extends Scene {
         const timeline = gsap.timeline({
             // paused: true,
             defaults: {
-                rotation: Math.PI * 2,
+                rotation: -Math.PI * 2,
                 duration: 0.4,
                 ease: Power3.easeOut,
             },
@@ -352,7 +356,7 @@ export class Game extends Scene {
             onComplete: () => {
                 // console.log('onComplete');
                 // Automatically end turn
-                this.onEndTurn();
+                this.endTurn();
             },
         });
 
@@ -407,16 +411,16 @@ export class Game extends Scene {
 
         // TODO Loot
 
-        this.deleteQuestAndActivateNext(uuid);
+        this.deleteQuestAndActivateNext(uuid, true);
     }
 
-    private deleteQuestAndActivateNext(uuid: string) {
+    private deleteQuestAndActivateNext(uuid: string, primed: boolean = false) {
         const card = this.deleteQuestCardFromUUID(uuid);
         // console.log('Deleted?', card?.uuid, this._questCards.map((q) => q.questName));
 
         card?.destroy();
 
-        this.activateNextQuest();
+        this.activateNextQuest(primed);
     }
 
     private shutdown() {

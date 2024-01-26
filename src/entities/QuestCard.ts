@@ -68,8 +68,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
         }
     }
 
-    activate() {
-        this._quest.activate();
+    activate(primed: boolean = false) {
+        this._quest.activate(primed);
         this.createSlots();
 
         this._boundOnRequirementProgress = this.onRequirementProgress.bind(this);

@@ -60,7 +60,7 @@ export class QuestStruct {
         return q;
     }
 
-    activate() {
+    activate(primed: boolean = false) {
         // Setup dynamic requirements
         const randomTypeReqs = [];
         for (const req of this._requirements) {
@@ -75,6 +75,9 @@ export class QuestStruct {
         // Pick a different random CharType for each requirement
         if (randomTypeReqs.length > 0)
             this.pickRandomTypes(randomTypeReqs);
+
+        // Prime if necessary
+        this.isPrimed = primed;
 
         // Listen to END_TURN event
         this._boundOnEndTurn = this.onEndTurn.bind(this)
