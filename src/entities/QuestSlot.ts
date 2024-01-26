@@ -10,12 +10,14 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     protected _text: Phaser.GameObjects.Text;
 
     protected _requirement: QuestRequirement;
+    protected _allRequirements: Array<QuestRequirement>;
     protected _belongsToMainQuest: boolean;
 
-    constructor(scene: Phaser.Scene, requirement: QuestRequirement, belongsToMainQuest = false) {
+    constructor(scene: Phaser.Scene, requirement: QuestRequirement, allRequirements: Array<QuestRequirement>, belongsToMainQuest = false) {
         super(scene);
 
         this._requirement = requirement;
+        this._allRequirements = allRequirements;
         this._belongsToMainQuest = belongsToMainQuest;
 
         this.width = Config.diceSize * 1.25;
@@ -79,7 +81,13 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         return s;
     }
 
+    update() {
+        this._text.text = this.getRequirementText();
+    }
+
     isDiceValid(dice: Dice) {
+        console.log("isDiceValid", dice.uuid);
+
         if (this._requirement.done)
             return false;
 
@@ -93,6 +101,9 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             case QuestRequirementMode.EXACT:
                 isValueValid = dice.currentValue === this._requirement.value;
                 break;
+            case QuestRequirementMode.EXCEPT:
+                isValueValid = dice.currentValue !== this._requirement.value;
+                break;
             case QuestRequirementMode.MAX:
                 isValueValid = dice.currentValue <= this._requirement.value;
                 break;
@@ -102,6 +113,10 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             case QuestRequirementMode.ODD:
                 isValueValid = dice.currentValue % 2 === 1;
                 break;
+            case QuestRequirementMode.SAME:
+                const reqValue = this.getValueFromOtherSlots();
+                isValueValid = reqValue === -1 ? true : reqValue === dice.currentValue;
+                break;
             case QuestRequirementMode.SCORE:
                 isValueValid = true;
                 break;
@@ -110,11 +125,22 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         return isTypeValid && isValueValid;
     }
 
+    protected getValueFromOtherSlots(): number {
+        console.log(this._allRequirements);
+
+        for (const req of this._allRequirements) {
+            if (req.done)
+                return req.value;
+        }
+        return -1;
+    }
+
     addDice(dice: Dice) {
+        // NOTE Maybe remove this since we already check it before calling addDice
         if (!this.isDiceValid(dice))
             return false;
 
-        // For SCORE mode
+        // If SCORE mode
         if (this._requirement.mode === QuestRequirementMode.SCORE) {
             // Substract dice current value from score
             this._requirement.value = Phaser.Math.Clamp(this._requirement.value - dice.currentValue, 0, this._requirement.value);
@@ -122,7 +148,19 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             if (this._requirement.value <= 0)
                 this._requirement.done = true
         }
-        // For all other modes
+        // If SAME mode, store the dice value to constrain the other slots later
+        else if (this._requirement.mode === QuestRequirementMode.SAME) {
+            this._requirement.value = dice.currentValue;
+            this._requirement.done = true;
+
+            for (const req of this._allRequirements) {
+                if (req.uuid !== this._requirement.uuid) {
+                    req.mode = QuestRequirementMode.EXACT;
+                    req.value = this._requirement.value;
+                }
+            }
+        }
+        // If any other mode
         else
             this._requirement.done = true;
 

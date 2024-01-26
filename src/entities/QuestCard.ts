@@ -16,6 +16,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
     // Graphics objects
     protected _background: Phaser.GameObjects.Rectangle | undefined;
     protected _text: Phaser.GameObjects.Text | undefined;
+    protected _slots: Array<QuestSlot> = [];
 
     protected _boundOnRequirementProgress: ((uuid: string) => void) | undefined;
     protected _boundOnRequirementCompleted: ((uuid: string) => void) | undefined;
@@ -55,9 +56,10 @@ export class QuestCard extends Phaser.GameObjects.Container {
     createSlots() {
         for (let i = 0; i < this._quest.requirements.length; i++) {
             const req = this._quest.requirements[i];
-            const slot = new QuestSlot(this.scene, req);
+            const slot = new QuestSlot(this.scene, req, this._quest.requirements);
             slot.x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.35 + Config.questCard.width * 0.25;
             this.add(slot);
+            this._slots.push(slot);
         }
     }
 
@@ -100,6 +102,10 @@ export class QuestCard extends Phaser.GameObjects.Container {
         }
         else if (Math.abs(x) > 0 || Math.abs(y) > 0) {
             this.setPosition(this.targetPosition.x, this.targetPosition.y);
+        }
+
+        for (const slot of this._slots) {
+            slot.update();
         }
     }
 

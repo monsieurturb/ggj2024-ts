@@ -61,12 +61,18 @@ export class QuestStruct {
     }
 
     activate() {
-        // Pick different random CharType for requirements that apply
+        // Setup dynamic requirements
         const randomTypeReqs = [];
         for (const req of this._requirements) {
+            // Store all requirements that need a random CharType
             if (req.type === CharType.RANDOM)
                 randomTypeReqs.push(req);
+
+            // Pick a random value for requirements that apply
+            if ((req.mode === QuestRequirementMode.EXACT || req.mode === QuestRequirementMode.EXCEPT) && req.value === -1)
+                req.value = Random.getInstance().integerInRange(1, 6);
         }
+        // Pick a different random CharType for each requirement
         if (randomTypeReqs.length > 0)
             this.pickRandomTypes(randomTypeReqs);
 
@@ -124,9 +130,7 @@ export class QuestStruct {
 export class QuestRequirement {
     readonly uuid: string;
 
-    private _mode: QuestRequirementMode;
-    public get mode(): QuestRequirementMode { return this._mode; }
-
+    public mode: QuestRequirementMode;
     public type: CharType;
     public value: number;
     public done: boolean;
@@ -134,22 +138,23 @@ export class QuestRequirement {
     constructor(type: CharType, mode: QuestRequirementMode, value: number) {
         this.uuid = Random.getInstance().uuid();
         this.type = type;
-        this._mode = mode;
+        this.mode = mode;
         this.value = value;
         this.done = false;
     }
 
     clone() {
-        return new QuestRequirement(this.type, this._mode, this.value);
+        return new QuestRequirement(this.type, this.mode, this.value);
     }
 }
 
 export enum QuestRequirementMode {
-    SCORE = "QRM_SCORE",// Must reach 'value' with any number of dice
+    EVEN = "QRM_EVEN",// Dice current value must be even
+    EXACT = "QRM_EXACT",// Dice current value must be exactly 'value'
+    EXCEPT = "QRM_EXCEPT",// Dice current value must NOT be 'value'
     MIN = "QRM_MIN",// Dice current value must be greater or equal than 'value'
     MAX = "QRM_MAX",// Dice current value must be lower or equal than 'value'
-    EXACT = "QRM_EXACT",// Dice current value must be exactly 'value'
-    EXCEPT = "QRM_EXCEPT",// Dice current value must NOT be 'value'// TODO
-    EVEN = "QRM_EVEN",// Dice current value must be even
     ODD = "QRM_ODD",// Dice current value must be odd
+    SAME = "QRM_SAME",// Must have the same value as the other reqs of its quest
+    SCORE = "QRM_SCORE",// Must reach 'value' with any number of dice
 }

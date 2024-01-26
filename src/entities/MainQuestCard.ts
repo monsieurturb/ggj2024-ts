@@ -15,7 +15,7 @@ export class MainQuestCard extends QuestCard {
     createSlots() {
         for (let i = 0; i < this._quest.requirements.length; i++) {
             const req = this._quest.requirements[i];
-            const slot = new QuestSlot(this.scene, req, true);
+            const slot = new QuestSlot(this.scene, req, this._quest.requirements, true);
             slot.x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.35 + Config.questCard.width * 0.25;
             this.add(slot);
         }
