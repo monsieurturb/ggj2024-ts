@@ -10,8 +10,6 @@ export class QuestCard extends Phaser.GameObjects.Container {
     public get uuid(): string { return this._quest.uuid; }
     public get questName(): string { return this._quest.name; }
     public get turnsRemaining(): number { return this._quest.turnsRemaining; }
-    public get lootOnFail(): string { return this._quest.lootOnFail; }
-    public get lootOnSuccess(): string { return this._quest.lootOnSuccess; }
 
     // Graphics objects
     protected _background: Phaser.GameObjects.Rectangle | undefined;
@@ -90,10 +88,6 @@ export class QuestCard extends Phaser.GameObjects.Container {
     update() {
         if (this._text) {
             let s = this._quest.name;
-            if (this._quest.lootOnFail != "")
-                s += "\nIf failed: " + this._quest.lootOnFail;
-            if (this._quest.lootOnSuccess != "")
-                s += "\nIf completed: " + this._quest.lootOnSuccess;
             s += "\nTurns remaining: " + this._quest.turnsRemaining;
             s += "\nDone: " + (this._quest.isDone() ? "YES" : "NO");
             this._text.text = s;

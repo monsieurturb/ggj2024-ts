@@ -1,7 +1,7 @@
 import { EventManager, Events } from "../Events";
 import { Colors, Config } from "../config";
 import { CharType } from "../struct/CharStruct";
-import { QuestRequirement, QuestRequirementMode } from "../struct/QuestStruct";
+import { QuestRequirement, QuestRequirementMode } from "../struct/QuestRequirement";
 import { Dice } from "./Dice";
 
 export class QuestSlot extends Phaser.GameObjects.Container {

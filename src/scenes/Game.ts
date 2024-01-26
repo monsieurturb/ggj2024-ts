@@ -1,16 +1,16 @@
+import { Power3, gsap } from 'gsap';
 import { Scene } from 'phaser';
-import { Random } from '../Random';
+import { EventManager, Events } from '../Events';
 import { Colors, Config } from '../config';
+import { BossBar } from '../entities/BossBar';
 import { Char } from '../entities/Char';
+import { Dice } from '../entities/Dice';
+import { MainQuestCard } from '../entities/MainQuestCard';
 import { QuestCard } from '../entities/QuestCard';
 import { CharType } from '../struct/CharStruct';
-import { QuestRequirement, QuestRequirementMode, QuestStruct } from '../struct/QuestStruct';
-import { QuestBook } from '../struct/QuestBook';
-import { EventManager, Events } from '../Events';
-import { gsap, Power3 } from 'gsap';
 import { MainQuestStruct } from '../struct/MainQuestStruct';
-import { MainQuestCard } from '../entities/MainQuestCard';
-import { BossBar } from '../entities/BossBar';
+import { QuestBook } from '../struct/QuestBook';
+import { QuestRequirement, QuestRequirementMode } from '../struct/QuestRequirement';
 
 export class Game extends Scene {
     // Entities
@@ -340,52 +340,55 @@ export class Game extends Scene {
         if (!slot)
             return;
 
+        // Filter and sort dice
+        let sortedDice: Array<Dice> = [];
+        for (const char of this._chars) {
+            for (let i = 0; i < char.diceEntities.length; i++) {
+                const dice = char.diceEntities[i];
+                // If dice was used already, skip it
+                if (!dice.visible || !slot.isDiceValid(dice))
+                    continue;
+                sortedDice.push(dice);
+            }
+        }
+        sortedDice.sort((a, b) => b.currentValue - a.currentValue);
+
+        // Prepare timeline
         const timeline = gsap.timeline({
-            // paused: true,
             defaults: {
                 rotation: -Math.PI * 2,
                 duration: 0.4,
                 ease: Power3.easeOut,
             },
             onStart: () => {
-                // console.log('onStart');
                 // Deactivate end turn button
                 if (this._endTurnButton && this._endTurnButton.input)
                     this._endTurnButton.input.enabled = false;
             },
             onComplete: () => {
-                // console.log('onComplete');
                 // Automatically end turn
                 this.endTurn();
             },
         });
 
-        for (const char of this._chars) {
-            for (let i = 0; i < char.diceEntities.length; i++) {
-                const dice = char.diceEntities[i];
-
-                // If dice was used already, skip it
-                if (!dice.visible || !slot.isDiceValid(dice))
-                    continue;
-
-                // Animate towards slot
-                timeline.to(
-                    dice,
-                    {
-                        x: (this._mainQuestCard ? this._mainQuestCard.x : 0) + slot.x,
-                        y: (this._mainQuestCard ? this._mainQuestCard.y : 0) + slot.y,
-                        onStart: () => {
-                            // Deactivate dice
-                            if (dice.input)
-                                dice.input.enabled = false;
-                        },
-                        onComplete: () => {
-                            slot.addDice(dice);
-                        },
+        // Animate all dice
+        for (const dice of sortedDice) {
+            timeline.to(
+                dice,
+                {
+                    x: (this._mainQuestCard ? this._mainQuestCard.x : 0) + slot.x,
+                    y: (this._mainQuestCard ? this._mainQuestCard.y : 0) + slot.y,
+                    onStart: () => {
+                        // Deactivate dice
+                        if (dice.input)
+                            dice.input.enabled = false;
                     },
-                    "<0.1"
-                );
-            }
+                    onComplete: () => {
+                        slot.addDice(dice);
+                    },
+                },
+                "<0.1"
+            );
         }
     }
 

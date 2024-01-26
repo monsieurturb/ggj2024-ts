@@ -1,6 +1,8 @@
 import { EventManager, Events } from "../Events";
 import { Random } from "../Random";
 import { CharType } from "./CharStruct";
+import { QuestRequirement, QuestRequirementMode } from "./QuestRequirement";
+import { QuestReward } from "./QuestReward";
 
 export class QuestStruct {
     readonly uuid: string;
@@ -10,14 +12,14 @@ export class QuestStruct {
 
     protected _requirements: Array<QuestRequirement> = [];
     protected _turnsRemaining: number = 2;
-    protected _lootOnFail: string = "";
-    protected _lootOnSuccess: string = "";
+    protected _rewardsOnFail: Array<QuestReward> = [];
+    protected _rewardsOnSuccess: Array<QuestReward> = [];
     protected _boundOnEndTurn: (() => void) | undefined;
 
     public get requirements(): Array<QuestRequirement> { return this._requirements; }
     public get turnsRemaining(): number { return this._turnsRemaining; }
-    public get lootOnFail(): string { return this._lootOnFail; }
-    public get lootOnSuccess(): string { return this._lootOnSuccess; }
+    public get rewardsOnFail(): Array<QuestReward> { return this._rewardsOnFail; }
+    public get rewardsOnSuccess(): Array<QuestReward> { return this._rewardsOnSuccess; }
 
     constructor(name: string) {
         this.uuid = Random.getInstance().uuid();
@@ -35,27 +37,32 @@ export class QuestStruct {
         return this;
     }
 
-    setLootOnFail(loot: string) {
-        this._lootOnFail = loot;
+    addRewardForFail(reward: QuestReward) {
+        this._rewardsOnFail.push(reward);
         return this;
     }
 
-    setLootOnSuccess(loot: string) {
-        this._lootOnSuccess = loot;
+    addRewardForSuccess(reward: QuestReward) {
+        this._rewardsOnSuccess.push(reward);
         return this;
     }
 
     clone() {
         const q = new QuestStruct(this.name)
-            // Copy loot
-            .setLootOnFail(this.lootOnFail)
-            .setLootOnSuccess(this.lootOnSuccess)
             // Copy turns
             .setTurnsRemaining(this.turnsRemaining);
 
         // Copy requirements
         for (let i = 0; i < this._requirements.length; i++)
             q.addRequirement(this._requirements[i].clone());
+
+        // Copy rewards for fail
+        for (const reward of this.rewardsOnFail)
+            q.addRewardForFail(reward.clone());
+
+        // Copy rewards for success
+        for (const reward of this.rewardsOnSuccess)
+            q.addRewardForSuccess(reward.clone());
 
         return q;
     }
@@ -128,36 +135,4 @@ export class QuestStruct {
     destroy() {
         EventManager.off(Events.END_TURN, this._boundOnEndTurn);
     }
-}
-
-export class QuestRequirement {
-    readonly uuid: string;
-
-    public mode: QuestRequirementMode;
-    public type: CharType;
-    public value: number;
-    public done: boolean;
-
-    constructor(type: CharType, mode: QuestRequirementMode, value: number) {
-        this.uuid = Random.getInstance().uuid();
-        this.type = type;
-        this.mode = mode;
-        this.value = value;
-        this.done = false;
-    }
-
-    clone() {
-        return new QuestRequirement(this.type, this.mode, this.value);
-    }
-}
-
-export enum QuestRequirementMode {
-    EVEN = "QRM_EVEN",// Dice current value must be even
-    EXACT = "QRM_EXACT",// Dice current value must be exactly 'value'
-    EXCEPT = "QRM_EXCEPT",// Dice current value must NOT be 'value'
-    MIN = "QRM_MIN",// Dice current value must be greater or equal than 'value'
-    MAX = "QRM_MAX",// Dice current value must be lower or equal than 'value'
-    ODD = "QRM_ODD",// Dice current value must be odd
-    SAME = "QRM_SAME",// Must have the same value as the other reqs of its quest
-    SCORE = "QRM_SCORE",// Must reach 'value' with any number of dice
 }
