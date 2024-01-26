@@ -5,7 +5,7 @@ import { QuestSlot } from "./QuestSlot";
 
 export class QuestCard extends Phaser.GameObjects.Container {
     // Actual quest class
-    private _quest: QuestStruct;
+    protected _quest: QuestStruct;
     // Expose some of the quest properties, keep the rest private
     public get uuid(): string { return this._quest.uuid; }
     public get questName(): string { return this._quest.name; }
@@ -14,10 +14,10 @@ export class QuestCard extends Phaser.GameObjects.Container {
     public get lootOnSuccess(): string { return this._quest.lootOnSuccess; }
 
     // Graphics objects
-    private _background: Phaser.GameObjects.Rectangle | undefined;
-    private _text: Phaser.GameObjects.Text | undefined;
+    protected _background: Phaser.GameObjects.Rectangle | undefined;
+    protected _text: Phaser.GameObjects.Text | undefined;
 
-    private _boundOnRequirementFilled: ((uuid: string) => void) | undefined;
+    protected _boundOnRequirementFilled: ((uuid: string) => void) | undefined;
 
     public targetPosition: Phaser.Geom.Point;
 
@@ -29,7 +29,6 @@ export class QuestCard extends Phaser.GameObjects.Container {
         this._quest = quest;
 
         this.createGraphics();
-        // this.createSlots();
     }
 
     createGraphics() {
@@ -69,6 +68,15 @@ export class QuestCard extends Phaser.GameObjects.Container {
         EventManager.on(Events.REQUIREMENT_FILLED, this._boundOnRequirementFilled);
     }
 
+    setPosition(x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined): this {
+        super.setPosition(x, y, z, w);
+        if (x)
+            this.targetPosition.x = x;
+        if (y)
+            this.targetPosition.y = y;
+        return this;
+    }
+
     update() {
         if (this._text) {
             let s = this._quest.name;
@@ -94,7 +102,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
     onRequirementFilled(uuid: string) {
         // console.log('Requirement filled:', uuid);
-        if (this._quest.isDone()) {
+        if (this._quest.isOwnRequirement(uuid) && this._quest.isDone()) {
             // console.log('Quest completed!');
             EventManager.emit(Events.QUEST_COMPLETED, this._quest.uuid);
         }

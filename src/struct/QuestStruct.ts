@@ -6,11 +6,11 @@ export class QuestStruct {
     readonly uuid: string;
     readonly name: string;
 
-    private _requirements: Array<QuestRequirement> = [];
-    private _turnsRemaining: number = 2;
-    private _lootOnFail: string = "";
-    private _lootOnSuccess: string = "";
-    private _boundOnEndTurn: (() => void) | undefined;
+    protected _requirements: Array<QuestRequirement> = [];
+    protected _turnsRemaining: number = 2;
+    protected _lootOnFail: string = "";
+    protected _lootOnSuccess: string = "";
+    protected _boundOnEndTurn: (() => void) | undefined;
 
     public get requirements(): Array<QuestRequirement> { return this._requirements; }
     public get turnsRemaining(): number { return this._turnsRemaining; }
@@ -92,10 +92,18 @@ export class QuestStruct {
         }
     }
 
+    isOwnRequirement(uuid: string): boolean {
+        for (const req of this._requirements) {
+            if (req.uuid === uuid)
+                return true;
+        }
+        return false;
+    }
+
     isDone() {
         // Return false if one of the requirements is not done
-        for (let i = 0; i < this._requirements.length; i++) {
-            if (!this._requirements[i].done)
+        for (const req of this._requirements) {
+            if (!req.done)
                 return false;
         }
         // Else return true

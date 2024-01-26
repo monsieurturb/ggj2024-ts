@@ -4,18 +4,24 @@ import { Colors, Config } from '../config';
 import { Char } from '../entities/Char';
 import { QuestCard } from '../entities/QuestCard';
 import { CharType } from '../struct/CharStruct';
-import { QuestStruct } from '../struct/QuestStruct';
+import { QuestRequirement, QuestRequirementMode, QuestStruct } from '../struct/QuestStruct';
 import { QuestBook } from '../struct/QuestBook';
 import { EventManager, Events } from '../Events';
 import { gsap, Power3 } from 'gsap';
+import { MainQuestStruct } from '../struct/MainQuestStruct';
+import { MainQuestCard } from '../entities/MainQuestCard';
+import { BossBar } from '../entities/BossBar';
 
 export class Game extends Scene {
     // Entities
     private _chars: Array<Char> = [];
     private _questCards: Array<QuestCard> = [];
+    private _bossBar: BossBar | undefined;
 
     // Data
+    private _mainQuestCard: MainQuestCard | undefined;
     private _turnsRemaining: number = 10;
+    private _throwDiceTimeline: gsap.core.Timeline | undefined;
     private _boundOnEndTurn: (() => void) | undefined;
     private _boundOnQuestCompleted: ((uuid: string) => void) | undefined;
     private _boundOnQuestFailed: ((uuid: string) => void) | undefined;
@@ -68,6 +74,7 @@ export class Game extends Scene {
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         });
+
         // End turn button
         this._endTurnButton = this.add.text(
             Config.screen.width - 20, Config.screen.height - 20,
@@ -82,12 +89,17 @@ export class Game extends Scene {
                 this._turnsRemaining--;
                 EventManager.emit(Events.END_TURN);
             });
+
+        // Boss bar
+        this._bossBar = new BossBar(this)
+            .setPosition(Config.screen.width * 0.5, 30);
+
         // Add to UI layer
         this._uiLayer.add([
             this._turnText,
-            this._endTurnButton
+            this._endTurnButton,
+            this._bossBar,
         ]);
-
 
         // NOTE Debug scene name
         let t = this.add.text(
@@ -108,9 +120,11 @@ export class Game extends Scene {
         // NOTE Cutscene test
         t = this.add.text(
             Config.screen.width * 0.5,
-            32,
+            50,
             'Launch cutscene', {
-            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
+            fontFamily: 'Arial Black',
+            fontSize: 24,
+            color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
@@ -151,12 +165,25 @@ export class Game extends Scene {
         this.createCharAndDice(CharType.TYPE_B, 700);
         this.createCharAndDice(CharType.TYPE_C, 1100);
 
+        // Setup the animation timeline for the dice throw
+        this.setupThrowDiceTimeline();
+
+        // Create main quest
+        const mainQuest = new MainQuestStruct()
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
+            .setTurnsRemaining(999);
+        this._mainQuestCard = new MainQuestCard(this, mainQuest)
+            .setPosition(Config.screen.width * 0.25, 300);
+        this._questsLayer?.add(this._mainQuestCard);
+
         // Queue quests
         for (let i = 0; i < 5; i++) {
             this.queueAnotherQuest();
         }
         // console.log(this._questCards.map((q) => q.questName));
 
+        // Activate main quest
+        this._mainQuestCard.activate();
         // Activate first quest
         this.activateNextQuest();
 
@@ -168,7 +195,7 @@ export class Game extends Scene {
         const i = this._questCards.length;
         const quest = QuestBook.getInstance().pickOne();
         const card = new QuestCard(this, quest)
-            .setPosition(Config.screen.width * 0.5 + i * 15, 300 - i * 15);
+            .setPosition(Config.screen.width * 0.75 + i * 15, 300 - i * 15);
         this._questsLayer?.addAt(card, 0);
         this._questCards.push(card);
     }
@@ -197,39 +224,72 @@ export class Game extends Scene {
         }
     }
 
-    private throwAllDice() {
-        let d = 0;
-        for (const char of this._chars) {
-            char.throwAllDice();
+    private setupThrowDiceTimeline() {
+        // Prepare timeline
+        this._throwDiceTimeline = gsap.timeline({
+            paused: true,
+            defaults: {
+                rotation: 0,
+                duration: 0.4,
+                ease: Power3.easeOut,
+            },
+            onStart: () => {
+                console.log('onStart');
+                // Deactivate end turn button
+                if (this._endTurnButton && this._endTurnButton.input)
+                    this._endTurnButton.input.enabled = false;
+            },
+            onComplete: () => {
+                console.log('onComplete');
+                // Activate end turn button
+                if (this._endTurnButton && this._endTurnButton.input)
+                    this._endTurnButton.input.enabled = true;
+            },
+        });
 
+        for (const char of this._chars) {
             let diceWidth = Config.diceSize * char.diceEntities.length + Config.diceSize * 0.25 * (char.diceEntities.length - 1);
             let startX = char.x + Config.diceSize / 2 - diceWidth / 2;
+
             for (let i = 0; i < char.diceEntities.length; i++) {
                 const dice = char.diceEntities[i];
-                // Place just outside the screen
-                dice.setPosition(startX + i * Config.diceSize * 1.25, Config.screen.height + Config.diceSize * 0.75);
-                dice.setRotation(Math.PI);
-                // Move into view
-                gsap.to(dice, {
-                    y: char.y - Config.diceSize * 0.75,
-                    rotation: 0,
-                    duration: 0.4,
-                    delay: 0.05 * d,
-                    ease: Power3.easeOut,
-                    onStart: () => {
-                        dice.setVisible(true);
-                        if (dice.input)
-                            dice.input.enabled = false;
+                this._throwDiceTimeline.fromTo(
+                    dice,
+                    // Start values
+                    {
+                        x: startX + i * Config.diceSize * 1.25,
+                        y: Config.screen.height + Config.diceSize * 0.75,
+                        rotation: Math.PI,
                     },
-                    onComplete: () => {
-                        if (dice.input)
-                            dice.input.enabled = true;
+                    // End values
+                    {
+                        x: startX + i * Config.diceSize * 1.25,
+                        y: char.y - Config.diceSize * 0.75,
+                        onStart: () => {
+                            dice.setVisible(true);
+                            // Deactivate dice
+                            if (dice.input)
+                                dice.input.enabled = false;
+                        },
+                        onComplete: () => {
+                            // Activate dice
+                            if (dice.input)
+                                dice.input.enabled = true;
+                        },
                     },
-                });
-
-                d++;
+                    "<0.1"
+                );
             }
         }
+    }
+
+    private throwAllDice() {
+        // Actual dice "throw" (get new random values)
+        for (const char of this._chars) {
+            char.throwAllDice();
+        }
+        // Play animation
+        this._throwDiceTimeline?.restart();
     }
 
     update(time: number, delta: number) {
@@ -239,10 +299,13 @@ export class Game extends Scene {
             char.update();
         }
 
+        // Update main quest card
+        this._mainQuestCard?.update();
+
         // Update all quest cards
         for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
-            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.5 + i * 15, 300 - i * 15);
+            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.75 + i * 15, 300 - i * 15);
             card.update();
         }
 
