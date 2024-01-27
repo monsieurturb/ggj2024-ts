@@ -26,8 +26,6 @@ export class Colors {
 }
 
 export enum Fonts {
-    // MAIN = "Arial Black",
-    // TEXT = "Arial Black",
     MAIN = "paroli",
     TEXT = "dovetail-mvb",
 }

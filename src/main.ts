@@ -6,7 +6,6 @@ import { MainMenu } from './scenes/MainMenu';
 import { Game } from './scenes/Game';
 import { CutScene } from './scenes/CutScene';
 import { GameOver } from './scenes/GameOver';
-import FontFaceObserver from 'fontfaceobserver';
 
 const config = {
   type: Phaser.CANVAS,
@@ -28,6 +27,8 @@ const config = {
   ]
 };
 
+declare var FontFaceObserver: any;
+
 const paroliObserver = new FontFaceObserver('paroli');
 const dovetailObserver = new FontFaceObserver('dovetail-mvb');
 
@@ -35,9 +36,9 @@ Promise.all([
   paroliObserver.load(),
   dovetailObserver.load(),
 ]).then(() => {
-  console.log('All font loaded');
+  // console.log('All font loaded');
   new Phaser.Game(config);
 }, () => {
-  console.log('Some fonts not loaded');
+  // console.log('Some fonts not loaded');
   new Phaser.Game(config);
 });
