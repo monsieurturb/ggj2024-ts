@@ -1,8 +1,10 @@
-import { Colors, Config } from "../config";
+import { Colors, Config, Fonts } from "../config";
+import { Random } from "../managers/Random";
 import { CharType } from "../struct/CharStruct";
 import { DiceStruct } from "../struct/DiceStruct";
+import { ilerp, lerp } from "../utils";
 import { QuestSlot } from "./QuestSlot";
-import { gsap, Power3 } from 'gsap';
+import { gsap, Power3, Elastic, Bounce } from 'gsap';
 
 export class Dice extends Phaser.GameObjects.Container {
     // Actual dice class
@@ -15,6 +17,8 @@ export class Dice extends Phaser.GameObjects.Container {
     private _text: Phaser.GameObjects.Text | undefined;
 
     private _shiftKey: Phaser.Input.Keyboard.Key | undefined;
+    private _isBeingDragged = false;
+    private _dragPosition = new Phaser.Geom.Point(0, 0);
 
     constructor(scene: Phaser.Scene, dice: DiceStruct) {
         super(scene);
@@ -40,8 +44,8 @@ export class Dice extends Phaser.GameObjects.Container {
             .setOrigin(0.5, 0.5);
 
         this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", {
-            fontFamily: 'Arial Black',
-            fontSize: 32,
+            fontFamily: Fonts.MAIN,
+            fontSize: 40,
             color: '#000000',
         })
             .setOrigin(0.5, 0.5);
@@ -79,7 +83,7 @@ export class Dice extends Phaser.GameObjects.Container {
         // Drag & drop
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart);
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.onDrag);
-        // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd);
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd);
         this.on(Phaser.Input.Events.GAMEOBJECT_DROP, this.onDrop);// Triggers only if dropped on a Zone
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_ENTER, this.onDragEnter);
         // this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_LEAVE, this.onDragLeave);
@@ -88,6 +92,18 @@ export class Dice extends Phaser.GameObjects.Container {
     update() {
         if (this._text)
             this._text.text = this._dice.displayValue;
+
+        const positionSpeed = 0.5;
+
+        if (this._isBeingDragged) {
+            this.setPosition(
+                lerp(this.x, this._dragPosition.x, positionSpeed),
+                lerp(this.y, this._dragPosition.y, positionSpeed)
+            );
+        }
+        else {
+            this._dragPosition.setTo(this.x, this.y);
+        }
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) {
@@ -100,29 +116,55 @@ export class Dice extends Phaser.GameObjects.Container {
     onDragStart(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) {
         const parent = this.parentContainer || this.scene.children;
         parent.bringToTop(this);
+
+        this._isBeingDragged = true;
+
+        gsap.to(this, {
+            scaleX: 1.2,
+            scaleY: 1.2,
+            rotation: Math.PI * (Math.random() * Config.diceRotation * 2 - Config.diceRotation),
+            duration: 0.65,
+            ease: Elastic.easeOut,
+            overwrite: true,
+        });
     }
 
     onDrag(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) {
-        this.setPosition(dragX, dragY);
+        this._dragPosition.setTo(dragX, dragY);
     }
 
-    onDragEnd(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) { }
+    onDragEnd(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) {
+        if (!this._isBeingDragged)
+            return;
+
+        this._isBeingDragged = false;
+
+        gsap.to(this, {
+            scaleX: 1,
+            scaleY: 1,
+            rotation: this.rotation * 0.5,
+            duration: 0.5,
+            ease: Bounce.easeOut,
+            overwrite: true,
+        })
+    }
 
     onDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
-        if (!this.isValidTarget(target)) {
-            this.setPosition(this.input?.dragStartX, this.input?.dragStartY);
-            return;
-        }
+        this._isBeingDragged = false;
 
         const slot = target.parentContainer as QuestSlot;
         const p = slot.getLocalPoint(this.x, this.y);
 
-        if (slot.isDiceValid(this)) {
+        if (this.isValidTarget(target) && slot.isDiceValid(this)) {
             gsap.to(this, {
                 x: `-=${p.x}`,
                 y: `-=${p.y}`,
+                scaleX: 1,
+                scaleY: 1,
+                rotation: 0,
                 duration: 0.2,
                 ease: Power3.easeOut,
+                overwrite: true,
                 onStart: () => {
                     if (this.input)
                         this.input.enabled = false;
@@ -136,8 +178,12 @@ export class Dice extends Phaser.GameObjects.Container {
             gsap.to(this, {
                 x: this.input?.dragStartX,
                 y: this.input?.dragStartY,
+                scaleX: 1,
+                scaleY: 1,
+                rotation: this.rotation * 0.5,
                 duration: 0.2,
                 ease: Power3.easeOut,
+                overwrite: true,
                 onStart: () => {
                     if (this.input)
                         this.input.enabled = false;

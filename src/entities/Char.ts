@@ -1,4 +1,4 @@
-import { Colors } from "../config";
+import { Colors, Fonts } from "../config";
 import { CharStruct, CharType } from "../struct/CharStruct";
 import { Dice } from "./Dice";
 
@@ -33,7 +33,7 @@ export class Char extends Phaser.GameObjects.Container {
             .setOrigin(0.5, 1);
 
         const t = new Phaser.GameObjects.Text(this.scene, 0, -300, this.char.type, {
-            fontFamily: 'Arial Black',
+            fontFamily: Fonts.MAIN,
             fontSize: 28,
             color: '#000000',
         })

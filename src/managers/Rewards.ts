@@ -37,6 +37,8 @@ export class Rewards {
         this._queue = this._queue.filter((ro) => ro.turnsRemaining >= 0);
 
         for (const rewardObject of expiredRewards) {
+            // TODO Avoid cancelling a reward with the same effect that started later
+            // TODO (ex: resetting the multiplier even though we got it again 1 turn later - should be extended)
             if (rewardObject.endCallback)
                 rewardObject.endCallback();
         }
@@ -152,7 +154,29 @@ export class Rewards {
     }
 
     private applyMainQuestReward(rewardObject: RewardObject) {
+        const mainQuestCard = this._game?.mainQuestCard;
+        if (!mainQuestCard)
+            return;
 
+        // APPLY REWARD --------------------------------------------
+
+        switch (rewardObject.reward.type) {
+            // Add [X] to the main quest multiplier for [Y] turns
+            case QuestRewardType.X_MULT_FOR_Y_TURNS:
+                // Validate args
+                if (rewardObject.reward.args.length != 2)
+                    break;
+                // Add multiplier
+                mainQuestCard.multiplier = rewardObject.reward.args[0];
+                // Init turns
+                rewardObject.turnsRemaining = rewardObject.reward.args[1];
+                // Setup end callback
+                rewardObject.endCallback = () => {
+                    // Remove multiplier
+                    mainQuestCard.multiplier = 1;
+                };
+                break;
+        }
     }
 
     private applyQuestsReward(rewardObject: RewardObject) {

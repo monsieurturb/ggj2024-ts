@@ -9,6 +9,8 @@ export class Config {
     static diceSize: number = 100;
     static sceneTransitionDuration: number = 1000;
     static stageBaseDifficulty: number = 50;
+    static diceRotation: number = 0.025;
+    static dicePosition: number = 8;
 }
 
 export class Colors {
@@ -21,4 +23,11 @@ export class Colors {
     static DARK: number = Phaser.Display.Color.HexStringToColor(Colors.DARK_HEX).color;
     static LIGHT: number = Phaser.Display.Color.HexStringToColor(Colors.LIGHT_HEX).color;
     static PINK: number = Phaser.Display.Color.HexStringToColor(Colors.PINK_HEX).color;
+}
+
+export enum Fonts {
+    // MAIN = "Arial Black",
+    // TEXT = "Arial Black",
+    MAIN = "paroli",
+    TEXT = "dovetail-mvb",
 }

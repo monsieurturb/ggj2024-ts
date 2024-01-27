@@ -1,5 +1,5 @@
 import { EventManager, Events } from "../managers/Events";
-import { Config } from "../config";
+import { Config, Fonts } from "../config";
 import { QuestStruct } from "../struct/QuestStruct";
 import { QuestSlot } from "./QuestSlot";
 import { QuestReward } from "../struct/QuestReward";
@@ -41,7 +41,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
             .setOrigin(0.5, 0.5);
 
         this._text = new Phaser.GameObjects.Text(this.scene, -Config.questCard.width * 0.5 + 20, -Config.questCard.height * 0.5 + 32, "", {
-            fontFamily: 'Arial',
+            fontFamily: Fonts.MAIN,
             fontSize: 28,
             color: '#000000',
             wordWrap: { width: Config.questCard.width * 0.5 }

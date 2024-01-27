@@ -7,8 +7,6 @@ import { Game } from './scenes/Game';
 import { CutScene } from './scenes/CutScene';
 import { GameOver } from './scenes/GameOver';
 
-//  Find out more information about the Game Config at:
-//  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
   type: Phaser.CANVAS,
   width: Config.screen.width,
@@ -29,4 +27,8 @@ const config = {
   ]
 };
 
-export default new Phaser.Game(config);
+setTimeout(() => {
+  new Phaser.Game(config);
+}, 250);
+
+// export default new Phaser.Game(config);

@@ -2,7 +2,7 @@ import { Power3, gsap } from 'gsap';
 import { Scene } from 'phaser';
 import { EventManager, Events } from '../managers/Events';
 import { Colors, Config } from '../config';
-import { BossBar } from '../entities/BossBar';
+import { StageBar } from '../entities/StageBar';
 import { Char } from '../entities/Char';
 import { Dice } from '../entities/Dice';
 import { MainQuestCard } from '../entities/MainQuestCard';
@@ -19,10 +19,11 @@ export class Game extends Scene {
     private _chars: Array<Char> = [];
     public get chars() { return this._chars; }
     private _questCards: Array<QuestCard> = [];
-    private _bossBar: BossBar | undefined;
+    private _bossBar: StageBar | undefined;
 
     // Data
     private _mainQuestCard: MainQuestCard | undefined;
+    public get mainQuestCard() { return this._mainQuestCard; }
     private _turnsRemaining: number = 10;
 
     // Layers
@@ -92,7 +93,7 @@ export class Game extends Scene {
             });
 
         // Boss bar
-        this._bossBar = new BossBar(this)
+        this._bossBar = new StageBar(this)
             .setPosition(Config.screen.width * 0.5, 30);
 
         // Add to UI layer
@@ -232,7 +233,6 @@ export class Game extends Scene {
 
         const timeline = gsap.timeline({
             defaults: {
-                rotation: 0,
                 duration: 0.4,
                 ease: Power3.easeOut,
             },
@@ -264,8 +264,9 @@ export class Game extends Scene {
                     },
                     // End values
                     {
-                        x: startX + i * Config.diceSize * 1.25,
-                        y: char.y - Config.diceSize * 0.75,
+                        x: startX + i * Config.diceSize * 1.25 + Math.random() * Config.dicePosition * 2 - Config.dicePosition,
+                        y: char.y - Config.diceSize * 0.75 + Math.random() * Config.dicePosition * 2 - Config.dicePosition,
+                        rotation: Math.PI * (Math.random() * Config.diceRotation * 2 - Config.diceRotation),
                         onStart: () => {
                             this._diceLayer?.add(dice);
                             dice.setVisible(true);

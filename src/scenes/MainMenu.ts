@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { Config } from '../config';
+import { Config, Fonts } from '../config';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -11,14 +11,18 @@ export class MainMenu extends Scene {
 
         // this.add.image(512, 300, 'logo');
 
+        const styleDark = {
+            color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            fontFamily: Fonts.MAIN,
+            fontSize: 32,
+            align: 'center'
+        }
+
         this.add.text(
             Config.screen.width * 0.5,
             Config.screen.height - 32,
-            'Main Menu', {
-            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5, 1);
+            'Main Menu', styleDark).setOrigin(0.5, 1);
 
         this.input.once('pointerdown', () => {
             this.scene.start('Game');

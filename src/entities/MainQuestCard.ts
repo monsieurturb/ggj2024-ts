@@ -1,5 +1,5 @@
 import { EventManager, Events } from "../managers/Events";
-import { Config } from "../config";
+import { Config, Fonts } from "../config";
 import { MainQuestStruct } from "../struct/MainQuestStruct";
 import { QuestStruct } from "../struct/QuestStruct";
 import { Dice } from "./Dice";
@@ -25,7 +25,7 @@ export class MainQuestCard extends QuestCard {
             -Config.questCard.width * 0.25,
             Config.questCard.height * 0.25,
             "Use remaining dice", {
-            fontFamily: 'Arial Black',
+            fontFamily: Fonts.MAIN,
             fontSize: 28,
             color: '#000000',
         })

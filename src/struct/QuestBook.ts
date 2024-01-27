@@ -35,7 +35,7 @@ export class QuestBook {
         this._quests.push(new QuestStruct("Irresistible Duo")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
-            .addRewardForSuccess(new QuestReward(QuestRewardTarget.MAIN_QUEST, QuestRewardType.X_MULT_FOR_Y_TURNS, [2, 4]))
+            .addRewardForSuccess(new QuestReward(QuestRewardTarget.MAIN_QUEST, QuestRewardType.X_MULT_FOR_Y_TURNS, [2, 1]))
             .setTurnsRemaining(3)
         );
         this._quests.push(new QuestStruct("Inspiring Monologue")

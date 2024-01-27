@@ -1,8 +1,9 @@
 import { EventManager, Events } from "../managers/Events";
-import { Colors, Config } from "../config";
+import { Colors, Config, Fonts } from "../config";
 import { CharType } from "../struct/CharStruct";
 import { QuestRequirement, QuestRequirementMode } from "../struct/QuestRequirement";
 import { Dice } from "./Dice";
+import { clamp } from "../utils";
 
 export class QuestSlot extends Phaser.GameObjects.Container {
     protected _zone: Phaser.GameObjects.Zone;
@@ -39,7 +40,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             this.scene,
             0, 0,
             this.getRequirementText(), {
-            fontFamily: 'Arial Black',
+            fontFamily: Fonts.MAIN,
             fontSize: 22,
             color: '#000000',
             stroke: <string>this.getColor(true),
@@ -144,7 +145,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         // If SCORE mode
         if (this._requirement.mode === QuestRequirementMode.SCORE) {
             // Substract dice current value from score
-            this._requirement.value = Phaser.Math.Clamp(this._requirement.value - dice.dice.currentValue, 0, this._requirement.value);
+            this._requirement.value = clamp(0, this._requirement.value, this._requirement.value - dice.dice.currentValue);
             // If score reached, we're done
             if (this._requirement.value <= 0)
                 this._requirement.done = true

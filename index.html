@@ -4,11 +4,23 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite + Phaser + TailwindCSS + TS</title>
+  <title>GGJ 2024 - P9</title>
+  <link rel="stylesheet" href="https://use.typekit.net/ovg0abe.css">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
-<body class="bg-black text-white m-0 p-0">
-  <div id="app" class="w-full h-dvh overflow-hidden flex items-center justify-center">
-    <div id="game-container"></div>
+<body>
+  <div id="app" class="relative w-full h-dvh overflow-hidden flex items-center justify-center">
+    <div class="absolute inset-0 flex items-center justify-center">
+      <p class="font-display text-3xl">Loading...</p>
+    </div>
+    <div id="game-container" class="relative"></div>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
