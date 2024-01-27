@@ -57,8 +57,8 @@ export class MainQuestCard extends QuestCard {
             return undefined;
     }
 
-    update() {
-        super.update();
+    update(time: number) {
+        super.update(time);
 
         if (this._text) {
             let s = this._quest.name;

@@ -296,7 +296,7 @@ export class Game extends Scene {
         }
 
         // Update main quest card
-        this._mainQuestCard?.update();
+        this._mainQuestCard?.update(time);
 
         // Update all quest cards
         for (let i = 0; i < this._questCards.length; i++) {
