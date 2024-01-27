@@ -3,6 +3,8 @@ import { Config, Fonts } from "../config";
 import { QuestStruct } from "../struct/QuestStruct";
 import { QuestSlot } from "./QuestSlot";
 import { QuestReward } from "../struct/QuestReward";
+import { Random } from "../managers/Random";
+import { gsap, Power3 } from "gsap";
 
 export class QuestCard extends Phaser.GameObjects.Container {
     // Actual quest class
@@ -20,6 +22,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
     protected _text: Phaser.GameObjects.Text | undefined;
     protected _slots: Array<QuestSlot> = [];
 
+    protected _facingUp = true;
     protected _boundOnRequirementProgress: ((uuid: string) => void) | undefined;
     protected _boundOnRequirementCompleted: ((uuid: string) => void) | undefined;
 
@@ -74,10 +77,50 @@ export class QuestCard extends Phaser.GameObjects.Container {
         this._quest.activate(primed);
         this.createSlots();
 
+        // Start facing down
+        this._facingUp = true;
+        this.flip(true);
+        this.flip();
+
         this._boundOnRequirementProgress = this.onRequirementProgress.bind(this);
         this._boundOnRequirementCompleted = this.onRequirementCompleted.bind(this);
         EventManager.on(Events.REQUIREMENT_PROGRESS, this._boundOnRequirementProgress);
         EventManager.on(Events.REQUIREMENT_COMPLETED, this._boundOnRequirementCompleted);
+    }
+
+    flip(instant: boolean = false) {
+        if (instant) {
+            this._facingUp = !this._facingUp;
+
+            this._text?.setVisible(this._facingUp);
+            for (const slot of this._slots) {
+                slot.setVisible(this._facingUp);
+            }
+        }
+        else {
+            const timeline = gsap.timeline({
+                delay: 0.35,
+                defaults: {
+                    duration: 0.3,
+                    ease: Power3.easeOut,
+                }
+            });
+            timeline.to(this, {
+                scaleY: 0,
+                // rotation: -Math.PI * 0.01,
+                onComplete: () => {
+                    this._facingUp = !this._facingUp;
+
+                    this._text?.setVisible(this._facingUp);
+                    for (const slot of this._slots) {
+                        slot.setVisible(this._facingUp);
+                    }
+                },
+            }).to(this, {
+                scaleY: 1,
+                rotation: 0,
+            });
+        }
     }
 
     setPosition(x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined): this {
@@ -89,7 +132,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
         return this;
     }
 
-    update() {
+    update(time: number) {
         if (this._text) {
             let s = this._quest.name;
             s += "\nTurns remaining: " + this._quest.turnsRemaining;
@@ -108,6 +151,11 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
         for (const slot of this._slots) {
             slot.update();
+        }
+
+        if (this._quest.turnsRemaining === 1) {
+            const r = 0.015 * Math.sin(time / 75);// amplitude * sin(time / freq)
+            this.setRotation(r);
         }
     }
 

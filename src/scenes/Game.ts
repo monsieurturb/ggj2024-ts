@@ -38,6 +38,8 @@ export class Game extends Scene {
 
     public mask: Phaser.GameObjects.Rectangle | undefined;
 
+    static preventAllInteractions: boolean = true;
+
     constructor() {
         super("Game");
     }
@@ -54,6 +56,8 @@ export class Game extends Scene {
     preload() { }
 
     create() {
+        Game.preventAllInteractions = true;
+
         // Create all layers
         this._charsLayer = this.add.container();
         this._questsLayer = this.add.container();
@@ -89,6 +93,8 @@ export class Game extends Scene {
             .setOrigin(1, 1)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                if (Game.preventAllInteractions)
+                    return;
                 this.endTurn();
             });
 
@@ -203,7 +209,7 @@ export class Game extends Scene {
     }
 
     private activateNextQuest(primed: boolean = false) {
-        while (this._questCards.length < 5) {
+        while (this._questCards.length < 1) {
             this.queueAnotherQuest();
         }
 
@@ -237,14 +243,10 @@ export class Game extends Scene {
                 ease: Power3.easeOut,
             },
             onStart: () => {
-                // Deactivate end turn button
-                if (this._endTurnButton && this._endTurnButton.input)
-                    this._endTurnButton.input.enabled = false;
+                Game.preventAllInteractions = true;
             },
             onComplete: () => {
-                // Activate end turn button
-                if (this._endTurnButton && this._endTurnButton.input)
-                    this._endTurnButton.input.enabled = true;
+                Game.preventAllInteractions = false;
             },
         });
 
@@ -300,7 +302,7 @@ export class Game extends Scene {
         for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
             card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.75 + i * 15, 300 - i * 15);
-            card.update();
+            card.update(time);
         }
 
         // Update UI
@@ -349,9 +351,7 @@ export class Game extends Scene {
                 ease: Power3.easeOut,
             },
             onStart: () => {
-                // Deactivate end turn button
-                if (this._endTurnButton && this._endTurnButton.input)
-                    this._endTurnButton.input.enabled = false;
+                Game.preventAllInteractions = true;
             },
             onComplete: () => {
                 // Automatically end turn

@@ -5,6 +5,7 @@ import { QuestStruct } from "../struct/QuestStruct";
 import { Dice } from "./Dice";
 import { QuestCard } from "./QuestCard";
 import { QuestSlot } from "./QuestSlot";
+import { Game } from "../scenes/Game";
 
 export class MainQuestCard extends QuestCard {
     declare protected _quest: MainQuestStruct;
@@ -32,6 +33,9 @@ export class MainQuestCard extends QuestCard {
             .setOrigin(0.5, 0.5)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                if (Game.preventAllInteractions)
+                    return;
+
                 EventManager.emit(Events.USE_REMAINING_DICE);
             });
 

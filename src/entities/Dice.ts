@@ -1,5 +1,6 @@
 import { Colors, Config, Fonts } from "../config";
 import { Random } from "../managers/Random";
+import { Game } from "../scenes/Game";
 import { CharType } from "../struct/CharStruct";
 import { DiceStruct } from "../struct/DiceStruct";
 import { ilerp, lerp } from "../utils";
@@ -70,7 +71,6 @@ export class Dice extends Phaser.GameObjects.Container {
             ),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
             draggable: true,
-            useHandCursor: true,
         }, Phaser.Geom.Rectangle.Contains);
 
         // Setup Shift key
@@ -107,6 +107,9 @@ export class Dice extends Phaser.GameObjects.Container {
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) {
+        if (Game.preventAllInteractions)
+            return;
+
         if (this._shiftKey!.isDown)
             this._dice.throw();
 
@@ -114,6 +117,9 @@ export class Dice extends Phaser.GameObjects.Container {
     }
 
     onDragStart(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) {
+        if (Game.preventAllInteractions)
+            return;
+
         const parent = this.parentContainer || this.scene.children;
         parent.bringToTop(this);
 
