@@ -8,12 +8,12 @@ export class QuestCard extends Phaser.GameObjects.Container {
     // Actual quest class
     protected _quest: QuestStruct;
     // Expose some of the quest properties, keep the rest private
-    public get quest(): QuestStruct { return this._quest; }
-    public get uuid(): string { return this._quest.uuid; }
-    public get questName(): string { return this._quest.name; }
-    public get turnsRemaining(): number { return this._quest.turnsRemaining; }
-    public get rewardsForFail(): Array<QuestReward> { return this._quest.rewardsForFail; }
-    public get rewardsForSuccess(): Array<QuestReward> { return this._quest.rewardsForSuccess; }
+    public get quest() { return this._quest; }
+    public get uuid() { return this._quest.uuid; }
+    public get questName() { return this._quest.name; }
+    public get turnsRemaining() { return this._quest.turnsRemaining; }
+    public get rewardsForFail() { return this._quest.rewardsForFail; }
+    public get rewardsForSuccess() { return this._quest.rewardsForSuccess; }
 
     // Graphics objects
     protected _background: Phaser.GameObjects.Rectangle | undefined;

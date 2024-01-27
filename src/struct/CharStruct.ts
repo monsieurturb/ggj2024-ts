@@ -33,7 +33,6 @@ export class CharStruct {
     }
 
     removeDice(n: number) {
-        console.log('removing', n, 'dice');
         if (n < 1)
             return [];
 

@@ -6,7 +6,7 @@ export class QuestReward {
     readonly type: QuestRewardType;
 
     private _args: Array<number> = [];
-    public get args(): Array<number> { return this._args; }
+    public get args() { return this._args; }
 
     constructor(target: QuestRewardTarget, type: QuestRewardType, args: Array<number>) {
         this.uuid = Random.getInstance().uuid();

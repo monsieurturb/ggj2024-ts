@@ -6,7 +6,7 @@ export class Char extends Phaser.GameObjects.Container {
     // Actual char class
     private _char: CharStruct;
     // Expose some of the dice properties, keep the rest private
-    public get char(): CharStruct { return this._char; }
+    public get char() { return this._char; }
 
     // Graphics objects
     private _background: Phaser.GameObjects.Rectangle;
@@ -64,8 +64,6 @@ export class Char extends Phaser.GameObjects.Container {
     }
 
     addDice(n: number) {
-        console.log(`adding ${n} dice to ${this.char.type}`);
-
         // Add to dice to pool
         const newDice = this._char.addDice(n);
         // Create the new dice entities
@@ -74,16 +72,13 @@ export class Char extends Phaser.GameObjects.Container {
     }
 
     removeDice(n: number) {
-        console.log(`removing ${n} dice from ${this.char.type}`);
-
         // Remove dice from pool
         const oldDice = this._char.removeDice(n);
         // Delete the old dice entities
         const oldUUIDs = oldDice.map((dice) => dice?.uuid);
         const oldDiceEntities = this.diceEntities.filter((dice) => oldUUIDs.includes(dice.dice.uuid));
-        for (const dice of oldDiceEntities) {
+        for (const dice of oldDiceEntities)
             dice.destroy();
-        }
         this.diceEntities = this.diceEntities.filter((dice) => !oldUUIDs.includes(dice.dice.uuid));
     }
 }

@@ -7,8 +7,8 @@ export class DiceStruct {
     readonly sides: Array<number>;
 
     private _currentSide: number = 0;
-    public get currentValue(): number { return this.sides[this._currentSide]; }
-    public get displayValue(): string { return this.sides[this._currentSide].toFixed(); }
+    public get currentValue() { return this.sides[this._currentSide]; }
+    public get displayValue() { return this.sides[this._currentSide].toFixed(); }
 
     constructor(type: CharType) {
         this.uuid = Random.getInstance().uuid();

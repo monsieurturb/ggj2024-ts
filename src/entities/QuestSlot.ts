@@ -13,12 +13,17 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     protected _allRequirements: Array<QuestRequirement>;
     protected _belongsToMainQuest: boolean;
 
+    protected _diceHistory: Array<DiceSnapshot>;
+    public get diceHistory() { return this._diceHistory; }
+
     constructor(scene: Phaser.Scene, requirement: QuestRequirement, allRequirements: Array<QuestRequirement>, belongsToMainQuest = false) {
         super(scene);
 
         this._requirement = requirement;
         this._allRequirements = allRequirements;
         this._belongsToMainQuest = belongsToMainQuest;
+
+        this._diceHistory = [];
 
         this.width = Config.diceSize * 1.25;
         this.height = Config.diceSize * 1.25;
@@ -160,6 +165,9 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         else
             this._requirement.done = true;
 
+        // Save to history
+        this._diceHistory.push({ type: dice.dice.type, value: dice.dice.currentValue });
+
         // Update text
         this._text.text = this.getRequirementText();
 
@@ -172,4 +180,13 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         else
             EventManager.emit(Events.REQUIREMENT_PROGRESS, this._requirement.uuid);
     }
+
+    clearHistory() {
+        this._diceHistory = [];
+    }
+}
+
+interface DiceSnapshot {
+    type: CharType,
+    value: number,
 }

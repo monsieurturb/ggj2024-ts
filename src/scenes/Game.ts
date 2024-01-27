@@ -17,14 +17,13 @@ import { QuestReward, QuestRewardTarget, QuestRewardType } from '../struct/Quest
 export class Game extends Scene {
     // Entities
     private _chars: Array<Char> = [];
-    public get chars(): Array<Char> { return this._chars; }
+    public get chars() { return this._chars; }
     private _questCards: Array<QuestCard> = [];
     private _bossBar: BossBar | undefined;
 
     // Data
     private _mainQuestCard: MainQuestCard | undefined;
     private _turnsRemaining: number = 10;
-    private _throwDiceTimeline: gsap.core.Timeline | undefined;
 
     // Layers
     private _charsLayer: Phaser.GameObjects.Container | undefined;
@@ -167,9 +166,6 @@ export class Game extends Scene {
         this.createCharAndDice(CharType.POET, 700);
         this.createCharAndDice(CharType.MIMO, 1100);
 
-        // Setup the animation timeline for the dice throw
-        // this.setupThrowDiceTimeline();
-
         // Create main quest
         const mainQuest = new MainQuestStruct()
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
@@ -182,8 +178,6 @@ export class Game extends Scene {
         for (let i = 0; i < 5; i++) {
             this.queueAnotherQuest();
         }
-        // console.log(this._questCards.map((q) => q.questName));
-
         // Activate main quest
         this._mainQuestCard.activate();
         // Activate first quest
@@ -309,6 +303,7 @@ export class Game extends Scene {
         }
 
         // Update UI
+        this._bossBar?.update();
         if (this._turnText)
             this._turnText.text = "Turns remaining: " + this._turnsRemaining;
     }
@@ -385,7 +380,7 @@ export class Game extends Scene {
     }
 
     private onEndTurn() {
-        console.log("onEndTurn");
+        // console.log("onEndTurn");
 
         this.throwAllDice();
     }

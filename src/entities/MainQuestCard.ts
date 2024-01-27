@@ -11,6 +11,8 @@ export class MainQuestCard extends QuestCard {
 
     protected _throwAllDiceButton: Phaser.GameObjects.Text | undefined;
 
+    public multiplier: number = 1;
+
     constructor(scene: Phaser.Scene, quest: QuestStruct) {
         super(scene, quest);
     }
@@ -22,7 +24,7 @@ export class MainQuestCard extends QuestCard {
             this.scene,
             -Config.questCard.width * 0.25,
             Config.questCard.height * 0.25,
-            "Use all dice", {
+            "Use remaining dice", {
             fontFamily: 'Arial Black',
             fontSize: 28,
             color: '#000000',
@@ -62,7 +64,18 @@ export class MainQuestCard extends QuestCard {
 
     onRequirementCompleted(uuid: string) {
         if (this._quest.isOwnRequirement(uuid)) {
-            console.log('MAIN QUEST Requirement filled:', uuid);
+            // console.log('MAIN QUEST Requirement filled:', uuid);
+
+            const slot = this.getSlot();
+            if (slot && slot.diceHistory.length > 0) {
+                // Find last dice
+                const lastDice = slot.diceHistory[slot.diceHistory.length - 1];
+                // Emit event
+                EventManager.emit(Events.MAIN_QUEST_PROGRESS, lastDice.value * this.multiplier);
+                // Clear history
+                slot.clearHistory();
+            }
+
             this._quest.undoRequirements();
         }
     }

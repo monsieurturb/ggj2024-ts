@@ -16,10 +16,10 @@ export class QuestStruct {
     protected _rewardsForSuccess: Array<QuestReward> = [];
     protected _boundOnEndTurn: (() => void) | undefined;
 
-    public get requirements(): Array<QuestRequirement> { return this._requirements; }
-    public get turnsRemaining(): number { return this._turnsRemaining; }
-    public get rewardsForFail(): Array<QuestReward> { return this._rewardsForFail; }
-    public get rewardsForSuccess(): Array<QuestReward> { return this._rewardsForSuccess; }
+    public get requirements() { return this._requirements; }
+    public get turnsRemaining() { return this._turnsRemaining; }
+    public get rewardsForFail() { return this._rewardsForFail; }
+    public get rewardsForSuccess() { return this._rewardsForSuccess; }
 
     constructor(name: string) {
         this.uuid = Random.getInstance().uuid();
