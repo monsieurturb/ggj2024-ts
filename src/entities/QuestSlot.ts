@@ -1,4 +1,4 @@
-import { EventManager, Events } from "../Events";
+import { EventManager, Events } from "../managers/Events";
 import { Colors, Config } from "../config";
 import { CharType } from "../struct/CharStruct";
 import { QuestRequirement, QuestRequirementMode } from "../struct/QuestRequirement";
@@ -86,36 +86,34 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     }
 
     isDiceValid(dice: Dice) {
-        console.log("isDiceValid", dice.uuid);
-
         if (this._requirement.done)
             return false;
 
-        const isTypeValid = this._requirement.type === CharType.ANY || this._requirement.type === dice.charType;
+        const isTypeValid = this._requirement.type === CharType.ANY || this._requirement.type === dice.dice.type;
 
         let isValueValid = false;
         switch (this._requirement.mode) {
             case QuestRequirementMode.EVEN:
-                isValueValid = dice.currentValue % 2 === 0;
+                isValueValid = dice.dice.currentValue % 2 === 0;
                 break;
             case QuestRequirementMode.EXACT:
-                isValueValid = dice.currentValue === this._requirement.value;
+                isValueValid = dice.dice.currentValue === this._requirement.value;
                 break;
             case QuestRequirementMode.EXCEPT:
-                isValueValid = dice.currentValue !== this._requirement.value;
+                isValueValid = dice.dice.currentValue !== this._requirement.value;
                 break;
             case QuestRequirementMode.MAX:
-                isValueValid = dice.currentValue <= this._requirement.value;
+                isValueValid = dice.dice.currentValue <= this._requirement.value;
                 break;
             case QuestRequirementMode.MIN:
-                isValueValid = dice.currentValue >= this._requirement.value;
+                isValueValid = dice.dice.currentValue >= this._requirement.value;
                 break;
             case QuestRequirementMode.ODD:
-                isValueValid = dice.currentValue % 2 === 1;
+                isValueValid = dice.dice.currentValue % 2 === 1;
                 break;
             case QuestRequirementMode.SAME:
                 const reqValue = this.getValueFromOtherSlots();
-                isValueValid = reqValue === -1 ? true : reqValue === dice.currentValue;
+                isValueValid = reqValue === -1 ? true : reqValue === dice.dice.currentValue;
                 break;
             case QuestRequirementMode.SCORE:
                 isValueValid = true;
@@ -126,8 +124,6 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     }
 
     protected getValueFromOtherSlots(): number {
-        console.log(this._allRequirements);
-
         for (const req of this._allRequirements) {
             if (req.done)
                 return req.value;
@@ -143,14 +139,14 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         // If SCORE mode
         if (this._requirement.mode === QuestRequirementMode.SCORE) {
             // Substract dice current value from score
-            this._requirement.value = Phaser.Math.Clamp(this._requirement.value - dice.currentValue, 0, this._requirement.value);
+            this._requirement.value = Phaser.Math.Clamp(this._requirement.value - dice.dice.currentValue, 0, this._requirement.value);
             // If score reached, we're done
             if (this._requirement.value <= 0)
                 this._requirement.done = true
         }
         // If SAME mode, store the dice value to constrain the other slots later
         else if (this._requirement.mode === QuestRequirementMode.SAME) {
-            this._requirement.value = dice.currentValue;
+            this._requirement.value = dice.dice.currentValue;
             this._requirement.done = true;
 
             for (const req of this._allRequirements) {

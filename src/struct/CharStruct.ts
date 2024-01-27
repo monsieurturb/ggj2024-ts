@@ -1,4 +1,4 @@
-import { Random } from "../Random";
+import { Random } from "../managers/Random";
 import { DiceStruct } from "./DiceStruct";
 
 export class CharStruct {
@@ -15,8 +15,33 @@ export class CharStruct {
         this._dicePool = [
             new DiceStruct(this.type),
             new DiceStruct(this.type),
-            // new DiceStruct(this.type),
         ];
+    }
+
+    addDice(n: number) {
+        if (n < 1)
+            return [];
+
+        const newDice = [];
+        for (let i = 0; i < n; i++) {
+            const dice = new DiceStruct(this.type);
+            this._dicePool.push(dice);
+            newDice.push(dice);
+        }
+
+        return newDice;
+    }
+
+    removeDice(n: number) {
+        console.log('removing', n, 'dice');
+        if (n < 1)
+            return [];
+
+        const oldDice = [];
+        for (let i = 0; i < n; i++)
+            oldDice.push(this._dicePool.pop());
+
+        return oldDice;
     }
 }
 

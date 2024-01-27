@@ -6,8 +6,7 @@ export class Char extends Phaser.GameObjects.Container {
     // Actual char class
     private _char: CharStruct;
     // Expose some of the dice properties, keep the rest private
-    public get uuid(): string { return this._char.uuid; }
-    public get charType(): CharType { return this._char.type; }
+    public get char(): CharStruct { return this._char; }
 
     // Graphics objects
     private _background: Phaser.GameObjects.Rectangle;
@@ -21,7 +20,7 @@ export class Char extends Phaser.GameObjects.Container {
         this._char = new CharStruct(type);
 
         const color = (() => {
-            switch (this.charType) {
+            switch (this.char.type) {
                 case CharType.BARD: return Colors.DARK;
                 case CharType.POET: return Colors.LIGHT;
                 case CharType.MIMO: return Colors.PINK;
@@ -33,15 +32,21 @@ export class Char extends Phaser.GameObjects.Container {
             .setStrokeStyle(4, 0x000000)
             .setOrigin(0.5, 1);
 
+        const t = new Phaser.GameObjects.Text(this.scene, 0, -300, this.char.type, {
+            fontFamily: 'Arial Black',
+            fontSize: 28,
+            color: '#000000',
+        })
+            .setOrigin(0.5, 0.5);
+
         this.add([
             this._background,
+            t,
         ]);
 
         // Create the dice entities from this char's dice pool
-        for (let i = 0; i < this._char.dicePool.length; i++) {
-            const dice = this._char.dicePool[i];
+        for (const dice of this._char.dicePool)
             this.diceEntities.push(new Dice(this.scene, dice));
-        }
     }
 
     update() {
@@ -56,5 +61,29 @@ export class Char extends Phaser.GameObjects.Container {
             const dice = this._char.dicePool[i];
             dice.throw();
         }
+    }
+
+    addDice(n: number) {
+        console.log(`adding ${n} dice to ${this.char.type}`);
+
+        // Add to dice to pool
+        const newDice = this._char.addDice(n);
+        // Create the new dice entities
+        for (const dice of newDice)
+            this.diceEntities.push(new Dice(this.scene, dice));
+    }
+
+    removeDice(n: number) {
+        console.log(`removing ${n} dice from ${this.char.type}`);
+
+        // Remove dice from pool
+        const oldDice = this._char.removeDice(n);
+        // Delete the old dice entities
+        const oldUUIDs = oldDice.map((dice) => dice?.uuid);
+        const oldDiceEntities = this.diceEntities.filter((dice) => oldUUIDs.includes(dice.dice.uuid));
+        for (const dice of oldDiceEntities) {
+            dice.destroy();
+        }
+        this.diceEntities = this.diceEntities.filter((dice) => !oldUUIDs.includes(dice.dice.uuid));
     }
 }

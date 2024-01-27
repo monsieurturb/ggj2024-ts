@@ -1,4 +1,4 @@
-import { EventManager, Events } from "../Events";
+import { EventManager, Events } from "../managers/Events";
 import { Config } from "../config";
 import { MainQuestStruct } from "../struct/MainQuestStruct";
 import { QuestStruct } from "../struct/QuestStruct";

@@ -8,9 +8,7 @@ export class Dice extends Phaser.GameObjects.Container {
     // Actual dice class
     private _dice: DiceStruct;
     // Expose some of the dice properties, keep the rest private
-    public get uuid(): string { return this._dice.uuid; }
-    public get charType(): string { return this._dice.type; }
-    public get currentValue(): number { return this._dice.currentValue; }
+    public get dice(): DiceStruct { return this._dice; }
 
     // Graphics objects
     private _background: Phaser.GameObjects.Rectangle | undefined;

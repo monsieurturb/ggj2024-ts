@@ -1,4 +1,4 @@
-import { Random } from "../Random";
+import { Random } from "../managers/Random";
 
 export class QuestReward {
     readonly uuid: string;
@@ -35,8 +35,8 @@ export enum QuestRewardTarget {
 
 export enum QuestRewardType {
     // Character targets
-    EXTRA_X_DICE = "EXTRA_X_DICE",// args: [X: number of extra dice to add]
-    FREEZE_X_DICE = "FREEZE_X_DICE",// args: [X: number of dice to freeze]
+    EXTRA_X_DICE_FOR_Y_TURNS = "EXTRA_X_DICE_FOR_Y_TURNS",// args: [X: number of extra dice to add, Y: number of turns to last]
+    FREEZE_X_DICE_FOR_Y_TURNS = "FREEZE_X_DICE_FOR_Y_TURNS",// args: [X: number of dice to freeze, Y: number of turns to last]
     // Quest targets
     X_MORE_TURNS_TO_COMPLETE = "X_MORE_TURNS_TO_COMPLETE",// args: [X: number of turns to add]
     X_LESS_TURNS_TO_COMPLETE = "X_LESS_TURNS_TO_COMPLETE",// args: [X: number of turns to substract]
@@ -44,5 +44,4 @@ export enum QuestRewardType {
     HIDE = "HIDE",
     // Main quest targets
     X_MULT_FOR_Y_TURNS = "X_MULT_FOR_Y_TURNS",// args: [X: dice value multiplier, Y: number of turns to last]
-    UNLOCK_NEXT_STAGE = "UNLOCK_NEXT_STAGE",
 }

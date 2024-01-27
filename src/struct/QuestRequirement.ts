@@ -1,4 +1,4 @@
-import { Random } from "../Random";
+import { Random } from "../managers/Random";
 import { CharType } from "./CharStruct";
 
 export class QuestRequirement {

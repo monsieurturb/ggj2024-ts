@@ -1,5 +1,5 @@
-import { EventManager, Events } from "../Events";
-import { Random } from "../Random";
+import { EventManager, Events } from "../managers/Events";
+import { Random } from "../managers/Random";
 import { CharType } from "./CharStruct";
 import { QuestRequirement, QuestRequirementMode } from "./QuestRequirement";
 import { QuestReward } from "./QuestReward";
@@ -12,14 +12,14 @@ export class QuestStruct {
 
     protected _requirements: Array<QuestRequirement> = [];
     protected _turnsRemaining: number = 2;
-    protected _rewardsOnFail: Array<QuestReward> = [];
-    protected _rewardsOnSuccess: Array<QuestReward> = [];
+    protected _rewardsForFail: Array<QuestReward> = [];
+    protected _rewardsForSuccess: Array<QuestReward> = [];
     protected _boundOnEndTurn: (() => void) | undefined;
 
     public get requirements(): Array<QuestRequirement> { return this._requirements; }
     public get turnsRemaining(): number { return this._turnsRemaining; }
-    public get rewardsOnFail(): Array<QuestReward> { return this._rewardsOnFail; }
-    public get rewardsOnSuccess(): Array<QuestReward> { return this._rewardsOnSuccess; }
+    public get rewardsForFail(): Array<QuestReward> { return this._rewardsForFail; }
+    public get rewardsForSuccess(): Array<QuestReward> { return this._rewardsForSuccess; }
 
     constructor(name: string) {
         this.uuid = Random.getInstance().uuid();
@@ -38,12 +38,12 @@ export class QuestStruct {
     }
 
     addRewardForFail(reward: QuestReward) {
-        this._rewardsOnFail.push(reward);
+        this._rewardsForFail.push(reward);
         return this;
     }
 
     addRewardForSuccess(reward: QuestReward) {
-        this._rewardsOnSuccess.push(reward);
+        this._rewardsForSuccess.push(reward);
         return this;
     }
 
@@ -57,11 +57,11 @@ export class QuestStruct {
             q.addRequirement(this._requirements[i].clone());
 
         // Copy rewards for fail
-        for (const reward of this.rewardsOnFail)
+        for (const reward of this.rewardsForFail)
             q.addRewardForFail(reward.clone());
 
         // Copy rewards for success
-        for (const reward of this.rewardsOnSuccess)
+        for (const reward of this.rewardsForSuccess)
             q.addRewardForSuccess(reward.clone());
 
         return q;

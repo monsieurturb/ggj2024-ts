@@ -1,15 +1,19 @@
-import { EventManager, Events } from "../Events";
+import { EventManager, Events } from "../managers/Events";
 import { Config } from "../config";
 import { QuestStruct } from "../struct/QuestStruct";
 import { QuestSlot } from "./QuestSlot";
+import { QuestReward } from "../struct/QuestReward";
 
 export class QuestCard extends Phaser.GameObjects.Container {
     // Actual quest class
     protected _quest: QuestStruct;
     // Expose some of the quest properties, keep the rest private
+    public get quest(): QuestStruct { return this._quest; }
     public get uuid(): string { return this._quest.uuid; }
     public get questName(): string { return this._quest.name; }
     public get turnsRemaining(): number { return this._quest.turnsRemaining; }
+    public get rewardsForFail(): Array<QuestReward> { return this._quest.rewardsForFail; }
+    public get rewardsForSuccess(): Array<QuestReward> { return this._quest.rewardsForSuccess; }
 
     // Graphics objects
     protected _background: Phaser.GameObjects.Rectangle | undefined;
@@ -108,16 +112,16 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     onRequirementProgress(uuid: string) {
-        if (this._quest.isOwnRequirement(uuid))
-            console.log('Requirement progress:', uuid);
+        // if (this._quest.isOwnRequirement(uuid))
+        // console.log('Requirement progress:', uuid);
 
         if (this._quest.isOwnRequirement(uuid) && !this._quest.isPrimed)
             this._quest.isPrimed = true;
     }
 
     onRequirementCompleted(uuid: string) {
-        if (this._quest.isOwnRequirement(uuid))
-            console.log('Requirement completed:', uuid);
+        // if (this._quest.isOwnRequirement(uuid))
+        // console.log('Requirement completed:', uuid);
 
         if (this._quest.isOwnRequirement(uuid)) {
             if (this._quest.isDone())
