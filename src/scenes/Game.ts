@@ -23,7 +23,7 @@ import { Button } from '../entities/Button';
 export class Game extends Scene {
     static score: number = 0;
     static preventAllInteractions: boolean = true;
-    static firstTimeUsedDice = 0;
+    static firstTimeUsedDice = 3;
 
     // Entities
     private _chars: Array<Char> = [];
