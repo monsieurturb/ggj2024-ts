@@ -59,7 +59,7 @@ export class FameDisplay extends Phaser.GameObjects.Container {
 
     onMainQuestProgress() {
         clearTimeout(this._animateTimeout);
-        this._animateTimeout = setTimeout(this.animate.bind(this), 100);
+        this._animateTimeout = setTimeout(this.animate.bind(this), 150);
     }
 
     animate() {

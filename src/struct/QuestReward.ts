@@ -37,6 +37,7 @@ export enum QuestRewardType {
     // Character targets
     EXTRA_X_DICE_FOR_Y_TURNS = "EXTRA_X_DICE_FOR_Y_TURNS",// args: [X: number of extra dice to add, Y: number of turns to last]
     FREEZE_X_DICE_FOR_Y_TURNS = "FREEZE_X_DICE_FOR_Y_TURNS",// args: [X: number of dice to freeze, Y: number of turns to last]
+    HIDE_X_DICE_FOR_Y_TURNS = "HIDE_X_DICE_FOR_Y_TURNS",// args: [X: number of dice to hide, Y: number of turns to last]
     // Quest targets
     X_MORE_TURNS_TO_COMPLETE = "X_MORE_TURNS_TO_COMPLETE",// args: [X: number of turns to add]
     X_LESS_TURNS_TO_COMPLETE = "X_LESS_TURNS_TO_COMPLETE",// args: [X: number of turns to substract]

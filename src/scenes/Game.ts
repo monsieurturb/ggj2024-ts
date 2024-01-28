@@ -131,9 +131,9 @@ export class Game extends Scene {
                 this.useRemainingDice();
             });
 
-        // Boss bar
+        // Stage bar
         this._stageBar = new StageBar(this)
-            .setPosition(Config.screen.width * 0.5, 30 * Config.DPR);
+            .setPosition(Config.screen.width * 0.5, 100 * Config.DPR);
 
         // Add to UI layer
         this._uiLayer.add([
@@ -174,35 +174,21 @@ export class Game extends Scene {
             });
         this._uiLayer.add(t);
 
-        // NOTE Cutscene test
-        t = this.add.text(
-            Config.screen.width * 0.5,
-            50 * Config.DPR,
-            'Launch cutscene', {
-            fontFamily: 'Arial Black',
-            fontSize: 24 * Config.DPR,
-            color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-            .setOrigin(0.5, 0)
-            .setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                this.mask?.setScale(0, 1)
-                    .addToDisplayList();
-                this.scene.transition({
-                    target: "CutScene",
-                    // moveAbove: true,
-                    moveBelow: true,
-                    duration: Config.sceneTransitionDuration,
-                    sleep: true,
-                    onUpdate: (progress: number) => {
-                        const v = Phaser.Math.Easing.Bounce.Out(progress);
-                        this.mask?.setScale(v, 1);
-                    }
-                });
-            });
-        this._uiLayer.add(t);
+        /* NOTE Reference for scene transition
+        this.mask?.setScale(0, 1)
+            .addToDisplayList();
+        this.scene.transition({
+            target: "CutScene",
+            // moveAbove: true,
+            moveBelow: true,
+            duration: Config.sceneTransitionDuration,
+            sleep: true,
+            onUpdate: (progress: number) => {
+                const v = Phaser.Math.Easing.Bounce.Out(progress);
+                this.mask?.setScale(v, 1);
+            }
+        });
+        */
 
         // Listen to "end turn" event
         EventManager.on(Events.END_TURN, this.onEndTurn.bind(this));
@@ -373,7 +359,7 @@ export class Game extends Scene {
         }
 
         // Update UI
-        this._stageBar?.update();
+        this._stageBar?.update(time);
         if (this._stageBar)
             this._fameDisplay?.updateValue(this._stageBar.score);
         if (this._mainQuestCard)
