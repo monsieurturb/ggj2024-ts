@@ -12,7 +12,7 @@ const config = {
   width: Config.screen.width,
   height: Config.screen.height,
   parent: 'game-container',
-  backgroundColor: Colors.BACKGROUND_HEX,
+  backgroundColor: Colors.BACKGROUND,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

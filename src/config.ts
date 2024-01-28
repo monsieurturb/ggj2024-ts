@@ -14,7 +14,7 @@ export class Config {
     static diceRotation: number = 0.025;
     static dicePosition: number = 8;
     static maxVisibleQuests: number = 3;
-    static characterDarkenValue: number = 50;
+    // static characterDarkenValue: number = 128;
 }
 
 export class Colors {

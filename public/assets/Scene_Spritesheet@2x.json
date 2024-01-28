@@ -1,0 +1,346 @@
+{
+	"textures": [
+		{
+			"image": "Scene_Spritesheet@2x-0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 4080,
+				"h": 2619
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Public_Scene_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 464,
+						"h": 437
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 464,
+						"h": 437
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 464,
+						"h": 437
+					}
+				},
+				{
+					"filename": "Public_Scene_6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 460,
+						"h": 437
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 0,
+						"w": 445,
+						"h": 437
+					},
+					"frame": {
+						"x": 467,
+						"y": 1,
+						"w": 445,
+						"h": 437
+					}
+				},
+				{
+					"filename": "Public_Scene_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 299,
+						"h": 452
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 298,
+						"h": 452
+					},
+					"frame": {
+						"x": 914,
+						"y": 1,
+						"w": 298,
+						"h": 452
+					}
+				},
+				{
+					"filename": "Public_Scene_7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 349,
+						"h": 455
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 344,
+						"h": 455
+					},
+					"frame": {
+						"x": 1214,
+						"y": 1,
+						"w": 344,
+						"h": 455
+					}
+				},
+				{
+					"filename": "Public_Scene_11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 515,
+						"h": 455
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 0,
+						"w": 507,
+						"h": 455
+					},
+					"frame": {
+						"x": 1560,
+						"y": 1,
+						"w": 507,
+						"h": 455
+					}
+				},
+				{
+					"filename": "Public_Scene_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 331,
+						"h": 476
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 331,
+						"h": 476
+					},
+					"frame": {
+						"x": 2069,
+						"y": 1,
+						"w": 331,
+						"h": 476
+					}
+				},
+				{
+					"filename": "Public_Scene_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 376,
+						"h": 481
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 374,
+						"h": 477
+					},
+					"frame": {
+						"x": 2402,
+						"y": 1,
+						"w": 374,
+						"h": 477
+					}
+				},
+				{
+					"filename": "Public_Scene_5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 440,
+						"h": 481
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 435,
+						"h": 477
+					},
+					"frame": {
+						"x": 2778,
+						"y": 1,
+						"w": 435,
+						"h": 477
+					}
+				},
+				{
+					"filename": "Public_Scene_9.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 458,
+						"h": 497
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 458,
+						"h": 497
+					},
+					"frame": {
+						"x": 3215,
+						"y": 1,
+						"w": 458,
+						"h": 497
+					}
+				},
+				{
+					"filename": "Public_Scene_12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 276,
+						"h": 515
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 272,
+						"h": 515
+					},
+					"frame": {
+						"x": 3675,
+						"y": 1,
+						"w": 272,
+						"h": 515
+					}
+				},
+				{
+					"filename": "Rideau_Scene_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 2100,
+						"h": 2100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1978,
+						"h": 2100
+					},
+					"frame": {
+						"x": 1,
+						"y": 458,
+						"w": 1978,
+						"h": 2100
+					}
+				},
+				{
+					"filename": "Rideau_Scene_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 2100,
+						"h": 2100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2098,
+						"h": 2100
+					},
+					"frame": {
+						"x": 1981,
+						"y": 518,
+						"w": 2098,
+						"h": 2100
+					}
+				}
+			]
+		},
+		{
+			"image": "Scene_Spritesheet@2x-1.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 2570,
+				"h": 2102
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Rideau_Scene_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 2100,
+						"h": 2100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2075,
+						"h": 2100
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 2075,
+						"h": 2100
+					}
+				},
+				{
+					"filename": "Public_Scene_10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 492,
+						"h": 515
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 491,
+						"h": 515
+					},
+					"frame": {
+						"x": 2078,
+						"y": 1,
+						"w": 491,
+						"h": 515
+					}
+				},
+				{
+					"filename": "Public_Scene_8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 458,
+						"h": 511
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 454,
+						"h": 511
+					},
+					"frame": {
+						"x": 2078,
+						"y": 518,
+						"w": 454,
+						"h": 511
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:9d7809e6964e1b70c97a68b6a2858f76:fd7f18e95172bcf0593b5ec9c6c2d0e9:066442420f80b56fb1bed550f6b62e75$"
+	}
+}

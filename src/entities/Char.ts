@@ -17,6 +17,7 @@ export class Char extends Phaser.GameObjects.Container {
     public diceEntities: Array<Dice> = [];
 
     private _basePosition: Phaser.Geom.Point;
+    private _fadeColor: Phaser.Display.Color;
     private _boundOnDicePickedUp: (type: CharType) => void;
     private _boundOnDiceDropped: (type: CharType) => void;
 
@@ -34,6 +35,15 @@ export class Char extends Phaser.GameObjects.Container {
                 case CharType.POET: return 'Barde';
                 case CharType.MIMO: return 'Mimo';
                 default: return '';
+            }
+        })();
+
+        this._fadeColor = (() => {
+            switch (this.char.type) {
+                case CharType.BARD: return new Phaser.Display.Color(100, 100, 100);
+                case CharType.POET: return new Phaser.Display.Color(100, 100, 100);
+                case CharType.MIMO: return new Phaser.Display.Color(100, 100, 100);
+                default: return new Phaser.Display.Color(100, 100, 100);
             }
         })();
 
@@ -72,15 +82,16 @@ export class Char extends Phaser.GameObjects.Container {
             y: destY,
             duration: 0.35,
             ease: Power3.easeOut,
-            onUpdate: function (b) {
-                if (!b)
-                    return;
-                const c = new Phaser.Display.Color(255, 255, 255);
+            onUpdate: function (body, color) {
+                if (!body) return;
                 const p = Power3.easeOut(this.progress());
-                c.darken(p * Config.characterDarkenValue);
-                b.setTint(c.color);
+                const r = lerp(255, color.r, p);
+                const g = lerp(255, color.g, p);
+                const b = lerp(255, color.b, p);
+                const c = new Phaser.Display.Color(r, g, b);
+                body.setTint(c.color);
             },
-            onUpdateParams: [type !== this._char.type ? this._body : false],
+            onUpdateParams: [type !== this._char.type ? this._body : false, this._fadeColor],
         });
     }
 
@@ -92,15 +103,16 @@ export class Char extends Phaser.GameObjects.Container {
             y: this._basePosition.y,
             duration: 0.35,
             ease: Power3.easeOut,
-            onUpdate: function (b: Phaser.GameObjects.Sprite) {
-                if (!b)
-                    return;
-                const c = new Phaser.Display.Color(255, 255, 255);
+            onUpdate: function (body, color) {
+                if (!body) return;
                 const p = 1 - Power3.easeOut(this.progress());
-                c.darken(p * Config.characterDarkenValue);
-                b.setTint(c.color);
+                const r = lerp(255, color.r, p);
+                const g = lerp(255, color.g, p);
+                const b = lerp(255, color.b, p);
+                const c = new Phaser.Display.Color(r, g, b);
+                body.setTint(c.color);
             },
-            onUpdateParams: [type !== this._char.type ? this._body : false],
+            onUpdateParams: [type !== this._char.type ? this._body : false, this._fadeColor],
         });
     }
 

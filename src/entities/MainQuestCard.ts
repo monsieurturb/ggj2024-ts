@@ -19,7 +19,19 @@ export class MainQuestCard extends QuestCard {
     }
 
     createGraphics() {
-        super.createGraphics();
+        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.questCard.width, Config.questCard.height, 0xFFFFFF, 0.1)
+            .setStrokeStyle(4, 0x000000)
+            .setOrigin(0.5, 0.5);
+
+        this._text = new Phaser.GameObjects.Text(this.scene, -Config.questCard.width * 0.5 + 20, -Config.questCard.height * 0.5 + 32, "", {
+            fontFamily: Fonts.MAIN,
+            fontSize: 28,
+            color: '#000000',
+            wordWrap: { width: Config.questCard.width * 0.5 }
+        })
+            .setFixedSize(Config.questCard.width, Config.questCard.height)
+            .setOrigin(0, 0)
+            .setVisible(this._facingUp);
 
         this._throwAllDiceButton = new Phaser.GameObjects.Text(
             this.scene,
@@ -39,7 +51,11 @@ export class MainQuestCard extends QuestCard {
                 EventManager.emit(Events.USE_REMAINING_DICE);
             });
 
-        this.add(this._throwAllDiceButton);
+        this.add([
+            this._background,
+            this._text,
+            this._throwAllDiceButton,
+        ]);
     }
 
     createSlots() {

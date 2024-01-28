@@ -14,6 +14,8 @@ import { QuestRequirement, QuestRequirementMode } from '../struct/QuestRequireme
 import { Rewards } from '../managers/Rewards';
 import { QuestReward, QuestRewardTarget, QuestRewardType } from '../struct/QuestReward';
 import { Random } from '../managers/Random';
+import { Curtains } from '../entities/Curtains';
+import { Audience } from '../entities/Audience';
 
 export class Game extends Scene {
     static preventAllInteractions: boolean = true;
@@ -24,6 +26,8 @@ export class Game extends Scene {
     public get chars() { return this._chars; }
     private _questCards: Array<QuestCard> = [];
     private _bossBar: StageBar | undefined;
+    private _audience: Audience | undefined;
+    private _curtains: Curtains | undefined;
 
     // Data
     private _mainQuestCard: MainQuestCard | undefined;
@@ -31,6 +35,7 @@ export class Game extends Scene {
     private _turnsRemaining: number = 10;
 
     // Layers
+    private _audienceLayer: Phaser.GameObjects.Container | undefined;
     private _charsLayer: Phaser.GameObjects.Container | undefined;
     private _questsLayer: Phaser.GameObjects.Container | undefined;
     private _diceLayer: Phaser.GameObjects.Container | undefined;
@@ -49,7 +54,7 @@ export class Game extends Scene {
     }
 
     init() {
-        this.cameras.main.setBackgroundColor(Colors.BACKGROUND);
+        this.cameras.main.setBackgroundColor('#111111');
 
         // Reset data
         this._chars = [];
@@ -63,6 +68,7 @@ export class Game extends Scene {
         Game.preventAllInteractions = true;
 
         // Create all layers
+        this._audienceLayer = this.add.container();
         this._charsLayer = this.add.container();
         this._questsLayer = this.add.container();
         this._diceLayer = this.add.container();
@@ -111,6 +117,20 @@ export class Game extends Scene {
             this._turnText,
             this._endTurnButton,
             this._bossBar,
+        ]);
+
+        // Audience
+        this._audience = new Audience(this)
+            .setPosition(Config.screen.width * 0.5, Config.screen.height);
+
+        // Curtains
+        this._curtains = new Curtains(this)
+            .setPosition(Config.screen.width * 0.5, Config.screen.height * 0.5);
+
+        // Add to audience layer
+        this._audienceLayer.add([
+            this._audience,
+            this._curtains,
         ]);
 
         // NOTE Debug scene name
