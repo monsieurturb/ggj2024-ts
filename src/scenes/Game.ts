@@ -18,6 +18,7 @@ import { Curtains } from '../entities/Curtains';
 import { Audience } from '../entities/Audience';
 import { TurnsDisplay } from '../entities/TurnsDisplay';
 import { FameDisplay } from '../entities/FameDisplay';
+import { Button } from '../entities/Button';
 
 export class Game extends Scene {
     static preventAllInteractions: boolean = true;
@@ -43,8 +44,8 @@ export class Game extends Scene {
     private _uiLayer: Phaser.GameObjects.Container | undefined;
 
     // UI
-    private _useAllDiceButton: Phaser.GameObjects.Text | undefined;
-    private _endTurnButton: Phaser.GameObjects.Text | undefined;
+    private _useAllDiceButton: Button | undefined;
+    private _endTurnButton: Button | undefined;
     private _fameDisplay: FameDisplay | undefined;
     private _turnsDisplay: TurnsDisplay | undefined;
 
@@ -100,15 +101,8 @@ export class Game extends Scene {
             );
 
         // End turn button
-        this._endTurnButton = this.add.text(
-            Config.screen.width - 40 * Config.DPR,
-            Config.screen.height - 40 * Config.DPR,
-            "End turn",
-            Fonts.getStyle(38, Colors.WHITE_HEX, Fonts.MAIN)
-        )
-            .setAlign('center')
-            .setOrigin(1, 1)
-            .setInteractive()
+        this._endTurnButton = new Button(this, "End turn", 38, Colors.WHITE_HEX, Colors.CHECK_BARD)
+            .setPosition(Config.screen.width - 120 * Config.DPR, Config.screen.height - 60 * Config.DPR)
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
                 if (Game.preventAllInteractions)
                     return;
@@ -116,15 +110,7 @@ export class Game extends Scene {
             });
 
         // Use all dice button
-        this._useAllDiceButton = this.add.text(
-            Config.screen.width - 40 * Config.DPR,
-            Config.screen.height - 120 * Config.DPR,
-            "Use all dice",
-            Fonts.getStyle(42, Colors.WHITE_HEX, Fonts.MAIN),
-        )
-            .setAlign('center')
-            .setOrigin(1, 1)
-            .setInteractive()
+        this._useAllDiceButton = new Button(this, "Use all dice", 38, Colors.WHITE_HEX, Colors.CHECK_BARD)
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
                 if (Game.preventAllInteractions)
                     return;
@@ -133,7 +119,7 @@ export class Game extends Scene {
 
         // Stage bar
         this._stageBar = new StageBar(this)
-            .setPosition(Config.screen.width * 0.5, 100 * Config.DPR);
+            .setPosition(Config.screen.width * 0.5, 80 * Config.DPR);
 
         // Add to UI layer
         this._uiLayer.add([
@@ -224,6 +210,9 @@ export class Game extends Scene {
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
             .setPosition(Config.screen.width * 0.75, Config.questCard.startY);
         this._questsLayer?.add(this._mainQuestCard);
+
+        // Place button
+        this._useAllDiceButton.setPosition(this._mainQuestCard.x, this._mainQuestCard.y + 210);
 
         // Activate main quest
         this._mainQuestCard.activate();

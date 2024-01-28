@@ -26,7 +26,7 @@ export class StageBar extends Phaser.GameObjects.Container {
         this._nameText = new Phaser.GameObjects.Text(
             this.scene,
             0,
-            -75 * Config.DPR,
+            -65 * Config.DPR,
             "",
             Fonts.getStyle(32, Colors.WHITE_HEX, Fonts.MAIN)
         )

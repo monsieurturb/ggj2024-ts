@@ -6,8 +6,8 @@ export class Config {
     static DPR: number = window.devicePixelRatio <= 1 ? 1 : 2;
 
     static screen = { width: 1920 * Config.DPR, height: 1080 * Config.DPR };
-    static questCard = { width: 700 * Config.DPR, height: 250 * Config.DPR, startX: -350 * Config.DPR, startY: 350 * Config.DPR };
-    static stageBar = { width: 1200 * Config.DPR, height: 45 * Config.DPR };
+    static questCard = { width: 700 * Config.DPR, height: 250 * Config.DPR, startX: -350 * Config.DPR, startY: 320 * Config.DPR };
+    static stageBar = { width: 1200 * Config.DPR, height: 35 * Config.DPR };
     static diceSize: number = 100 * Config.DPR;
     static sceneTransitionDuration: number = 1000;
     static stageBaseDifficulty: number = 50;
