@@ -9,8 +9,6 @@ export class MainMenu extends Scene {
     create() {
         // this.add.image(512, 384, 'background');
 
-        // this.add.sprite(512 * Config.DPR, 300 * Config.DPR, 'spritesheet', 'Picto_Smile.png');
-
         this.add.text(
             Config.screen.width * 0.5,
             Config.screen.height - 32,
@@ -30,5 +28,6 @@ export class MainMenu extends Scene {
         this.input.once('pointerdown', () => {
             this.scene.start('Game');
         });
+
     }
 }

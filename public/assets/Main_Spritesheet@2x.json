@@ -1,0 +1,231 @@
+{
+	"textures": [
+		{
+			"image": "Main_Spritesheet@2x-0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1867,
+				"h": 2023
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Poet_Full.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 1082,
+						"h": 860
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 19,
+						"w": 1082,
+						"h": 841
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1082,
+						"h": 841
+					}
+				},
+				{
+					"filename": "Barde_Select.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 783,
+						"h": 1252
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 12,
+						"w": 770,
+						"h": 1240
+					},
+					"frame": {
+						"x": 1085,
+						"y": 1,
+						"w": 770,
+						"h": 1240
+					}
+				},
+				{
+					"filename": "Mimo_Full.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 892,
+						"h": 860
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 73,
+						"w": 869,
+						"h": 787
+					},
+					"frame": {
+						"x": 1,
+						"y": 844,
+						"w": 869,
+						"h": 787
+					}
+				},
+				{
+					"filename": "Barde_Full.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 994,
+						"h": 788
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 9,
+						"w": 994,
+						"h": 779
+					},
+					"frame": {
+						"x": 872,
+						"y": 1243,
+						"w": 994,
+						"h": 779
+					}
+				}
+			]
+		},
+		{
+			"image": "Main_Spritesheet@2x-1.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 2046,
+				"h": 1240
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Poet_Select.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 647,
+						"h": 1238
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 647,
+						"h": 1238
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 647,
+						"h": 1238
+					}
+				},
+				{
+					"filename": "Barde_Idle.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 783,
+						"h": 1252
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 34,
+						"w": 771,
+						"h": 1218
+					},
+					"frame": {
+						"x": 650,
+						"y": 1,
+						"w": 771,
+						"h": 1218
+					}
+				},
+				{
+					"filename": "Mimo_Idle.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 622,
+						"h": 1174
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 622,
+						"h": 1174
+					},
+					"frame": {
+						"x": 1423,
+						"y": 1,
+						"w": 622,
+						"h": 1174
+					}
+				}
+			]
+		},
+		{
+			"image": "Main_Spritesheet@2x-2.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1273,
+				"h": 1238
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Poet_Idle.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 647,
+						"h": 1238
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 2,
+						"w": 647,
+						"h": 1236
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 647,
+						"h": 1236
+					}
+				},
+				{
+					"filename": "Mimo_Select.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 622,
+						"h": 1174
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 622,
+						"h": 1174
+					},
+					"frame": {
+						"x": 650,
+						"y": 1,
+						"w": 622,
+						"h": 1174
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:93edfd62786a041d739c188f5d33f6a7:483952589e2b0fbd75ff3258a68bd9e7:08b5d85b2d0d87aae3ec22d7f23d479a$"
+	}
+}

@@ -1,4 +1,5 @@
 import { Colors, Config, Fonts } from "../config";
+import { EventManager, Events } from "../managers/Events";
 import { Random } from "../managers/Random";
 import { Game } from "../scenes/Game";
 import { CharType } from "../struct/CharStruct";
@@ -10,7 +11,6 @@ import { gsap, Power3, Elastic, Bounce } from 'gsap';
 export class Dice extends Phaser.GameObjects.Container {
     // Actual dice class
     private _dice: DiceStruct;
-    // Expose some of the dice properties, keep the rest private
     public get dice() { return this._dice; }
 
     // Graphics objects
@@ -125,6 +125,8 @@ export class Dice extends Phaser.GameObjects.Container {
 
         this._isBeingDragged = true;
 
+        EventManager.emit(Events.DICE_PICKED_UP, this._dice.type);
+
         gsap.to(this, {
             scaleX: 1.2,
             scaleY: 1.2,
@@ -145,6 +147,8 @@ export class Dice extends Phaser.GameObjects.Container {
 
         this._isBeingDragged = false;
 
+        EventManager.emit(Events.DICE_DROPPED, this._dice.type);
+
         gsap.to(this, {
             scaleX: 1,
             scaleY: 1,
@@ -157,6 +161,8 @@ export class Dice extends Phaser.GameObjects.Container {
 
     onDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject) {
         this._isBeingDragged = false;
+
+        EventManager.emit(Events.DICE_DROPPED, this._dice.type);
 
         const slot = target.parentContainer as QuestSlot;
         const p = slot.getLocalPoint(this.x, this.y);

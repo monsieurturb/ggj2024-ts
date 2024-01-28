@@ -1,0 +1,209 @@
+{
+	"textures": [
+		{
+			"image": "Main_Spritesheet@1x-0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 2038,
+				"h": 1016
+			},
+			"scale": 0.5,
+			"frames": [
+				{
+					"filename": "Barde_Select.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 392,
+						"h": 626
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 386,
+						"h": 621
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 386,
+						"h": 621
+					}
+				},
+				{
+					"filename": "Barde_Full.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 497,
+						"h": 394
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 497,
+						"h": 390
+					},
+					"frame": {
+						"x": 1,
+						"y": 624,
+						"w": 497,
+						"h": 390
+					}
+				},
+				{
+					"filename": "Poet_Select.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 324,
+						"h": 619
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 324,
+						"h": 619
+					},
+					"frame": {
+						"x": 389,
+						"y": 1,
+						"w": 324,
+						"h": 619
+					}
+				},
+				{
+					"filename": "Poet_Idle.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 324,
+						"h": 619
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 324,
+						"h": 618
+					},
+					"frame": {
+						"x": 715,
+						"y": 1,
+						"w": 324,
+						"h": 618
+					}
+				},
+				{
+					"filename": "Mimo_Full.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 446,
+						"h": 430
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 36,
+						"w": 436,
+						"h": 394
+					},
+					"frame": {
+						"x": 715,
+						"y": 621,
+						"w": 436,
+						"h": 394
+					}
+				},
+				{
+					"filename": "Barde_Idle.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 392,
+						"h": 626
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 16,
+						"w": 387,
+						"h": 610
+					},
+					"frame": {
+						"x": 1041,
+						"y": 1,
+						"w": 387,
+						"h": 610
+					}
+				},
+				{
+					"filename": "Poet_Full.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 541,
+						"h": 430
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 9,
+						"w": 541,
+						"h": 421
+					},
+					"frame": {
+						"x": 1430,
+						"y": 1,
+						"w": 541,
+						"h": 421
+					}
+				},
+				{
+					"filename": "Mimo_Idle.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 311,
+						"h": 587
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 311,
+						"h": 587
+					},
+					"frame": {
+						"x": 1430,
+						"y": 424,
+						"w": 311,
+						"h": 587
+					}
+				},
+				{
+					"filename": "Mimo_Select.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 311,
+						"h": 587
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 294,
+						"h": 587
+					},
+					"frame": {
+						"x": 1743,
+						"y": 424,
+						"w": 294,
+						"h": 587
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:93edfd62786a041d739c188f5d33f6a7:483952589e2b0fbd75ff3258a68bd9e7:08b5d85b2d0d87aae3ec22d7f23d479a$"
+	}
+}

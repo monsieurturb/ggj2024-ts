@@ -13,6 +13,7 @@ import { QuestBook } from '../struct/QuestBook';
 import { QuestRequirement, QuestRequirementMode } from '../struct/QuestRequirement';
 import { Rewards } from '../managers/Rewards';
 import { QuestReward, QuestRewardTarget, QuestRewardType } from '../struct/QuestReward';
+import { Random } from '../managers/Random';
 
 export class Game extends Scene {
     static preventAllInteractions: boolean = true;
@@ -182,9 +183,11 @@ export class Game extends Scene {
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
 
         // Create all characters
-        this.createCharAndDice(CharType.BARD, 300 * Config.DPR);
-        this.createCharAndDice(CharType.POET, 700 * Config.DPR);
-        this.createCharAndDice(CharType.MIMO, 1100 * Config.DPR);
+        const charTypes = Random.getInstance().shuffle([CharType.BARD, CharType.MIMO, CharType.POET]);
+        for (let i = 0; i < charTypes.length; i++) {
+            const charType = charTypes[i];
+            this.createCharAndDice(charType, Config.screen.width * 0.2 + Config.screen.width * 0.25 * i);
+        }
 
         // Create main quest
         const mainQuest = new MainQuestStruct()
@@ -246,16 +249,13 @@ export class Game extends Scene {
     }
 
     private createCharAndDice(type: CharType, x: number) {
-        const char = new Char(this, type);
-        char.setPosition(x, Config.screen.height);
+        const char = new Char(this, type)
+            .setPosition(x, Config.screen.height * 1.15);
+
         if (this._charsLayer)
             this._charsLayer.add(char);
-        this._chars.push(char);
 
-        /* for (const dice of char.diceEntities) {
-            if (this._diceLayer)
-                this._diceLayer.add(dice);
-        } */
+        this._chars.push(char);
     }
 
     private throwAllDice() {
@@ -294,7 +294,7 @@ export class Game extends Scene {
                     // End values
                     {
                         x: startX + i * Config.diceSize * 1.25 + Math.random() * Config.dicePosition * 2 - Config.dicePosition,
-                        y: char.y - Config.diceSize * 0.75 + Math.random() * Config.dicePosition * 2 - Config.dicePosition,
+                        y: Config.screen.height - Config.diceSize + Math.random() * Config.dicePosition * 2 - Config.dicePosition,
                         rotation: Math.PI * (Math.random() * Config.diceRotation * 2 - Config.diceRotation),
                         onStart: () => {
                             this._diceLayer?.add(dice);

@@ -29,7 +29,8 @@ export class Preloader extends Scene {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
 
-        this.load.multiatlas('spritesheet', `Icon_Spritesheet@${Config.DPR}x.json`, 'assets');
+        this.load.multiatlas('main', `Main_Spritesheet@${Config.DPR}x.json`, 'assets');
+        this.load.multiatlas('icon', `Icon_Spritesheet@${Config.DPR}x.json`, 'assets');
         // this.load.image('test', `Picto_Turn.png`);
         // this.load.image('back', `DosCarte_UI.png`);
         // this.load.image('logo', 'logo.png');
