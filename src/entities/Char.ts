@@ -1,4 +1,4 @@
-import { Colors, Fonts } from "../config";
+import { Colors, Config, Fonts } from "../config";
 import { CharStruct, CharType } from "../struct/CharStruct";
 import { Dice } from "./Dice";
 
@@ -28,13 +28,13 @@ export class Char extends Phaser.GameObjects.Container {
             }
         })();
 
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 300, 600, color, 0.35)
-            .setStrokeStyle(4, 0x000000)
+        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 300 * Config.DPR, 600 * Config.DPR, color, 0.35)
+            .setStrokeStyle(4 * Config.DPR, 0x000000)
             .setOrigin(0.5, 1);
 
-        const t = new Phaser.GameObjects.Text(this.scene, 0, -300, this.char.type, {
+        const t = new Phaser.GameObjects.Text(this.scene, 0, -300 * Config.DPR, this.char.type, {
             fontFamily: Fonts.MAIN,
-            fontSize: 28,
+            fontSize: 28 * Config.DPR,
             color: '#000000',
         })
             .setOrigin(0.5, 0.5);

@@ -15,7 +15,10 @@ const config = {
   backgroundColor: Colors.BACKGROUND_HEX,
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: Config.screen.width,
+    height: Config.screen.height,
+    zoom: 1 / Config.DPR,
   },
   scene: [
     Boot,

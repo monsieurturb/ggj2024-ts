@@ -41,12 +41,12 @@ export class Dice extends Phaser.GameObjects.Container {
 
     createGraphics() {
         this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.diceSize, Config.diceSize, this.getColor())
-            .setStrokeStyle(4, 0x000000)
+            .setStrokeStyle(4 * Config.DPR, 0x000000)
             .setOrigin(0.5, 0.5);
 
         this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", {
             fontFamily: Fonts.MAIN,
-            fontSize: 40,
+            fontSize: 40 * Config.DPR,
             color: '#000000',
         })
             .setOrigin(0.5, 0.5);

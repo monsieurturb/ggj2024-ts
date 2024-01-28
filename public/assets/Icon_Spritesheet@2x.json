@@ -1,0 +1,335 @@
+{
+	"textures": [
+		{
+			"image": "Icon_Spritesheet@2x-0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 995,
+				"h": 254
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Picto_LevelUp.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 245,
+						"h": 163
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 245,
+						"h": 163
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 245,
+						"h": 163
+					}
+				},
+				{
+					"filename": "Picto_Dice.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 81,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 81,
+						"h": 80
+					},
+					"frame": {
+						"x": 1,
+						"y": 166,
+						"w": 81,
+						"h": 80
+					}
+				},
+				{
+					"filename": "Picto_Nope.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 6,
+						"w": 91,
+						"h": 78
+					},
+					"frame": {
+						"x": 84,
+						"y": 166,
+						"w": 91,
+						"h": 78
+					}
+				},
+				{
+					"filename": "Picto_Egal.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 111,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 90,
+						"h": 71
+					},
+					"frame": {
+						"x": 177,
+						"y": 166,
+						"w": 90,
+						"h": 71
+					}
+				},
+				{
+					"filename": "Select_Open.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 117,
+						"h": 157
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 117,
+						"h": 157
+					},
+					"frame": {
+						"x": 248,
+						"y": 1,
+						"w": 117,
+						"h": 157
+					}
+				},
+				{
+					"filename": "Picto_Check.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 92,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 92,
+						"h": 90
+					},
+					"frame": {
+						"x": 269,
+						"y": 160,
+						"w": 92,
+						"h": 90
+					}
+				},
+				{
+					"filename": "Picto_Minus.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 112,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 37,
+						"w": 100,
+						"h": 32
+					},
+					"frame": {
+						"x": 363,
+						"y": 160,
+						"w": 100,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Picto_Smile.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 156,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 156,
+						"h": 131
+					},
+					"frame": {
+						"x": 367,
+						"y": 1,
+						"w": 156,
+						"h": 131
+					}
+				},
+				{
+					"filename": "Picto_Chara.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 181,
+						"h": 119
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 181,
+						"h": 119
+					},
+					"frame": {
+						"x": 465,
+						"y": 134,
+						"w": 181,
+						"h": 119
+					}
+				},
+				{
+					"filename": "Picto_Turn.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 131,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 130,
+						"h": 131
+					},
+					"frame": {
+						"x": 525,
+						"y": 1,
+						"w": 130,
+						"h": 131
+					}
+				},
+				{
+					"filename": "Picto_Question.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 81,
+						"h": 114
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 81,
+						"h": 114
+					},
+					"frame": {
+						"x": 648,
+						"y": 134,
+						"w": 81,
+						"h": 114
+					}
+				},
+				{
+					"filename": "Picto_Flash.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 105,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 105,
+						"h": 131
+					},
+					"frame": {
+						"x": 657,
+						"y": 1,
+						"w": 105,
+						"h": 131
+					}
+				},
+				{
+					"filename": "Picto_Card.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 181,
+						"h": 119
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 171,
+						"h": 109
+					},
+					"frame": {
+						"x": 731,
+						"y": 134,
+						"w": 171,
+						"h": 109
+					}
+				},
+				{
+					"filename": "Select_Close.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 117,
+						"h": 156
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 26,
+						"w": 117,
+						"h": 130
+					},
+					"frame": {
+						"x": 764,
+						"y": 1,
+						"w": 117,
+						"h": 130
+					}
+				},
+				{
+					"filename": "Picto_Plus.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 111,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 111,
+						"h": 104
+					},
+					"frame": {
+						"x": 883,
+						"y": 1,
+						"w": 111,
+						"h": 104
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:0ce0ba8d82ced8cb9befd38e6ed0603d:0ed52060832460018a63ed4d42897eba:987b505697e75a1127a7e03246895504$"
+	}
+}

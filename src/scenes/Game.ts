@@ -115,10 +115,10 @@ export class Game extends Scene {
         // NOTE Debug scene name
         let t = this.add.text(
             Config.screen.width * 0.5,
-            Config.screen.height - 32,
+            Config.screen.height - 32 * Config.DPR,
             'Game', {
-            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
+            fontFamily: 'Arial Black', fontSize: 32 * Config.DPR, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8 * Config.DPR,
             align: 'center'
         })
             .setOrigin(0.5, 1)
@@ -131,10 +131,10 @@ export class Game extends Scene {
         // NOTE Cutscene test
         t = this.add.text(
             Config.screen.width * 0.5,
-            50,
+            50 * Config.DPR,
             'Launch cutscene', {
             fontFamily: 'Arial Black',
-            fontSize: 24,
+            fontSize: 24 * Config.DPR,
             color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
@@ -167,6 +167,11 @@ export class Game extends Scene {
         // Listen to quest events
         EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted.bind(this));
         EventManager.on(Events.QUEST_FAILED, this.onQuestFailed.bind(this));
+
+        // Listen to requirement events (to keep track of used dice)
+        EventManager.on(Events.REQUIREMENT_PROGRESS, this.onDiceUsed.bind(this));
+        EventManager.on(Events.REQUIREMENT_COMPLETED, this.onDiceUsed.bind(this));
+
         // Listen to main quest progress if needed
         if (Game.firstTimeUsedDice > 0) {
             this._boundOnMainQuestProgress = this.onMainQuestProgress.bind(this);
@@ -177,16 +182,16 @@ export class Game extends Scene {
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
 
         // Create all characters
-        this.createCharAndDice(CharType.BARD, 300);
-        this.createCharAndDice(CharType.POET, 700);
-        this.createCharAndDice(CharType.MIMO, 1100);
+        this.createCharAndDice(CharType.BARD, 300 * Config.DPR);
+        this.createCharAndDice(CharType.POET, 700 * Config.DPR);
+        this.createCharAndDice(CharType.MIMO, 1100 * Config.DPR);
 
         // Create main quest
         const mainQuest = new MainQuestStruct()
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
             .setTurnsRemaining(9999);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
-            .setPosition(Config.screen.width * 0.75, 300);
+            .setPosition(Config.screen.width * 0.75, 300 * Config.DPR);
         this._questsLayer?.add(this._mainQuestCard);
 
         // Activate main quest
@@ -346,6 +351,19 @@ export class Game extends Scene {
         return card;
     }
 
+    private onDiceUsed() {
+        let allDiceUsed = true;
+        for (const char of this._chars) {
+            for (const dice of char.diceEntities) {
+                if (dice.visible)
+                    allDiceUsed = false;
+            }
+        }
+        // Automatically end turn
+        if (allDiceUsed)
+            this.endTurn();
+    }
+
     private onUseRemainingDice() {
         const slot = this._mainQuestCard?.getSlot();
         if (!slot)
@@ -375,8 +393,7 @@ export class Game extends Scene {
                 Game.preventAllInteractions = true;
             },
             onComplete: () => {
-                // Automatically end turn
-                this.endTurn();
+                Game.preventAllInteractions = false;
             },
         });
 
@@ -417,7 +434,7 @@ export class Game extends Scene {
             Rewards.getInstance().queue(card?.rewardsForSuccess, card.quest);
 
         // Delete quest and activate the next
-        this.deleteQuestAndActivateNext(uuid);
+        this.deleteQuestAndActivateNext(uuid, true);
     }
 
     private onQuestFailed(uuid: string) {
@@ -430,26 +447,27 @@ export class Game extends Scene {
             Rewards.getInstance().queue(card?.rewardsForFail, card.quest);
 
         // Delete quest and activate the next
-        this.deleteQuestAndActivateNext(uuid, true);
+        this.deleteQuestAndActivateNext(uuid, false);
     }
 
-    private deleteQuestAndActivateNext(uuid: string, primed: boolean = false) {
+    private deleteQuestAndActivateNext(uuid: string, success: boolean) {
         const card = this.deleteQuestCardFromUUID(uuid);
 
         if (card) {
             card.isBeingDestroyed = true;
             gsap.to(card, {
-                y: -150,
+                y: success ? `-=${Config.questCard.height * 2}` : `+=${Config.questCard.height * 2}`,
+                rotation: success ? `-=${Math.PI * 0.2}` : `+=${Math.PI * 0.2}`,
                 alpha: 0,
                 duration: 0.5,
                 onComplete: () => {
                     card?.destroy();
-                    this.activateNextQuest(primed);
+                    this.activateNextQuest(!success);// Prime if previous quest failed
                 }
             });
         }
         else
-            this.activateNextQuest(primed);
+            this.activateNextQuest(!success);// Prime if previous quest failed
     }
 
     private shutdown() {
@@ -457,6 +475,8 @@ export class Game extends Scene {
         EventManager.off(Events.END_TURN);
         EventManager.off(Events.QUEST_COMPLETED);
         EventManager.off(Events.QUEST_FAILED);
+        EventManager.off(Events.REQUIREMENT_PROGRESS);
+        EventManager.off(Events.REQUIREMENT_COMPLETED);
 
         this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }

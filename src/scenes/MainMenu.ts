@@ -9,20 +9,17 @@ export class MainMenu extends Scene {
     create() {
         // this.add.image(512, 384, 'background');
 
-        // this.add.image(512, 300, 'logo');
-
-        const styleDark = {
-            color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            fontFamily: Fonts.MAIN,
-            fontSize: 32,
-            align: 'center'
-        }
+        this.add.sprite(512 * Config.DPR, 300 * Config.DPR, 'spritesheet', 'Picto_Smile.png');
 
         this.add.text(
             Config.screen.width * 0.5,
             Config.screen.height - 32,
-            'Main Menu', styleDark).setOrigin(0.5, 1);
+            'Main Menu',
+            Fonts.getStyle(48, Colors.BLACK_HEX, Fonts.MAIN)
+        )
+            .setStroke(Colors.WHITE_HEX, 8 * Config.DPR)
+            .setAlign('center')
+            .setOrigin(0.5, 1);
 
         // const test = this.add.image(150, 150, 'test');
         // test.setTintFill(Colors.PINK);
