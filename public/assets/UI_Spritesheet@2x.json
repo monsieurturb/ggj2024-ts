@@ -4,161 +4,13 @@
 			"image": "UI_Spritesheet@2x-0.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1438,
-				"h": 2022
+				"w": 1772,
+				"h": 2029
 			},
 			"scale": 1,
 			"frames": [
 				{
 					"filename": "Carte_Barde.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 1436,
-						"h": 672
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 1436,
-						"h": 672
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 1436,
-						"h": 672
-					}
-				},
-				{
-					"filename": "Carte_Barde_Poet.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 1436,
-						"h": 672
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 1436,
-						"h": 672
-					},
-					"frame": {
-						"x": 1,
-						"y": 675,
-						"w": 1436,
-						"h": 672
-					}
-				},
-				{
-					"filename": "Carte_Malus.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 1436,
-						"h": 672
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 1436,
-						"h": 672
-					},
-					"frame": {
-						"x": 1,
-						"y": 1349,
-						"w": 1436,
-						"h": 672
-					}
-				}
-			]
-		},
-		{
-			"image": "UI_Spritesheet@2x-1.png",
-			"format": "RGBA8888",
-			"size": {
-				"w": 1438,
-				"h": 2022
-			},
-			"scale": 1,
-			"frames": [
-				{
-					"filename": "Carte_Mimo.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 1436,
-						"h": 672
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 1436,
-						"h": 672
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 1436,
-						"h": 672
-					}
-				},
-				{
-					"filename": "Carte_Mimo_Barde.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 1436,
-						"h": 672
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 1436,
-						"h": 672
-					},
-					"frame": {
-						"x": 1,
-						"y": 675,
-						"w": 1436,
-						"h": 672
-					}
-				},
-				{
-					"filename": "Carte_Mimo_Poet.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 1436,
-						"h": 672
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 1436,
-						"h": 672
-					},
-					"frame": {
-						"x": 1,
-						"y": 1349,
-						"w": 1436,
-						"h": 672
-					}
-				}
-			]
-		},
-		{
-			"image": "UI_Spritesheet@2x-2.png",
-			"format": "RGBA8888",
-			"size": {
-				"w": 1772,
-				"h": 2022
-			},
-			"scale": 1,
-			"frames": [
-				{
-					"filename": "Carte_Poet.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -368,7 +220,7 @@
 					}
 				},
 				{
-					"filename": "Carte_Special.png",
+					"filename": "Carte_Barde_Poet.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -391,22 +243,22 @@
 				{
 					"filename": "Carte_Main.png",
 					"rotated": false,
-					"trimmed": true,
+					"trimmed": false,
 					"sourceSize": {
-						"w": 1007,
-						"h": 672
+						"w": 1002,
+						"h": 679
 					},
 					"spriteSourceSize": {
-						"x": 4,
-						"y": 1,
-						"w": 999,
-						"h": 670
+						"x": 0,
+						"y": 0,
+						"w": 1002,
+						"h": 679
 					},
 					"frame": {
 						"x": 1,
 						"y": 1349,
-						"w": 999,
-						"h": 670
+						"w": 1002,
+						"h": 679
 					}
 				},
 				{
@@ -634,7 +486,7 @@
 						"h": 372
 					},
 					"frame": {
-						"x": 1002,
+						"x": 1005,
 						"y": 1349,
 						"w": 372,
 						"h": 372
@@ -655,7 +507,7 @@
 						"h": 200
 					},
 					"frame": {
-						"x": 1002,
+						"x": 1005,
 						"y": 1723,
 						"w": 200,
 						"h": 200
@@ -676,7 +528,7 @@
 						"h": 200
 					},
 					"frame": {
-						"x": 1204,
+						"x": 1207,
 						"y": 1723,
 						"w": 200,
 						"h": 200
@@ -697,7 +549,7 @@
 						"h": 200
 					},
 					"frame": {
-						"x": 1376,
+						"x": 1379,
 						"y": 1378,
 						"w": 200,
 						"h": 200
@@ -718,7 +570,7 @@
 						"h": 140
 					},
 					"frame": {
-						"x": 1376,
+						"x": 1379,
 						"y": 1580,
 						"w": 146,
 						"h": 140
@@ -739,7 +591,7 @@
 						"h": 119
 					},
 					"frame": {
-						"x": 1578,
+						"x": 1581,
 						"y": 1378,
 						"w": 181,
 						"h": 119
@@ -760,7 +612,7 @@
 						"h": 109
 					},
 					"frame": {
-						"x": 1578,
+						"x": 1581,
 						"y": 1499,
 						"w": 171,
 						"h": 109
@@ -781,7 +633,7 @@
 						"h": 131
 					},
 					"frame": {
-						"x": 1524,
+						"x": 1527,
 						"y": 1610,
 						"w": 156,
 						"h": 131
@@ -802,9 +654,30 @@
 						"h": 140
 					},
 					"frame": {
-						"x": 1406,
+						"x": 1409,
 						"y": 1743,
 						"w": 146,
+						"h": 140
+					}
+				},
+				{
+					"filename": "ValeurDice_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 201,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 30,
+						"w": 145,
+						"h": 140
+					},
+					"frame": {
+						"x": 1409,
+						"y": 1885,
+						"w": 145,
 						"h": 140
 					}
 				},
@@ -823,31 +696,10 @@
 						"h": 136
 					},
 					"frame": {
-						"x": 1406,
+						"x": 1556,
 						"y": 1885,
 						"w": 146,
 						"h": 136
-					}
-				},
-				{
-					"filename": "ValeurDice_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 201,
-						"h": 200
-					},
-					"spriteSourceSize": {
-						"x": 28,
-						"y": 30,
-						"w": 145,
-						"h": 140
-					},
-					"frame": {
-						"x": 1554,
-						"y": 1743,
-						"w": 145,
-						"h": 140
 					}
 				},
 				{
@@ -865,10 +717,158 @@
 						"h": 134
 					},
 					"frame": {
-						"x": 1554,
-						"y": 1885,
+						"x": 1557,
+						"y": 1743,
 						"w": 144,
 						"h": 134
+					}
+				}
+			]
+		},
+		{
+			"image": "UI_Spritesheet@2x-1.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1438,
+				"h": 2022
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Carte_Malus.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Mimo.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 675,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Mimo_Barde.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1349,
+						"w": 1436,
+						"h": 672
+					}
+				}
+			]
+		},
+		{
+			"image": "UI_Spritesheet@2x-2.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1438,
+				"h": 2022
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Carte_Mimo_Poet.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Poet.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 675,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Special.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1349,
+						"w": 1436,
+						"h": 672
 					}
 				}
 			]
@@ -877,6 +877,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:a0ce38109281b8d31d1dc8642eed7592:bdf3dcd97ab3ae9d6a2f1e94329fe848:d9f7735decdafb3044034a0581151636$"
+		"smartupdate": "$TexturePacker:SmartUpdate:2b410e8c5230413c1af6c6b8486caa64:87b03789ecf8116402d01a97deeacd7a:d9f7735decdafb3044034a0581151636$"
 	}
 }
