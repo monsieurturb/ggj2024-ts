@@ -124,7 +124,9 @@ export class QuestBook {
     }
 
     public pickOne(): QuestStruct {
-        // return this._quests[13].clone();
+        if (!import.meta.env.PROD)
+            return this._quests[13].clone();
+
         return Random.getInstance().pick(this._quests).clone();
     }
 }

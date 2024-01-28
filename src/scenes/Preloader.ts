@@ -50,8 +50,6 @@ export class Preloader extends Scene {
     }
 
     create() {
-        console.log(import.meta.env.PROD);
-
         // this.scene.start('MainMenu');
         this.scene.start('Game');
         // this.scene.start('GameOver');

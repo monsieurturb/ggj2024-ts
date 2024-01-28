@@ -101,11 +101,12 @@ export class Dice extends Phaser.GameObjects.Container {
         }, Phaser.Geom.Rectangle.Contains);
 
         // Setup Shift key
-        if (this.scene.input && this.scene.input.keyboard)
+        if (!import.meta.env.PROD && this.scene.input && this.scene.input.keyboard)
             this._shiftKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
         // Click
-        this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onPointerDown);
+        if (!import.meta.env.PROD)
+            this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onPointerDown);
 
         // Drag & drop
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart);
@@ -137,7 +138,7 @@ export class Dice extends Phaser.GameObjects.Container {
         if (Game.preventAllInteractions)
             return;
 
-        if (this._shiftKey!.isDown)
+        if (this._shiftKey?.isDown)
             this._dice.throw();
 
         event.stopPropagation();
