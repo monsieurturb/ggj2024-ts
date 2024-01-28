@@ -1,7 +1,7 @@
 import { Power3, gsap } from 'gsap';
 import { Scene } from 'phaser';
 import { EventManager, Events } from '../managers/Events';
-import { Colors, Config } from '../config';
+import { Colors, Config, Fonts } from '../config';
 import { StageBar } from '../entities/StageBar';
 import { Char } from '../entities/Char';
 import { Dice } from '../entities/Dice';
@@ -19,7 +19,7 @@ import { Audience } from '../entities/Audience';
 
 export class Game extends Scene {
     static preventAllInteractions: boolean = true;
-    static firstTimeUsedDice = 3;
+    static firstTimeUsedDice = 0;
 
     // Entities
     private _chars: Array<Char> = [];
@@ -42,6 +42,7 @@ export class Game extends Scene {
     private _uiLayer: Phaser.GameObjects.Container | undefined;
 
     // UI
+    private _useAllDiceButton: Phaser.GameObjects.Text | undefined;
     private _endTurnButton: Phaser.GameObjects.Text | undefined;
     private _turnText: Phaser.GameObjects.Text | undefined;
 
@@ -94,18 +95,32 @@ export class Game extends Scene {
 
         // End turn button
         this._endTurnButton = this.add.text(
-            Config.screen.width - 20, Config.screen.height - 20,
-            "END TURN", {
-            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
+            Config.screen.width - 40, Config.screen.height - 40,
+            "End turn",
+            Fonts.getStyle(38, Colors.WHITE_HEX, Fonts.MAIN)
+        )
+            .setAlign('center')
             .setOrigin(1, 1)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
                 if (Game.preventAllInteractions)
                     return;
                 this.endTurn();
+            });
+
+        // Use all dice button
+        this._useAllDiceButton = this.add.text(
+            Config.screen.width - 40, Config.screen.height - 120,
+            "Use all dice",
+            Fonts.getStyle(42, Colors.WHITE_HEX, Fonts.MAIN),
+        )
+            .setAlign('center')
+            .setOrigin(1, 1)
+            .setInteractive()
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                if (Game.preventAllInteractions)
+                    return;
+                this.useRemainingDice();
             });
 
         // Boss bar
@@ -115,6 +130,7 @@ export class Game extends Scene {
         // Add to UI layer
         this._uiLayer.add([
             this._turnText,
+            this._useAllDiceButton,
             this._endTurnButton,
             this._bossBar,
         ]);
@@ -136,7 +152,7 @@ export class Game extends Scene {
         // NOTE Debug scene name
         let t = this.add.text(
             Config.screen.width * 0.5,
-            Config.screen.height - 32 * Config.DPR,
+            Config.screen.height * Config.DPR,
             'Game', {
             fontFamily: 'Arial Black', fontSize: 32 * Config.DPR, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8 * Config.DPR,
@@ -179,9 +195,6 @@ export class Game extends Scene {
             });
         this._uiLayer.add(t);
 
-        // Listen to "use remaining dice" event
-        EventManager.on(Events.USE_REMAINING_DICE, this.onUseRemainingDice.bind(this));
-
         // Listen to "end turn" event
         EventManager.on(Events.END_TURN, this.onEndTurn.bind(this));
 
@@ -214,7 +227,7 @@ export class Game extends Scene {
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
             .setTurnsRemaining(9999);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
-            .setPosition(Config.screen.width * 0.75, 300 * Config.DPR);
+            .setPosition(Config.screen.width * 0.75, Config.questCard.startY);
         this._questsLayer?.add(this._mainQuestCard);
 
         // Activate main quest
@@ -260,7 +273,7 @@ export class Game extends Scene {
         // Reset target positions
         for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
-            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.25 + i * -40, Config.questCard.startY);
+            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.31 + i * (-50 * Config.DPR), Config.questCard.startY);
         }
 
         const card = this._questCards[0];
@@ -384,7 +397,7 @@ export class Game extends Scene {
             this.endTurn();
     }
 
-    private onUseRemainingDice() {
+    private useRemainingDice() {
         const slot = this._mainQuestCard?.getSlot();
         if (!slot)
             return;
@@ -491,7 +504,6 @@ export class Game extends Scene {
     }
 
     private shutdown() {
-        EventManager.off(Events.USE_REMAINING_DICE);
         EventManager.off(Events.END_TURN);
         EventManager.off(Events.QUEST_COMPLETED);
         EventManager.off(Events.QUEST_FAILED);

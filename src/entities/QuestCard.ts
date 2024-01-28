@@ -1,10 +1,10 @@
 import { EventManager, Events } from "../managers/Events";
-import { Config, Fonts } from "../config";
+import { Colors, Config, Fonts } from "../config";
 import { QuestStruct } from "../struct/QuestStruct";
 import { QuestSlot } from "./QuestSlot";
 import { QuestReward } from "../struct/QuestReward";
 import { Random } from "../managers/Random";
-import { gsap, Power3 } from "gsap";
+import { gsap, Power3, Elastic } from "gsap";
 import { lerp } from "../utils";
 
 export class QuestCard extends Phaser.GameObjects.Container {
@@ -19,12 +19,18 @@ export class QuestCard extends Phaser.GameObjects.Container {
     public get rewardsForSuccess() { return this._quest.rewardsForSuccess; }
 
     // Graphics objects
-    protected _background: Phaser.GameObjects.Rectangle | undefined;
+    protected _back: Phaser.GameObjects.Sprite | undefined;
     protected _text: Phaser.GameObjects.Text | undefined;
+    protected _subText: Phaser.GameObjects.Text | undefined;
     protected _slots: Array<QuestSlot> = [];
+    protected _turnsText: Phaser.GameObjects.Text | undefined;
+    protected _turnsIcon: Phaser.GameObjects.Sprite | undefined;
+    protected _turnsCircle: Phaser.GameObjects.Ellipse | undefined;
+
     protected _facingUp: boolean;
     protected _boundOnRequirementProgress: ((uuid: string) => void) | undefined;
     protected _boundOnRequirementCompleted: ((uuid: string) => void) | undefined;
+    protected _boundOnEndTurn: (() => void) | undefined;
 
     public targetPosition: Phaser.Geom.Point;
     public isBeingDestroyed: boolean = false;
@@ -44,23 +50,65 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     createGraphics() {
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.questCard.width, Config.questCard.height, 0xFFFFFF)
-            .setStrokeStyle(4, 0x000000)
-            .setOrigin(0.5, 0.5);
+        this._back = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'ui', 'Carte_Special.png');
 
-        this._text = new Phaser.GameObjects.Text(this.scene, -Config.questCard.width * 0.5 + 20, -Config.questCard.height * 0.5 + 32, "", {
-            fontFamily: Fonts.MAIN,
-            fontSize: 28,
-            color: '#000000',
-            wordWrap: { width: Config.questCard.width * 0.5 }
-        })
-            .setFixedSize(Config.questCard.width, Config.questCard.height)
+        this._text = new Phaser.GameObjects.Text(
+            this.scene,
+            -this._back.width * 0.5 + (30 * Config.DPR),
+            -this._back.height * 0.5 + (25 * Config.DPR),
+            "",
+            Fonts.getStyle(32, Colors.BLACK_HEX, Fonts.MAIN)
+        )
+            .setFixedSize(this._back.width, this._back.height)
             .setOrigin(0, 0)
             .setVisible(this._facingUp);
 
+        this._subText = new Phaser.GameObjects.Text(
+            this.scene,
+            -this._back.width * 0.5 + (30 * Config.DPR),
+            -this._back.height * 0.5 + (75 * Config.DPR),
+            "",
+            Fonts.getStyle(24, Colors.BLACK_HEX, Fonts.TEXT)
+        )
+            .setFixedSize(this._back.width, this._back.height)
+            .setOrigin(0, 0)
+            .setVisible(this._facingUp);
+
+        this._turnsText = new Phaser.GameObjects.Text(
+            this.scene,
+            this._back.width * 0.5 - (45 * Config.DPR),
+            -this._back.height * 0.5 + (65 * Config.DPR),
+            "",
+            Fonts.getStyle(48, Colors.BLACK_HEX, Fonts.MAIN)
+        )
+            .setOrigin(0.5, 0.5)
+            .setVisible(this._facingUp);
+
+        this._turnsIcon = new Phaser.GameObjects.Sprite(
+            this.scene,
+            this._turnsText.x - 40 * Config.DPR, this._turnsText.y,
+            'ui',
+            'Picto_Turn.png',
+        )
+            .setOrigin(0.5, 0.5)
+            .setScale(0.55)
+            .setVisible(this._facingUp);
+
+        this._turnsCircle = new Phaser.GameObjects.Ellipse(
+            this.scene,
+            this._turnsText.x - 22 * Config.DPR, this._turnsText.y,
+            95 * Config.DPR, 95 * Config.DPR,
+            Colors.SLOT_ANY
+        )
+            .setVisible(this._facingUp);
+
         this.add([
-            this._background,
+            this._back,
             this._text,
+            this._subText,
+            this._turnsCircle,
+            this._turnsIcon,
+            this._turnsText,
         ]);
     }
 
@@ -74,8 +122,10 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     placeSlots() {
+        const w = this._slots[0].width * this._slots.length + 20 * Config.DPR * (this._slots.length - 1);
         for (let i = 0; i < this._slots.length; i++) {
-            this._slots[i].x = - (this._quest.requirements.length - 1) * Config.diceSize * 1.25 * 0.5 + i * Config.diceSize * 1.35 + Config.questCard.width * 0.25;
+            this._slots[i].x = -w * 0.5 + (i + 0.5) * this._slots[i].width + i * 20 * Config.DPR;
+            this._slots[i].y = 50 * Config.DPR;
             this.add(this._slots[i]);
         }
     }
@@ -89,8 +139,10 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
         this._boundOnRequirementProgress = this.onRequirementProgress.bind(this);
         this._boundOnRequirementCompleted = this.onRequirementCompleted.bind(this);
+        this._boundOnEndTurn = this.onEndTurn.bind(this);
         EventManager.on(Events.REQUIREMENT_PROGRESS, this._boundOnRequirementProgress);
         EventManager.on(Events.REQUIREMENT_COMPLETED, this._boundOnRequirementCompleted);
+        EventManager.on(Events.END_TURN, this._boundOnEndTurn);
     }
 
     flip(instant: boolean = false) {
@@ -98,6 +150,11 @@ export class QuestCard extends Phaser.GameObjects.Container {
             this._facingUp = !this._facingUp;
 
             this._text?.setVisible(this._facingUp);
+            this._subText?.setVisible(this._facingUp);
+            this._turnsCircle?.setVisible(this._facingUp);
+            this._turnsIcon?.setVisible(this._facingUp);
+            this._turnsText?.setVisible(this._facingUp);
+
             for (const slot of this._slots)
                 slot.setVisible(this._facingUp);
         }
@@ -110,19 +167,26 @@ export class QuestCard extends Phaser.GameObjects.Container {
                 }
             });
             timeline.to(this, {
-                scaleX: 1.25,
+                scaleX: 1.1,
                 scaleY: 0,
                 onStart: () => {
-                    this.targetPosition.y += 200;
+                    this.targetPosition.y += 250;
                 },
                 onComplete: () => {
                     this._facingUp = !this._facingUp;
 
+                    this._back?.setTintFill(0xFFFFFF);
+
                     this._text?.setVisible(this._facingUp);
+                    this._subText?.setVisible(this._facingUp);
+                    this._turnsCircle?.setVisible(this._facingUp);
+                    this._turnsIcon?.setVisible(this._facingUp);
+                    this._turnsText?.setVisible(this._facingUp);
+
                     for (const slot of this._slots)
                         slot.setVisible(this._facingUp);
 
-                    this.targetPosition.y -= 200;
+                    this.targetPosition.y -= 250;
                 },
             }).to(this, {
                 scaleX: 1,
@@ -144,11 +208,20 @@ export class QuestCard extends Phaser.GameObjects.Container {
         if (this.isBeingDestroyed)
             return;
 
-        if (this._text) {
-            let s = this._quest.name;
-            s += "\nTurns remaining: " + this._quest.turnsRemaining;
-            this._text.text = s;
+        if (this._text)
+            this._text.text = this._quest.name;
+
+        if (this._subText) {
+            let s = "";
+            if (this._quest.rewardsForSuccess.length > 0)
+                s = "Success: " + this._quest.rewardsForSuccess.map((r) => r.type).join(", ");
+            else if (this._quest.rewardsForFail.length > 0)
+                s = "Fail: " + this._quest.rewardsForFail.map((r) => r.type).join(", ");
+            this._subText.text = s;
         }
+
+        if (this._turnsText)
+            this._turnsText.text = this.turnsRemaining.toFixed();
 
         // Lerp to target position
         const x = this.targetPosition.x - this.x;
@@ -173,6 +246,24 @@ export class QuestCard extends Phaser.GameObjects.Container {
             const s = 0.01 * Math.sin(time / 125);// amplitude * sin(time / freq)
             this.setRotation(r);
             this.setScale(1 + s);
+        }
+    }
+
+    onEndTurn() {
+        if (this._turnsIcon) {
+            gsap.to(this._turnsIcon, {
+                rotation: `-=${Math.PI}`,
+                duration: 1.5,
+                ease: Elastic.easeOut,
+            });
+        }
+
+        if (this._turnsText) {
+            gsap.from(this._turnsText, {
+                scale: 1.35,
+                duration: 1.5,
+                ease: Elastic.easeOut,
+            });
         }
     }
 
@@ -201,6 +292,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
         EventManager.off(Events.REQUIREMENT_PROGRESS, this._boundOnRequirementProgress);
         EventManager.off(Events.REQUIREMENT_COMPLETED, this._boundOnRequirementCompleted);
+        EventManager.off(Events.END_TURN, this._boundOnEndTurn);
 
         this._quest.destroy();
 

@@ -30,7 +30,7 @@ export class Preloader extends Scene {
         this.load.setPath('assets');
 
         this.load.multiatlas('main', `Main_Spritesheet@${Config.DPR}x.json`, 'assets');
-        this.load.multiatlas('icon', `Icon_Spritesheet@${Config.DPR}x.json`, 'assets');
+        this.load.multiatlas('ui', `UI_Spritesheet@${Config.DPR}x.json`, 'assets');
         this.load.multiatlas('scene', `Scene_Spritesheet@${Config.DPR}x.json`, 'assets');
     }
 

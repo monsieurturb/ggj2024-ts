@@ -16,9 +16,8 @@ export class Audience extends Phaser.GameObjects.Container {
         const memberSpacing = Config.screen.width / (memberPerRow - 1);
 
         const frames = [];
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 12; i++)
             frames.push(`Public_Scene_${i}.png`);
-        }
 
         // Loop rows
         for (let y = 0; y < rows; y++) {
@@ -73,7 +72,7 @@ export class Audience extends Phaser.GameObjects.Container {
             this.scene,
             0, 0,
             Config.screen.width, 200 * Config.DPR,
-            0x05111F
+            0x353756
         )
             .setOrigin(0.5, 1);
         this.add(rect);

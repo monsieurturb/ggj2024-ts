@@ -11,12 +11,12 @@ export class Curtains extends Phaser.GameObjects.Container {
 
         this._leftParts = [
             new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'scene', 'Rideau_Scene_1.png')
-                .setTint(0x676AA2)
+                // .setTint(0x676AA2)
                 .setScale(scale),
         ];
         this._rightParts = [
             new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'scene', 'Rideau_Scene_1.png')
-                .setTint(0x676AA2)
+                // .setTint(0x676AA2)
                 .setScale(-scale, scale),
         ];
 

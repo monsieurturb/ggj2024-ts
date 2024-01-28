@@ -8,8 +8,10 @@ import DissolvePipelinePlugin from "phaser3-rex-plugins/plugins/dissolvepipeline
 
 export class QuestSlot extends Phaser.GameObjects.Container {
     protected _zone: Phaser.GameObjects.Zone;
-    protected _background: Phaser.GameObjects.Rectangle;
+    protected _background: Phaser.GameObjects.Sprite;
     protected _text: Phaser.GameObjects.Text;
+    protected _subText: Phaser.GameObjects.Text;
+    protected _check: Phaser.GameObjects.Sprite;
 
     protected _requirement: QuestRequirement;
     protected _allRequirements: Array<QuestRequirement>;
@@ -27,51 +29,91 @@ export class QuestSlot extends Phaser.GameObjects.Container {
 
         this._diceHistory = [];
 
-        this.width = Config.diceSize * 1.25;
-        this.height = Config.diceSize * 1.25;
+        const backgroundColor = (() => {
+            switch (this._requirement.type) {
+                case CharType.BARD: return Colors.SLOT_BARD;
+                case CharType.POET: return Colors.SLOT_POET;
+                case CharType.MIMO: return Colors.SLOT_MIMO;
+                case CharType.ANY: return Colors.SLOT_ANY;
+            }
+        })();
 
-        this._zone = new Phaser.GameObjects.Zone(this.scene, 0, 0, this.width, this.height)
-            .setRectangleDropZone(this.width, this.height);
+        const checkColor = (() => {
+            switch (this._requirement.type) {
+                case CharType.BARD: return Colors.CHECK_BARD;
+                case CharType.POET: return Colors.CHECK_POET;
+                case CharType.MIMO: return Colors.CHECK_MIMO;
+                case CharType.ANY: return Colors.CHECK_ANY;
+            }
+        })();
 
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.width, this.height, <number>this.getColor(), 0.5)
-            .setStrokeStyle(4, 0x000000, 0.5)
+        this._background = new Phaser.GameObjects.Sprite(
+            this.scene,
+            0, 0,
+            'ui',
+            'Picto_Dropzone.png',
+        )
+            .setTintFill(backgroundColor)
             .setOrigin(0.5, 0.5);
+
+        this.width = this._background.width;
+        this.height = this._background.height;
 
         this._text = new Phaser.GameObjects.Text(
             this.scene,
-            0, 0,
-            this.getRequirementText(), {
-            fontFamily: Fonts.MAIN,
-            fontSize: 22,
-            color: '#000000',
-            stroke: <string>this.getColor(true),
-            strokeThickness: 4,
-            align: 'center',
-        })
+            0, -10,
+            this.getRequirementValue(),
+            Fonts.getStyle(72, Colors.BLACK_HEX, Fonts.MAIN),
+        )
+            .setAlign('center')
             .setOrigin(0.5, 0.5);
+
+        this._subText = new Phaser.GameObjects.Text(
+            this.scene,
+            0, 50,
+            this.getRequirementText(),
+            Fonts.getStyle(26, Colors.BLACK_HEX, Fonts.TEXT),
+        )
+            .setAlign('center')
+            .setOrigin(0.5, 0.5);
+
+        this._check = new Phaser.GameObjects.Sprite(
+            this.scene,
+            0, 0,
+            'ui',
+            'Picto_Check.png',
+        )
+            .setTintFill(checkColor)
+            .setScale(1.5)
+            .setVisible(false);
+
+        this._zone = new Phaser.GameObjects.Zone(
+            this.scene,
+            0, 0,
+            this._background.width,
+            this._background.height
+        )
+            .setRectangleDropZone(this._background.width, this._background.height);
 
         this.add([
             this._background,
             this._text,
+            this._subText,
+            this._check,
             this._zone,
         ]);
     }
 
-    getColor(hex: boolean = false): string | number {
-        switch (this._requirement.type) {
-            case CharType.BARD: return hex ? Colors.DARK_HEX : Colors.DARK;
-            case CharType.POET: return hex ? Colors.LIGHT_HEX : Colors.LIGHT;
-            case CharType.MIMO: return hex ? Colors.PINK_HEX : Colors.PINK;
-            default: return hex ? '#FFFFFF' : 0xFFFFFF;
-        }
+    getRequirementValue() {
+        if (this._belongsToMainQuest || this._requirement.done)
+            return "";
+
+        return this._requirement.value.toFixed();
     }
 
     getRequirementText() {
-        if (this._belongsToMainQuest)
+        if (this._belongsToMainQuest || this._requirement.done)
             return "";
-
-        if (this._requirement.done)
-            return 'DONE';
 
         let s = (() => {
             switch (this._requirement.mode) {
@@ -84,12 +126,13 @@ export class QuestSlot extends Phaser.GameObjects.Container {
                 default: return "";
             }
         })();
-        s += "\n" + this._requirement.value;
         return s;
     }
 
     update() {
-        this._text.text = this.getRequirementText();
+        this._text.text = this.getRequirementValue();
+        this._subText.text = this.getRequirementText();
+        this._check.setVisible(this._requirement.done);
     }
 
     isDiceValid(dice: Dice) {

@@ -1,16 +1,15 @@
 import { EventManager, Events } from "../managers/Events";
-import { Config, Fonts } from "../config";
+import { Colors, Config, Fonts } from "../config";
 import { MainQuestStruct } from "../struct/MainQuestStruct";
 import { QuestStruct } from "../struct/QuestStruct";
 import { Dice } from "./Dice";
 import { QuestCard } from "./QuestCard";
 import { QuestSlot } from "./QuestSlot";
 import { Game } from "../scenes/Game";
+import { gsap, Power3, Elastic } from "gsap";
 
 export class MainQuestCard extends QuestCard {
     declare protected _quest: MainQuestStruct;
-
-    protected _throwAllDiceButton: Phaser.GameObjects.Text | undefined;
 
     public multiplier: number = 1;
 
@@ -19,51 +18,62 @@ export class MainQuestCard extends QuestCard {
     }
 
     createGraphics() {
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.questCard.width, Config.questCard.height, 0xFFFFFF, 0.1)
-            .setStrokeStyle(4, 0x000000)
-            .setOrigin(0.5, 0.5);
+        this._back = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'ui', 'Carte_Main.png');
 
-        this._text = new Phaser.GameObjects.Text(this.scene, -Config.questCard.width * 0.5 + 20, -Config.questCard.height * 0.5 + 32, "", {
-            fontFamily: Fonts.MAIN,
-            fontSize: 28,
-            color: '#000000',
-            wordWrap: { width: Config.questCard.width * 0.5 }
-        })
-            .setFixedSize(Config.questCard.width, Config.questCard.height)
-            .setOrigin(0, 0)
+        this._text = new Phaser.GameObjects.Text(
+            this.scene,
+            0,
+            -125 * Config.DPR,
+            "",
+            Fonts.getStyle(42, Colors.WHITE_HEX, Fonts.MAIN),
+        )
+            .setAlign('center')
+            .setOrigin(0.5, 0.5)
             .setVisible(this._facingUp);
 
-        this._throwAllDiceButton = new Phaser.GameObjects.Text(
+        this._subText = new Phaser.GameObjects.Text(
             this.scene,
-            -Config.questCard.width * 0.25,
-            Config.questCard.height * 0.25,
-            "Use remaining dice", {
-            fontFamily: Fonts.MAIN,
-            fontSize: 28,
-            color: '#000000',
-        })
+            0,
+            -75 * Config.DPR,
+            "",
+            Fonts.getStyle(28, Colors.WHITE_HEX, Fonts.TEXT),
+        )
+            .setAlign('center')
             .setOrigin(0.5, 0.5)
-            .setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                if (Game.preventAllInteractions)
-                    return;
+            .setVisible(this._facingUp);
 
-                EventManager.emit(Events.USE_REMAINING_DICE);
-            });
+        this._turnsIcon = new Phaser.GameObjects.Sprite(
+            this.scene,
+            0, 0,
+            'ui',
+            'Picto_Smile.png',
+        )
+            .setOrigin(0.5, 0.5)
+            .setVisible(this._facingUp);
 
         this.add([
-            this._background,
+            this._back,
             this._text,
-            this._throwAllDiceButton,
+            this._subText,
         ]);
     }
 
     createSlots() {
         for (let i = 0; i < this._quest.requirements.length; i++) {
-            const slot = new QuestSlot(this.scene, this._quest.requirements[i], this._quest.requirements, true);
+            const slot = new QuestSlot(this.scene, this._quest.requirements[i], this._quest.requirements, true)
+                .setAlpha(0.25);
             this._slots.push(slot);
         }
         this.placeSlots();
+    }
+
+    placeSlots() {
+        super.placeSlots();
+
+        if (this._turnsIcon && this._slots.length > 0) {
+            this._turnsIcon.setPosition(this._slots[0].x, this._slots[0].y);
+            this.add(this._turnsIcon);
+        }
     }
 
     getSlot(): QuestSlot | undefined {
@@ -80,11 +90,14 @@ export class MainQuestCard extends QuestCard {
     update(time: number) {
         super.update(time);
 
-        if (this._text) {
-            let s = this._quest.name;
-            this._text.text = s;
-        }
+        if (this._text)
+            this._text.text = this._quest.name;
+
+        if (this._subText)
+            this._subText.text = this._quest.subtitle;
     }
+
+    onEndTurn() { }
 
     onRequirementCompleted(uuid: string) {
         if (this._quest.isOwnRequirement(uuid)) {
@@ -101,6 +114,18 @@ export class MainQuestCard extends QuestCard {
             }
 
             this._quest.undoRequirements();
+
+            if (this._turnsIcon) {
+                gsap.fromTo(this._turnsIcon, {
+                    rotation: `${(Math.random() * Math.PI * 0.4) - Math.PI * 0.2}`,
+                    scale: 1.5,
+                }, {
+                    rotation: `${(Math.random() * Math.PI * 0.2) - Math.PI * 0.1}`,
+                    scale: 1,
+                    duration: 2,
+                    ease: Elastic.easeOut,
+                });
+            }
         }
     }
 }

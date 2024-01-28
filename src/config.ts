@@ -6,7 +6,7 @@ export class Config {
     static DPR: number = window.devicePixelRatio <= 1 ? 1 : 2;
 
     static screen = { width: 1920 * Config.DPR, height: 1080 * Config.DPR };
-    static questCard = { width: 700 * Config.DPR, height: 250 * Config.DPR, startX: -350 * Config.DPR, startY: 300 * Config.DPR };
+    static questCard = { width: 700 * Config.DPR, height: 250 * Config.DPR, startX: -350 * Config.DPR, startY: 350 * Config.DPR };
     static bossBar = { width: 1200 * Config.DPR, height: 25 * Config.DPR };
     static diceSize: number = 100 * Config.DPR;
     static sceneTransitionDuration: number = 1000;
@@ -25,12 +25,30 @@ export class Colors {
     static LIGHT_HEX: string = '#FFCD96';
     static PINK_HEX: string = '#FF7777';
 
+    static SLOT_ANY_HEX: string = '#ECECEC';
+    static SLOT_MIMO_HEX: string = '#FFD4D5';
+    static SLOT_BARD_HEX: string = '#FFE9D4';
+    static SLOT_POET_HEX: string = '#C2D5DA';
+
+    static CHECK_ANY_HEX: string = '#BDBDBD';
+    static CHECK_MIMO_HEX: string = '#FF6C6F';
+    static CHECK_BARD_HEX: string = '#E9AD72';
+    static CHECK_POET_HEX: string = '#38899D';
+
     static BLACK: number = Phaser.Display.Color.HexStringToColor(Colors.BLACK_HEX).color;
     static WHITE: number = Phaser.Display.Color.HexStringToColor(Colors.WHITE_HEX).color;
     static BACKGROUND: number = Phaser.Display.Color.HexStringToColor(Colors.BACKGROUND_HEX).color;
     static DARK: number = Phaser.Display.Color.HexStringToColor(Colors.DARK_HEX).color;
     static LIGHT: number = Phaser.Display.Color.HexStringToColor(Colors.LIGHT_HEX).color;
     static PINK: number = Phaser.Display.Color.HexStringToColor(Colors.PINK_HEX).color;
+    static SLOT_ANY: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_ANY_HEX).color;
+    static SLOT_MIMO: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_MIMO_HEX).color;
+    static SLOT_BARD: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_BARD_HEX).color;
+    static SLOT_POET: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_POET_HEX).color;
+    static CHECK_ANY: number = Phaser.Display.Color.HexStringToColor(Colors.CHECK_ANY_HEX).color;
+    static CHECK_MIMO: number = Phaser.Display.Color.HexStringToColor(Colors.CHECK_MIMO_HEX).color;
+    static CHECK_BARD: number = Phaser.Display.Color.HexStringToColor(Colors.CHECK_BARD_HEX).color;
+    static CHECK_POET: number = Phaser.Display.Color.HexStringToColor(Colors.CHECK_POET_HEX).color;
 }
 
 export class Fonts {

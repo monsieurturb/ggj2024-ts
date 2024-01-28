@@ -14,7 +14,8 @@ export class Dice extends Phaser.GameObjects.Container {
     public get dice() { return this._dice; }
 
     // Graphics objects
-    private _background: Phaser.GameObjects.Rectangle | undefined;
+    private _background: Phaser.GameObjects.Sprite | undefined;
+    private _dots: Phaser.GameObjects.Sprite | undefined;
     private _text: Phaser.GameObjects.Text | undefined;
 
     private _shiftKey: Phaser.Input.Keyboard.Key | undefined;
@@ -40,20 +41,46 @@ export class Dice extends Phaser.GameObjects.Container {
     }
 
     createGraphics() {
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, Config.diceSize, Config.diceSize, this.getColor())
-            .setStrokeStyle(4 * Config.DPR, 0x000000)
-            .setOrigin(0.5, 0.5);
+        const prefix = (() => {
+            switch (this.dice.type) {
+                case CharType.BARD: return 'Barde';
+                case CharType.POET: return 'Poet';
+                case CharType.MIMO: return 'Mimo';
+                default: return '';
+            }
+        })();
 
-        this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", {
-            fontFamily: Fonts.MAIN,
-            fontSize: 40 * Config.DPR,
-            color: '#000000',
-        })
-            .setOrigin(0.5, 0.5);
+        // Background
+
+        const frames = [];
+        for (let i = 1; i <= 3; i++)
+            frames.push(`Dice_${prefix}_UI_${i}.png`);
+
+        this._background = new Phaser.GameObjects.Sprite(
+            this.scene,
+            0, 0,
+            'ui',
+            Random.getInstance().pick(frames),
+        )
+            .setOrigin(0.5, 0.5)
+            .setScale(Random.getInstance().sign(), Random.getInstance().sign())
+            .setRotation(Random.getInstance().integerInRange(0, 3) * Math.PI);
+
+        // Dots
+
+        this._dots = new Phaser.GameObjects.Sprite(
+            this.scene,
+            0, 0,
+            'ui',
+            `ValeurDice_${this._dice.currentValue}.png`,
+        )
+            .setOrigin(0.5, 0.5)
+            .setScale(Random.getInstance().sign(), Random.getInstance().sign())
+            .setRotation(Random.getInstance().integerInRange(0, 3) * Math.PI);
 
         this.add([
             this._background,
-            this._text,
+            this._dots,
         ]);
     }
 
@@ -90,8 +117,8 @@ export class Dice extends Phaser.GameObjects.Container {
     }
 
     update() {
-        if (this._text)
-            this._text.text = this._dice.displayValue;
+        if (this._dots)
+            this._dots.setFrame(`ValeurDice_${this._dice.currentValue}.png`);
 
         const positionSpeed = 0.5;
 

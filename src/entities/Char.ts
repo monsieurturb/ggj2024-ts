@@ -23,6 +23,7 @@ export class Char extends Phaser.GameObjects.Container {
 
     constructor(scene: Phaser.Scene, type: CharType) {
         super(scene);
+        console.log(type);
 
         // Create this char's struct
         this._char = new CharStruct(type);
@@ -31,8 +32,8 @@ export class Char extends Phaser.GameObjects.Container {
 
         this._prefix = (() => {
             switch (this.char.type) {
-                case CharType.BARD: return 'Poet';
-                case CharType.POET: return 'Barde';
+                case CharType.BARD: return 'Barde';
+                case CharType.POET: return 'Poet';
                 case CharType.MIMO: return 'Mimo';
                 default: return '';
             }

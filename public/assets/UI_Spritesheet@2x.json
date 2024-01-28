@@ -1,0 +1,882 @@
+{
+	"textures": [
+		{
+			"image": "UI_Spritesheet@2x-0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1438,
+				"h": 2022
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Carte_Barde.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Barde_Poet.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 675,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Malus.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1349,
+						"w": 1436,
+						"h": 672
+					}
+				}
+			]
+		},
+		{
+			"image": "UI_Spritesheet@2x-1.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1438,
+				"h": 2022
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Carte_Mimo.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Mimo_Barde.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 675,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Mimo_Poet.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1349,
+						"w": 1436,
+						"h": 672
+					}
+				}
+			]
+		},
+		{
+			"image": "UI_Spritesheet@2x-2.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1772,
+				"h": 2022
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Carte_Poet.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Picto_LevelUp.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 245,
+						"h": 163
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 245,
+						"h": 163
+					},
+					"frame": {
+						"x": 1439,
+						"y": 1,
+						"w": 245,
+						"h": 163
+					}
+				},
+				{
+					"filename": "Picto_Question.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 81,
+						"h": 114
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 81,
+						"h": 114
+					},
+					"frame": {
+						"x": 1686,
+						"y": 1,
+						"w": 81,
+						"h": 114
+					}
+				},
+				{
+					"filename": "Picto_Dice.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 81,
+						"h": 80
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 81,
+						"h": 80
+					},
+					"frame": {
+						"x": 1686,
+						"y": 117,
+						"w": 81,
+						"h": 80
+					}
+				},
+				{
+					"filename": "Dice_Barde_UI_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1439,
+						"y": 166,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Picto_Turn.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 131,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 130,
+						"h": 131
+					},
+					"frame": {
+						"x": 1641,
+						"y": 199,
+						"w": 130,
+						"h": 131
+					}
+				},
+				{
+					"filename": "Select_Open.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 117,
+						"h": 157
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 117,
+						"h": 157
+					},
+					"frame": {
+						"x": 1641,
+						"y": 332,
+						"w": 117,
+						"h": 157
+					}
+				},
+				{
+					"filename": "Dice_Barde_UI_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1439,
+						"y": 368,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Select_Close.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 117,
+						"h": 156
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 26,
+						"w": 117,
+						"h": 130
+					},
+					"frame": {
+						"x": 1641,
+						"y": 491,
+						"w": 117,
+						"h": 130
+					}
+				},
+				{
+					"filename": "Dice_Barde_UI_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1439,
+						"y": 570,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Carte_Special.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1436,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1436,
+						"h": 672
+					},
+					"frame": {
+						"x": 1,
+						"y": 675,
+						"w": 1436,
+						"h": 672
+					}
+				},
+				{
+					"filename": "Carte_Main.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 1007,
+						"h": 672
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 1,
+						"w": 999,
+						"h": 670
+					},
+					"frame": {
+						"x": 1,
+						"y": 1349,
+						"w": 999,
+						"h": 670
+					}
+				},
+				{
+					"filename": "Picto_Plus.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 111,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 111,
+						"h": 104
+					},
+					"frame": {
+						"x": 1641,
+						"y": 623,
+						"w": 111,
+						"h": 104
+					}
+				},
+				{
+					"filename": "Picto_Flash.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 105,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 105,
+						"h": 131
+					},
+					"frame": {
+						"x": 1641,
+						"y": 729,
+						"w": 105,
+						"h": 131
+					}
+				},
+				{
+					"filename": "Dice_Mimo_UI_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1439,
+						"y": 772,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Picto_Minus.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 112,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 37,
+						"w": 100,
+						"h": 32
+					},
+					"frame": {
+						"x": 1641,
+						"y": 862,
+						"w": 100,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Picto_Check.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 92,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 92,
+						"h": 90
+					},
+					"frame": {
+						"x": 1641,
+						"y": 896,
+						"w": 92,
+						"h": 90
+					}
+				},
+				{
+					"filename": "Dice_Mimo_UI_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1439,
+						"y": 974,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Picto_Nope.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 6,
+						"w": 91,
+						"h": 78
+					},
+					"frame": {
+						"x": 1641,
+						"y": 988,
+						"w": 91,
+						"h": 78
+					}
+				},
+				{
+					"filename": "Picto_Egal.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 111,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 90,
+						"h": 71
+					},
+					"frame": {
+						"x": 1641,
+						"y": 1068,
+						"w": 90,
+						"h": 71
+					}
+				},
+				{
+					"filename": "ValeurDice_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 201,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 80,
+						"y": 82,
+						"w": 40,
+						"h": 36
+					},
+					"frame": {
+						"x": 1641,
+						"y": 1141,
+						"w": 40,
+						"h": 36
+					}
+				},
+				{
+					"filename": "Dice_Mimo_UI_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1439,
+						"y": 1176,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Picto_Dropzone.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 372,
+						"h": 372
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 372,
+						"h": 372
+					},
+					"frame": {
+						"x": 1002,
+						"y": 1349,
+						"w": 372,
+						"h": 372
+					}
+				},
+				{
+					"filename": "Dice_Poet_UI_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1002,
+						"y": 1723,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Dice_Poet_UI_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1204,
+						"y": 1723,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "Dice_Poet_UI_3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 200
+					},
+					"frame": {
+						"x": 1376,
+						"y": 1378,
+						"w": 200,
+						"h": 200
+					}
+				},
+				{
+					"filename": "ValeurDice_5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 200,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 30,
+						"w": 146,
+						"h": 140
+					},
+					"frame": {
+						"x": 1376,
+						"y": 1580,
+						"w": 146,
+						"h": 140
+					}
+				},
+				{
+					"filename": "Picto_Chara.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 181,
+						"h": 119
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 181,
+						"h": 119
+					},
+					"frame": {
+						"x": 1578,
+						"y": 1378,
+						"w": 181,
+						"h": 119
+					}
+				},
+				{
+					"filename": "Picto_Card.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 181,
+						"h": 119
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 171,
+						"h": 109
+					},
+					"frame": {
+						"x": 1578,
+						"y": 1499,
+						"w": 171,
+						"h": 109
+					}
+				},
+				{
+					"filename": "Picto_Smile.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 156,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 156,
+						"h": 131
+					},
+					"frame": {
+						"x": 1524,
+						"y": 1610,
+						"w": 156,
+						"h": 131
+					}
+				},
+				{
+					"filename": "ValeurDice_6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 201,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 30,
+						"w": 146,
+						"h": 140
+					},
+					"frame": {
+						"x": 1406,
+						"y": 1743,
+						"w": 146,
+						"h": 140
+					}
+				},
+				{
+					"filename": "ValeurDice_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 201,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 32,
+						"w": 146,
+						"h": 136
+					},
+					"frame": {
+						"x": 1406,
+						"y": 1885,
+						"w": 146,
+						"h": 136
+					}
+				},
+				{
+					"filename": "ValeurDice_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 201,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 30,
+						"w": 145,
+						"h": 140
+					},
+					"frame": {
+						"x": 1554,
+						"y": 1743,
+						"w": 145,
+						"h": 140
+					}
+				},
+				{
+					"filename": "ValeurDice_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 201,
+						"h": 200
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 33,
+						"w": 144,
+						"h": 134
+					},
+					"frame": {
+						"x": 1554,
+						"y": 1885,
+						"w": 144,
+						"h": 134
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:a0ce38109281b8d31d1dc8642eed7592:bdf3dcd97ab3ae9d6a2f1e94329fe848:d9f7735decdafb3044034a0581151636$"
+	}
+}

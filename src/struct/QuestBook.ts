@@ -19,17 +19,17 @@ export class QuestBook {
     constructor() {
         this._quests = [];
 
-        /* this._quests.push(new QuestStruct("Reading The Crowd")
+        this._quests.push(new QuestStruct("Reading The Crowd")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
-            // .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.DISCARD, [4]))
-            // .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.HIDE, [4]))
+            .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.DISCARD, [4]))
+            .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.HIDE, [4]))
             .setTurnsRemaining(2)
-        ); */
+        );
         this._quests.push(new QuestStruct("Perfect Delivery")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.EXACT, 6))
-            // .addRewardForSuccess(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.X_MORE_TURNS_TO_COMPLETE, [1, 1]))
+            .addRewardForSuccess(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.X_MORE_TURNS_TO_COMPLETE, [1, 1]))
             .setTurnsRemaining(2)
         );
         this._quests.push(new QuestStruct("Irresistible Duo")
