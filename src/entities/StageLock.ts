@@ -1,11 +1,12 @@
-import { Colors, Fonts } from "../config";
+import { Colors, Config, Fonts } from "../config";
 import { Random } from "../managers/Random";
+import RoundRectangle from 'phaser3-rex-plugins/plugins/roundrectangle.js';
 
 export class StageLock extends Phaser.GameObjects.Container {
     private _lock: StageLockStruct;
     public get lock() { return this._lock; };
 
-    protected _background: Phaser.GameObjects.Rectangle;
+    protected _background: RoundRectangle;
     protected _text: Phaser.GameObjects.Text;
 
     constructor(scene: Phaser.Scene, lock: StageLockStruct) {
@@ -13,14 +14,19 @@ export class StageLock extends Phaser.GameObjects.Container {
 
         this._lock = lock;
 
-        this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 40, 40, Colors.PINK);
+        this._background = new RoundRectangle(
+            this.scene,
+            0, 0,
+            60 * Config.DPR, Config.stageBar.height * 1.25,
+            10,
+            Colors.WHITE
+        );
 
-        this._text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", {
-            fontFamily: Fonts.MAIN,
-            fontSize: 24,
-            color: '#000000',
-            align: 'center',
-        })
+        this._text = new Phaser.GameObjects.Text(
+            this.scene, 0, 0,
+            "",
+            Fonts.getStyle(32, Colors.BLACK_HEX, Fonts.MAIN)
+        )
             .setOrigin(0.5, 0.5);
 
         this.add([

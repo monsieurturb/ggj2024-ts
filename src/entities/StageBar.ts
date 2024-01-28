@@ -51,7 +51,7 @@ export class StageBar extends Phaser.GameObjects.Container {
         this._totalScore = 0;
 
         // Init first stage
-        this._stageLevel = 3;
+        this._stageLevel = 0;
         this._stage = new StageStruct(this._stageLevel);
         this.resetGraphics();
 
