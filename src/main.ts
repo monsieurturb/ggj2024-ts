@@ -8,7 +8,7 @@ import { CutScene } from './scenes/CutScene';
 import { GameOver } from './scenes/GameOver';
 
 const config = {
-  type: Phaser.CANVAS,
+  type: Phaser.WEBGL,
   width: Config.screen.width,
   height: Config.screen.height,
   parent: 'game-container',

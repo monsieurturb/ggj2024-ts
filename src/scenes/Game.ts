@@ -15,6 +15,9 @@ import { Rewards } from '../managers/Rewards';
 import { QuestReward, QuestRewardTarget, QuestRewardType } from '../struct/QuestReward';
 
 export class Game extends Scene {
+    static preventAllInteractions: boolean = true;
+    static firstTimeUsedDice = 3;
+
     // Entities
     private _chars: Array<Char> = [];
     public get chars() { return this._chars; }
@@ -38,7 +41,7 @@ export class Game extends Scene {
 
     public mask: Phaser.GameObjects.Rectangle | undefined;
 
-    static preventAllInteractions: boolean = true;
+    private _boundOnMainQuestProgress: (() => void) | undefined;
 
     constructor() {
         super("Game");
@@ -164,6 +167,11 @@ export class Game extends Scene {
         // Listen to quest events
         EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted.bind(this));
         EventManager.on(Events.QUEST_FAILED, this.onQuestFailed.bind(this));
+        // Listen to main quest progress if needed
+        if (Game.firstTimeUsedDice > 0) {
+            this._boundOnMainQuestProgress = this.onMainQuestProgress.bind(this);
+            EventManager.on(Events.MAIN_QUEST_PROGRESS, this._boundOnMainQuestProgress);
+        }
 
         // Listen to shutdown event
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
@@ -176,22 +184,30 @@ export class Game extends Scene {
         // Create main quest
         const mainQuest = new MainQuestStruct()
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
-            .setTurnsRemaining(999);
+            .setTurnsRemaining(9999);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
-            .setPosition(Config.screen.width * 0.25, 300);
+            .setPosition(Config.screen.width * 0.75, 300);
         this._questsLayer?.add(this._mainQuestCard);
 
-        // Queue quests
-        for (let i = 0; i < 5; i++) {
-            this.queueAnotherQuest();
-        }
         // Activate main quest
         this._mainQuestCard.activate();
-        // Activate first quest
-        this.activateNextQuest(true);
+
+        // Activate first quest if player has already played
+        if (Game.firstTimeUsedDice <= 0)
+            this.activateNextQuest(true);
 
         // Throw and show
         this.throwAllDice();
+    }
+
+    private onMainQuestProgress() {
+        Game.firstTimeUsedDice--;
+
+        if (Game.firstTimeUsedDice === 0) {
+            EventManager.off(Events.MAIN_QUEST_PROGRESS, this._boundOnMainQuestProgress);
+            // Activate first quest
+            this.activateNextQuest();
+        }
     }
 
     private endTurn() {
@@ -203,14 +219,20 @@ export class Game extends Scene {
         const i = this._questCards.length;
         const quest = QuestBook.getInstance().pickOne();
         const card = new QuestCard(this, quest)
-            .setPosition(Config.screen.width * 0.75 + i * 15, 300 - i * 15);
+            .setPosition(Config.questCard.startX, Config.questCard.startY);
         this._questsLayer?.addAt(card, 0);
         this._questCards.push(card);
     }
 
     private activateNextQuest(primed: boolean = false) {
-        while (this._questCards.length < 1) {
+        while (this._questCards.length < Config.maxVisibleQuests) {
             this.queueAnotherQuest();
+        }
+
+        // Reset target positions
+        for (let i = 0; i < this._questCards.length; i++) {
+            const card = this._questCards[i];
+            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.25 + i * -40, Config.questCard.startY);
         }
 
         const card = this._questCards[0];
@@ -301,7 +323,6 @@ export class Game extends Scene {
         // Update all quest cards
         for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
-            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.75 + i * 15, 300 - i * 15);
             card.update(time);
         }
 
@@ -414,11 +435,21 @@ export class Game extends Scene {
 
     private deleteQuestAndActivateNext(uuid: string, primed: boolean = false) {
         const card = this.deleteQuestCardFromUUID(uuid);
-        // console.log('Deleted?', card?.quest.uuid, this._questCards.map((q) => q.questName));
 
-        card?.destroy();
-
-        this.activateNextQuest(primed);
+        if (card) {
+            card.isBeingDestroyed = true;
+            gsap.to(card, {
+                y: -150,
+                alpha: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    card?.destroy();
+                    this.activateNextQuest(primed);
+                }
+            });
+        }
+        else
+            this.activateNextQuest(primed);
     }
 
     private shutdown() {

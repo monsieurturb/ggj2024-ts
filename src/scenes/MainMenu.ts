@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { Config, Fonts } from '../config';
+import { Colors, Config, Fonts } from '../config';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -23,6 +23,12 @@ export class MainMenu extends Scene {
             Config.screen.width * 0.5,
             Config.screen.height - 32,
             'Main Menu', styleDark).setOrigin(0.5, 1);
+
+        // const test = this.add.image(150, 150, 'test');
+        // test.setTintFill(Colors.PINK);
+
+        // const back = this.add.image(700, 600, 'back');
+        // back.setTint(Colors.PINK);
 
         this.input.once('pointerdown', () => {
             this.scene.start('Game');

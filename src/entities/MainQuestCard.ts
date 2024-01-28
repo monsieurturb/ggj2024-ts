@@ -57,6 +57,10 @@ export class MainQuestCard extends QuestCard {
             return undefined;
     }
 
+    flip() {
+        super.flip(true);
+    }
+
     update(time: number) {
         super.update(time);
 

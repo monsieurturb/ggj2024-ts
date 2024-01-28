@@ -5,6 +5,7 @@ import { QuestSlot } from "./QuestSlot";
 import { QuestReward } from "../struct/QuestReward";
 import { Random } from "../managers/Random";
 import { gsap, Power3 } from "gsap";
+import { lerp } from "../utils";
 
 export class QuestCard extends Phaser.GameObjects.Container {
     // Actual quest class
@@ -21,12 +22,12 @@ export class QuestCard extends Phaser.GameObjects.Container {
     protected _background: Phaser.GameObjects.Rectangle | undefined;
     protected _text: Phaser.GameObjects.Text | undefined;
     protected _slots: Array<QuestSlot> = [];
-
-    protected _facingUp = true;
+    protected _facingUp: boolean;
     protected _boundOnRequirementProgress: ((uuid: string) => void) | undefined;
     protected _boundOnRequirementCompleted: ((uuid: string) => void) | undefined;
 
     public targetPosition: Phaser.Geom.Point;
+    public isBeingDestroyed: boolean = false;
 
     constructor(scene: Phaser.Scene, quest: QuestStruct) {
         super(scene);
@@ -35,7 +36,11 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
         this._quest = quest;
 
+        // Create graphics
         this.createGraphics();
+
+        // Start facing down
+        this._facingUp = false;
     }
 
     createGraphics() {
@@ -50,7 +55,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
             wordWrap: { width: Config.questCard.width * 0.5 }
         })
             .setFixedSize(Config.questCard.width, Config.questCard.height)
-            .setOrigin(0, 0);
+            .setOrigin(0, 0)
+            .setVisible(this._facingUp);
 
         this.add([
             this._background,
@@ -60,7 +66,8 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
     createSlots() {
         for (let i = 0; i < this._quest.requirements.length; i++) {
-            const slot = new QuestSlot(this.scene, this._quest.requirements[i], this._quest.requirements);
+            const slot = new QuestSlot(this.scene, this._quest.requirements[i], this._quest.requirements)
+                .setVisible(this._facingUp);
             this._slots.push(slot);
         }
         this.placeSlots();
@@ -77,9 +84,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
         this._quest.activate(primed);
         this.createSlots();
 
-        // Start facing down
-        this._facingUp = true;
-        this.flip(true);
+        // Flip to face up
         this.flip();
 
         this._boundOnRequirementProgress = this.onRequirementProgress.bind(this);
@@ -93,32 +98,35 @@ export class QuestCard extends Phaser.GameObjects.Container {
             this._facingUp = !this._facingUp;
 
             this._text?.setVisible(this._facingUp);
-            for (const slot of this._slots) {
+            for (const slot of this._slots)
                 slot.setVisible(this._facingUp);
-            }
         }
         else {
             const timeline = gsap.timeline({
                 delay: 0.35,
                 defaults: {
-                    duration: 0.3,
+                    duration: 0.4,
                     ease: Power3.easeOut,
                 }
             });
             timeline.to(this, {
+                scaleX: 1.25,
                 scaleY: 0,
-                // rotation: -Math.PI * 0.01,
+                onStart: () => {
+                    this.targetPosition.y += 200;
+                },
                 onComplete: () => {
                     this._facingUp = !this._facingUp;
 
                     this._text?.setVisible(this._facingUp);
-                    for (const slot of this._slots) {
+                    for (const slot of this._slots)
                         slot.setVisible(this._facingUp);
-                    }
+
+                    this.targetPosition.y -= 200;
                 },
             }).to(this, {
+                scaleX: 1,
                 scaleY: 1,
-                rotation: 0,
             });
         }
     }
@@ -133,29 +141,38 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     update(time: number) {
+        if (this.isBeingDestroyed)
+            return;
+
         if (this._text) {
             let s = this._quest.name;
             s += "\nTurns remaining: " + this._quest.turnsRemaining;
             this._text.text = s;
         }
 
+        // Lerp to target position
         const x = this.targetPosition.x - this.x;
         const y = this.targetPosition.y - this.y;
         if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
             const mult = 0.15;
-            this.setPosition(this.x + x * mult, this.y + y * mult);
+            this.x = lerp(this.x, this.targetPosition.x, mult);
+            this.y = lerp(this.y, this.targetPosition.y, mult);
         }
         else if (Math.abs(x) > 0 || Math.abs(y) > 0) {
             this.setPosition(this.targetPosition.x, this.targetPosition.y);
         }
 
+        // Update slots
         for (const slot of this._slots) {
             slot.update();
         }
 
+        // Last turn warning
         if (this._quest.turnsRemaining === 1) {
-            const r = 0.015 * Math.sin(time / 75);// amplitude * sin(time / freq)
+            const r = 0.01 * Math.sin(time / 75);// amplitude * sin(time / freq)
+            const s = 0.01 * Math.sin(time / 125);// amplitude * sin(time / freq)
             this.setRotation(r);
+            this.setScale(1 + s);
         }
     }
 

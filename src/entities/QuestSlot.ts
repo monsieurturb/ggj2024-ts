@@ -4,6 +4,7 @@ import { CharType } from "../struct/CharStruct";
 import { QuestRequirement, QuestRequirementMode } from "../struct/QuestRequirement";
 import { Dice } from "./Dice";
 import { clamp } from "../utils";
+import DissolvePipelinePlugin from "phaser3-rex-plugins/plugins/dissolvepipeline-plugin";
 
 export class QuestSlot extends Phaser.GameObjects.Container {
     protected _zone: Phaser.GameObjects.Zone;
