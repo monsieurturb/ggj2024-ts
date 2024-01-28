@@ -43,7 +43,7 @@ export class Preloader extends Scene {
     preload() {
         this.load.setPath('assets');
 
-        this.load.audio('main_theme', 'ComediceTheme_Loop.mp3')
+        this.load.audio('main_theme', 'ComediceTheme_Loop.mp3');
         this.load.multiatlas('main', `Main_Spritesheet@${Config.DPR}x.json`, 'assets');
         this.load.multiatlas('ui', `UI_Spritesheet@${Config.DPR}x.json`, 'assets');
         this.load.multiatlas('scene', `Scene_Spritesheet@${Config.DPR}x.json`, 'assets');

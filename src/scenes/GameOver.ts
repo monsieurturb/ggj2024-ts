@@ -23,7 +23,7 @@ export class GameOver extends Scene {
 
         this.input.once('pointerdown', () => {
             this.sound.setVolume(0.666);
-            this.sound.play('main_theme');
+            this.sound.play('main_theme', { loop: true });
             this.scene.start('Game');
         });
     }
