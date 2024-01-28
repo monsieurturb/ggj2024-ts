@@ -50,8 +50,8 @@ export class Preloader extends Scene {
     }
 
     create() {
-        // this.scene.start('MainMenu');
-        this.scene.start('Game');
+        this.scene.start('MainMenu');
+        // this.scene.start('Game');
         // this.scene.start('GameOver');
     }
 }
