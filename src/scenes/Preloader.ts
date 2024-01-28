@@ -22,9 +22,18 @@ export class Preloader extends Scene {
             Config.screen.width * 0.25,
             Config.screen.height * 0.5,
             Config.screen.width * 0.5,
-            h,
+            h - 4 * Config.DPR,
             Colors.GOLD)
             .setOrigin(0, 0.5);
+
+        this.add.text(
+            Config.screen.width * 0.5,
+            Config.screen.height * 0.5 - 55 * Config.DPR,
+            "The Comedians are getting ready...",
+            Fonts.getStyle(32, Colors.WHITE_HEX, Fonts.MAIN)
+        )
+            .setAlign('center')
+            .setOrigin(0.5, 0.5);
 
         this.load.on('progress', (progress: number) => {
             bar.setScale(progress, 1);
@@ -32,7 +41,6 @@ export class Preloader extends Scene {
     }
 
     preload() {
-        //  Load the assets for the game
         this.load.setPath('assets');
 
         this.load.multiatlas('main', `Main_Spritesheet@${Config.DPR}x.json`, 'assets');
@@ -42,14 +50,6 @@ export class Preloader extends Scene {
     }
 
     create() {
-        this.add.text(
-            Config.screen.width * 0.5,
-            Config.screen.height * 0.5 - 55 * Config.DPR,
-            "The Comedians are getting ready...",
-            Fonts.getStyle(32, Colors.WHITE_HEX, Fonts.MAIN)
-        )
-            .setAlign('center')
-            .setOrigin(0.5, 0.5);
 
         this.scene.start('MainMenu');
         // this.scene.start('Game');
