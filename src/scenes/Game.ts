@@ -21,6 +21,7 @@ import { FameDisplay } from '../entities/FameDisplay';
 import { Button } from '../entities/Button';
 
 export class Game extends Scene {
+    static score: number = 0;
     static preventAllInteractions: boolean = true;
     static firstTimeUsedDice = 0;
 
@@ -68,14 +69,17 @@ export class Game extends Scene {
     preload() { }
 
     create() {
+        Game.score = 0;
         Game.preventAllInteractions = true;
+
+        // gsap.globalTimeline.resume();
 
         // Create all layers
         this._audienceLayer = this.add.container();
         this._charsLayer = this.add.container();
         this._questsLayer = this.add.container();
-        this._diceLayer = this.add.container();
         this._uiLayer = this.add.container();
+        this._diceLayer = this.add.container();
         this.mask = this.add.rectangle(0, 0, Config.screen.width, Config.screen.height, 0x000000)
             .setOrigin(0, 0)
             .removeFromDisplayList();
@@ -156,25 +160,10 @@ export class Game extends Scene {
             .setOrigin(0.5, 1)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                Game.score = this._stageBar?.score || 0;
                 this.scene.start('GameOver');
             });
         this._uiLayer.add(t);
-
-        /* NOTE Reference for scene transition
-        this.mask?.setScale(0, 1)
-            .addToDisplayList();
-        this.scene.transition({
-            target: "CutScene",
-            // moveAbove: true,
-            moveBelow: true,
-            duration: Config.sceneTransitionDuration,
-            sleep: true,
-            onUpdate: (progress: number) => {
-                const v = Phaser.Math.Easing.Bounce.Out(progress);
-                this.mask?.setScale(v, 1);
-            }
-        });
-        */
 
         // Listen to "end turn" event
         EventManager.on(Events.END_TURN, this.onEndTurn.bind(this));
@@ -193,6 +182,9 @@ export class Game extends Scene {
             EventManager.on(Events.MAIN_QUEST_PROGRESS, this._boundOnMainQuestProgress);
         }
 
+        // Listen to stage complete event
+        EventManager.on(Events.STAGE_COMPLETED, this.onStageCompleted.bind(this));
+
         // Listen to shutdown event
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown.bind(this));
 
@@ -206,7 +198,7 @@ export class Game extends Scene {
         // Create main quest
         const mainQuest = new MainQuestStruct()
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
-            .setTurnsRemaining(99);
+            .setTurnsRemaining(2);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
             .setPosition(Config.screen.width * 0.75, Config.questCard.startY);
         this._questsLayer?.add(this._mainQuestCard);
@@ -215,7 +207,7 @@ export class Game extends Scene {
         this._useAllDiceButton.setPosition(this._mainQuestCard.x, this._mainQuestCard.y + 210);
 
         // Activate main quest
-        this._mainQuestCard.activate();
+        this._mainQuestCard.activate(true);
 
         // Activate first quest if player has already played
         if (Game.firstTimeUsedDice <= 0)
@@ -437,8 +429,6 @@ export class Game extends Scene {
     }
 
     private onEndTurn() {
-        // console.log("onEndTurn");
-
         this.throwAllDice();
     }
 
@@ -458,6 +448,11 @@ export class Game extends Scene {
     private onQuestFailed(uuid: string) {
         console.log('Detected quest failed!', uuid);
 
+        if (uuid === this.mainQuestCard?.quest.uuid) {
+            this.gameOver();
+            return;
+        }
+
         // Get target quest card
         const card = this.getQuestCardFromUUID(uuid);
         // Queue rewards for fail
@@ -466,6 +461,15 @@ export class Game extends Scene {
 
         // Delete quest and activate the next
         this.deleteQuestAndActivateNext(uuid, false);
+    }
+
+    private gameOver() {
+        // Kill all gsap tweens
+        gsap.globalTimeline.clear();
+
+        // Save score and change scene
+        Game.score = this._stageBar?.score || 0;
+        this.scene.start('GameOver');
     }
 
     private deleteQuestAndActivateNext(uuid: string, success: boolean) {
@@ -488,12 +492,19 @@ export class Game extends Scene {
             this.activateNextQuest(!success);// Prime if previous quest failed
     }
 
+    private onStageCompleted() {
+        this.throwAllDice();
+
+        this._stageBar?.startNextStage();
+    }
+
     private shutdown() {
         EventManager.off(Events.END_TURN);
         EventManager.off(Events.QUEST_COMPLETED);
         EventManager.off(Events.QUEST_FAILED);
         EventManager.off(Events.REQUIREMENT_PROGRESS);
         EventManager.off(Events.REQUIREMENT_COMPLETED);
+        EventManager.off(Events.STAGE_COMPLETED);
 
         this.events.off(Phaser.Scenes.Events.SHUTDOWN);
     }

@@ -78,7 +78,7 @@ export class StageBar extends Phaser.GameObjects.Container {
             .setPosition(-size * 0.5, 0);
 
         this._bar?.setSize(size - 1 * Config.DPR, Config.stageBar.height - 3 * Config.DPR)
-            .setFillStyle(Colors.LIGHT)
+            .setFillStyle(Colors.GOLD)
             .setOrigin(0, 0.5)
             .setPosition(-size * 0.5, 0)
             .setScale(0, 1);
@@ -101,6 +101,8 @@ export class StageBar extends Phaser.GameObjects.Container {
     }
 
     startNextStage() {
+        console.log('startNextStage');
+
         this._stageLevel++;
         this._stage = new StageStruct(this._stageLevel);
         this.resetGraphics();
@@ -122,22 +124,20 @@ export class StageBar extends Phaser.GameObjects.Container {
     }
 
     onQuestCompleted() {
+        const wasComplete = this._stage.isComplete;
         this._stage.decrementLock();
 
-        if (this._stage.isComplete) {
-            console.log('STAGE_COMPLETED');
+        if (!wasComplete && this._stage.isComplete)
             EventManager.emit(Events.STAGE_COMPLETED);
-        }
     }
 
     onMainQuestProgress(value: number) {
+        const wasComplete = this._stage.isComplete;
         const added = this._stage.add(value);
         this._totalScore += added;
 
-        if (this._stage.isComplete) {
-            console.log('STAGE_COMPLETED');
+        if (!wasComplete && this._stage.isComplete)
             EventManager.emit(Events.STAGE_COMPLETED);
-        }
     }
 }
 
@@ -189,7 +189,7 @@ export class StageStruct {
 
     setupLocks() {
         const count = this._level + 1;
-        const extra = 2;
+        const extra = 0;//2
 
         // Add the progress locks
         if (count > 1) {

@@ -17,7 +17,7 @@ export class StageLock extends Phaser.GameObjects.Container {
         this._background = new RoundRectangle(
             this.scene,
             0, 0,
-            60 * Config.DPR, Config.stageBar.height * 1.25,
+            60 * Config.DPR, Config.stageBar.height * 1.35,
             10,
             Colors.WHITE
         );

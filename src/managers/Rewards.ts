@@ -182,6 +182,106 @@ export class Rewards {
     private applyQuestsReward(rewardObject: RewardObject) {
 
     }
+
+    public getRewardText(reward: QuestReward) {
+        let s = [];
+        let a = -1;
+        let v, w, v1, v2, v3, v4, v5;
+
+        // Target
+        switch (reward.target) {
+            case QuestRewardTarget.ALL_CHARS:
+                s.push(`All Comedians`);
+                break;
+            case QuestRewardTarget.ALL_NON_QUEST_CHARS:
+                s.push(`All Comedians outside this Bit`);
+                break;
+            case QuestRewardTarget.ALL_QUEST_CHARS:
+                s.push(`All Comedians from this Bit`);
+                break;
+            case QuestRewardTarget.MAIN_QUEST:
+                s.push(`Quick Jokes`);
+                break;
+            case QuestRewardTarget.NEXT_X_QUESTS:
+                v = reward.args[++a];
+                if (v === 1)
+                    s.push(`Next Bit:`);
+                else
+                    s.push(`Next ${v} Bits:`);
+                break;
+            case QuestRewardTarget.ONE_RANDOM_CHAR:
+                s.push(`One random Comedian`);
+                break;
+            case QuestRewardTarget.ONE_RANDOM_NON_QUEST_CHAR:
+                s.push(`One random Comedian outside this Bit`);
+                break;
+            case QuestRewardTarget.ONE_RANDOM_QUEST_CHAR:
+                s.push(`One random Comedian from this Bit`);
+                break;
+        }
+
+        switch (reward.type) {
+            case QuestRewardType.DISCARD:
+                s.push(``);
+                break;
+            case QuestRewardType.EXTRA_X_DICE_FOR_Y_TURNS:
+                v1 = reward.args[++a];
+                v2 = reward.args[++a];
+                if (v2 === 1)
+                    s.push(`get ${v1} extra Dice for the next Turn`);
+                else
+                    s.push(`get ${v1} extra Dice for the next ${v2} Turns`);
+                break;
+            case QuestRewardType.FREEZE_X_DICE_FOR_Y_TURNS:
+                s.push(``);
+                break;
+            case QuestRewardType.HIDE:
+                s.push(``);
+                break;
+            case QuestRewardType.HIDE_X_DICE_FOR_Y_TURNS:
+                v1 = reward.args[++a];
+                v2 = reward.args[++a];
+                if (v2 === 1)
+                    s.push(`get ${v1} hidden Dice for the next Turn`);
+                else
+                    s.push(`get ${v1} hidden Dice for the next ${v2} Turns`);
+                s.push(``);
+                break;
+            case QuestRewardType.X_LESS_TURNS_TO_COMPLETE:
+                w = v;
+                v = reward.args[++a];
+                if (v === 1)
+                    s.push(`get ${v} less Turn to complete`);
+                else
+                    s.push(`get ${v} less Turns to complete`);
+                break;
+            case QuestRewardType.X_MORE_TURNS_TO_COMPLETE:
+                w = v;
+                v = reward.args[++a];
+                if (v === 1)
+                    s.push(`get ${v} more Turn to complete`);
+                else
+                    s.push(`get ${v} more Turns to complete`);
+                break;
+            case QuestRewardType.X_MULT_FOR_Y_TURNS:
+                v1 = reward.args[++a];
+                v2 = reward.args[++a];
+                if (v2 === 1)
+                    s.push(`get a x${v1} multiplier for ${v2} Turn`);
+                else
+                    s.push(`get a x${v1} multiplier for ${v2} Turns`);
+                break;
+        }
+
+        let joined = s.join(" ");
+
+        for (let i = 0; i < reward.args.length; i++) {
+            const arg = reward.args[i];
+            joined = joined.replace(`[${i}]`, arg.toFixed());
+        }
+
+        return joined;
+    }
 }
 
 interface RewardObject {

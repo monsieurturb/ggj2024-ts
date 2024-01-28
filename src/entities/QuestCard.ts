@@ -6,6 +6,7 @@ import { QuestReward } from "../struct/QuestReward";
 import { Random } from "../managers/Random";
 import { gsap, Power3, Elastic } from "gsap";
 import { lerp } from "../utils";
+import { Rewards } from "../managers/Rewards";
 
 export class QuestCard extends Phaser.GameObjects.Container {
     // Actual quest class
@@ -55,7 +56,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
         this._text = new Phaser.GameObjects.Text(
             this.scene,
             -this._back.width * 0.5 + (30 * Config.DPR),
-            -this._back.height * 0.5 + (25 * Config.DPR),
+            -this._back.height * 0.5 + (17 * Config.DPR),
             "",
             Fonts.getStyle(32, Colors.BLACK_HEX, Fonts.MAIN)
         )
@@ -65,12 +66,13 @@ export class QuestCard extends Phaser.GameObjects.Container {
 
         this._subText = new Phaser.GameObjects.Text(
             this.scene,
-            -this._back.width * 0.5 + (30 * Config.DPR),
-            -this._back.height * 0.5 + (75 * Config.DPR),
+            -this._back.width * 0.5 + 30 * Config.DPR,
+            -this._back.height * 0.5 + 65 * Config.DPR,
             "",
             Fonts.getStyle(24, Colors.BLACK_HEX, Fonts.TEXT)
         )
-            .setFixedSize(this._back.width, this._back.height)
+            // .setFixedSize(this._back.width - 60 * Config.DPR, this._back.height)
+            .setWordWrapWidth(this._back.width - 150 * Config.DPR)
             .setOrigin(0, 0)
             .setVisible(this._facingUp);
 
@@ -125,7 +127,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
         const w = this._slots[0].width * this._slots.length + 20 * Config.DPR * (this._slots.length - 1);
         for (let i = 0; i < this._slots.length; i++) {
             this._slots[i].x = -w * 0.5 + (i + 0.5) * this._slots[i].width + i * 20 * Config.DPR;
-            this._slots[i].y = 50 * Config.DPR;
+            this._slots[i].y = 57 * Config.DPR;
             this.add(this._slots[i]);
         }
     }
@@ -133,6 +135,19 @@ export class QuestCard extends Phaser.GameObjects.Container {
     activate(primed: boolean = false) {
         this._quest.activate(primed);
         this.createSlots();
+
+        // Update texts
+        if (this._text)
+            this._text.text = this._quest.name;
+
+        if (this._subText) {
+            let s = "";
+            if (this._quest.rewardsForSuccess.length > 0)
+                s = this._quest.rewardsForSuccess.map((r) => Rewards.getInstance().getRewardText(r)).join(", ");
+            else if (this._quest.rewardsForFail.length > 0)
+                s = "Fail: " + this._quest.rewardsForFail.map((r) => r.type).join(", ");
+            this._subText.text = s;
+        }
 
         // Flip to face up
         this.flip();
@@ -208,17 +223,17 @@ export class QuestCard extends Phaser.GameObjects.Container {
         if (this.isBeingDestroyed)
             return;
 
-        if (this._text)
-            this._text.text = this._quest.name;
+        /* if (this._text)
+            this._text.text = this._quest.name; */
 
-        if (this._subText) {
+        /* if (this._subText) {
             let s = "";
             if (this._quest.rewardsForSuccess.length > 0)
-                s = "Success: " + this._quest.rewardsForSuccess.map((r) => r.type).join(", ");
+                s = "Success: " + this._quest.rewardsForSuccess.map((r) => Rewards.getInstance().getRewardText(r)).join(", ");
             else if (this._quest.rewardsForFail.length > 0)
                 s = "Fail: " + this._quest.rewardsForFail.map((r) => r.type).join(", ");
             this._subText.text = s;
-        }
+        } */
 
         if (this._turnsText)
             this._turnsText.text = this.turnsRemaining.toFixed();
@@ -241,7 +256,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
         }
 
         // Last turn warning
-        if (this._quest.turnsRemaining === 1) {
+        if (this._quest.turnsRemaining === 1 && this._quest.isPrimed) {
             const r = 0.01 * Math.sin(time / 75);// amplitude * sin(time / freq)
             const s = 0.01 * Math.sin(time / 125);// amplitude * sin(time / freq)
             this.setRotation(r);
@@ -250,6 +265,9 @@ export class QuestCard extends Phaser.GameObjects.Container {
     }
 
     onEndTurn() {
+        if (!this._quest.isPrimed)
+            return;
+
         if (this._turnsIcon) {
             gsap.to(this._turnsIcon, {
                 rotation: `-=${Math.PI}`,

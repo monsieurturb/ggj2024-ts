@@ -13,7 +13,7 @@ export class StageBarIcon extends Phaser.GameObjects.Container {
             this.scene,
             0, 0,
             Config.stageBar.height * 1.5, Config.stageBar.height * 1.5,
-            Colors.LIGHT
+            Colors.GOLD
         )
             .setOrigin(1, 0.5)
             .setStrokeStyle(3 * Config.DPR, Colors.WHITE);
@@ -33,14 +33,15 @@ export class StageBarIcon extends Phaser.GameObjects.Container {
             0, 0,
             Config.stageBar.height * 0.75 + 3 * Config.DPR,
             Config.stageBar.height - 3 * Config.DPR,
-            Colors.LIGHT
+            Colors.GOLD
         )
             .setOrigin(0, 0.5)
             .setPosition(-this._background.width * 0.5, 2 * Config.DPR);
 
         this._icon = new Phaser.GameObjects.Image(this.scene, 0, 0, 'ui', 'Picto_Smile.png')
             .setPosition(-this._background.width * 0.5, 2 * Config.DPR)
-            .setScale(0.45);
+            .setRotation(Math.PI * 0.1)
+            .setScale(0.35);
 
         this.add([
             this._overlapBorder,

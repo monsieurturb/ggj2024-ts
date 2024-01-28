@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { Config } from '../config';
+import { Colors, Config, Fonts } from '../config';
 
 export class Preloader extends Scene {
     constructor() {
@@ -7,21 +7,27 @@ export class Preloader extends Scene {
     }
 
     init() {
-        //  We loaded this image in our Boot Scene, so we can display it here
-        // this.add.image(512, 384, 'background');
+        this.cameras.main.setBackgroundColor('#1d1d2e');
 
-        //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+        const h = 30 * Config.DPR;
 
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
+        this.add.rectangle(
+            Config.screen.width * 0.5,
+            Config.screen.height * 0.5,
+            Config.screen.width * 0.5,
+            h
+        ).setStrokeStyle(4, 0xffffff);
 
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+        const bar = this.add.rectangle(
+            Config.screen.width * 0.25,
+            Config.screen.height * 0.5,
+            Config.screen.width * 0.5,
+            h,
+            Colors.GOLD)
+            .setOrigin(0, 0.5);
+
         this.load.on('progress', (progress: number) => {
-
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
-
+            bar.setScale(progress, 1);
         });
     }
 
@@ -32,14 +38,21 @@ export class Preloader extends Scene {
         this.load.multiatlas('main', `Main_Spritesheet@${Config.DPR}x.json`, 'assets');
         this.load.multiatlas('ui', `UI_Spritesheet@${Config.DPR}x.json`, 'assets');
         this.load.multiatlas('scene', `Scene_Spritesheet@${Config.DPR}x.json`, 'assets');
+        this.load.multiatlas('screens', `Screen_Spritesheet@${Config.DPR}x.json`, 'assets');
     }
 
     create() {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
+        this.add.text(
+            Config.screen.width * 0.5,
+            Config.screen.height * 0.5 - 55 * Config.DPR,
+            "The Comedians are getting ready...",
+            Fonts.getStyle(32, Colors.WHITE_HEX, Fonts.MAIN)
+        )
+            .setAlign('center')
+            .setOrigin(0.5, 0.5);
 
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        // this.scene.start('MainMenu');
-        this.scene.start('Game');
+        this.scene.start('MainMenu');
+        // this.scene.start('Game');
+        // this.scene.start('GameOver');
     }
 }

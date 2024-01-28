@@ -7,23 +7,16 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        // this.add.image(512, 384, 'background');
+        this.add.image(0, 0, 'screens', 'ScreenIntro_UI.png').setOrigin(0, 0);
 
         this.add.text(
             Config.screen.width * 0.5,
-            Config.screen.height - 32,
-            'Main Menu',
-            Fonts.getStyle(48, Colors.BLACK_HEX, Fonts.MAIN)
+            25 * Config.DPR,
+            'Global Game Jam 2024\nA game by [...]',
+            Fonts.getStyle(22, Colors.WHITE_HEX, Fonts.TEXT)
         )
-            .setStroke(Colors.WHITE_HEX, 8 * Config.DPR)
             .setAlign('center')
-            .setOrigin(0.5, 1);
-
-        // const test = this.add.image(150, 150, 'test');
-        // test.setTintFill(Colors.PINK);
-
-        // const back = this.add.image(700, 600, 'back');
-        // back.setTint(Colors.PINK);
+            .setOrigin(0.5, 0);
 
         this.input.once('pointerdown', () => {
             this.scene.start('Game');

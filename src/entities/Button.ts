@@ -20,9 +20,9 @@ export class Button extends Phaser.GameObjects.Container {
         this._background = new RoundRectangle(
             this.scene,
             0, 0,
-            this._label.width + 30 * Config.DPR, this._label.height + 10 * Config.DPR,
+            this._label.width + 40 * Config.DPR, this._label.height + 15 * Config.DPR,
             10,
-            bgColor
+            Colors.WHITE, 0.35
         );
 
         this.add([

@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
-import { Config } from '../config';
+import { Colors, Config, Fonts } from '../config';
+import { Game } from './Game';
 
 export class GameOver extends Scene {
     constructor() {
@@ -7,15 +8,16 @@ export class GameOver extends Scene {
     }
 
     create() {
+        this.add.image(0, 0, 'screens', 'ScreenOutro_UI.png').setOrigin(0, 0);
+
         this.add.text(
             Config.screen.width * 0.5,
-            Config.screen.height - 32,
-            'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-            .setOrigin(0.5, 1);
+            Config.screen.height * 0.5 + 55 * Config.DPR,
+            Game.score.toFixed(),
+            Fonts.getStyle(128, Colors.WHITE_HEX, Fonts.MAIN)
+        )
+            .setAlign('center')
+            .setOrigin(0.5, 0.5);
 
         this.input.once('pointerdown', () => {
             this.scene.start('MainMenu');

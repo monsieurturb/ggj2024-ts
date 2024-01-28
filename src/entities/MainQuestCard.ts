@@ -61,7 +61,7 @@ export class MainQuestCard extends QuestCard {
     createSlots() {
         for (let i = 0; i < this._quest.requirements.length; i++) {
             const slot = new QuestSlot(this.scene, this._quest.requirements[i], this._quest.requirements, true)
-                .setAlpha(0.25);
+                .setAlpha(0.35);
             this._slots.push(slot);
         }
         this.placeSlots();
@@ -89,6 +89,9 @@ export class MainQuestCard extends QuestCard {
 
     update(time: number) {
         super.update(time);
+
+        // this.setRotation(0);
+        // this.setScale(1);
 
         if (this._text)
             this._text.text = this._quest.name;

@@ -23,7 +23,7 @@ export class Char extends Phaser.GameObjects.Container {
 
     constructor(scene: Phaser.Scene, type: CharType) {
         super(scene);
-        console.log(type);
+        // console.log(type);
 
         // Create this char's struct
         this._char = new CharStruct(type);

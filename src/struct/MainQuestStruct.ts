@@ -10,8 +10,7 @@ export class MainQuestStruct extends QuestStruct {
     }
 
     undoRequirements() {
-        for (const req of this._requirements) {
+        for (const req of this._requirements)
             req.done = false;
-        }
     }
 }

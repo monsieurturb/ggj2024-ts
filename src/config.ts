@@ -7,10 +7,10 @@ export class Config {
 
     static screen = { width: 1920 * Config.DPR, height: 1080 * Config.DPR };
     static questCard = { width: 700 * Config.DPR, height: 250 * Config.DPR, startX: -350 * Config.DPR, startY: 320 * Config.DPR };
-    static stageBar = { width: 1200 * Config.DPR, height: 35 * Config.DPR };
+    static stageBar = { width: 1200 * Config.DPR, height: 37 * Config.DPR };
     static diceSize: number = 100 * Config.DPR;
     static sceneTransitionDuration: number = 1000;
-    static stageBaseDifficulty: number = 50;
+    static stageBaseDifficulty: number = 10;//50
     static diceRotation: number = 0.025;
     static dicePosition: number = 8;
     static maxVisibleQuests: number = 3;
@@ -24,6 +24,7 @@ export class Colors {
     static DARK_HEX: string = '#097F89';
     static LIGHT_HEX: string = '#FFCD96';
     static PINK_HEX: string = '#FF7777';
+    static GOLD_HEX: string = '#c19f00';
 
     static SLOT_ANY_HEX: string = '#ECECEC';
     static SLOT_MIMO_HEX: string = '#FFD4D5';
@@ -41,6 +42,7 @@ export class Colors {
     static DARK: number = Phaser.Display.Color.HexStringToColor(Colors.DARK_HEX).color;
     static LIGHT: number = Phaser.Display.Color.HexStringToColor(Colors.LIGHT_HEX).color;
     static PINK: number = Phaser.Display.Color.HexStringToColor(Colors.PINK_HEX).color;
+    static GOLD: number = Phaser.Display.Color.HexStringToColor(Colors.GOLD_HEX).color;
     static SLOT_ANY: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_ANY_HEX).color;
     static SLOT_MIMO: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_MIMO_HEX).color;
     static SLOT_BARD: number = Phaser.Display.Color.HexStringToColor(Colors.SLOT_BARD_HEX).color;

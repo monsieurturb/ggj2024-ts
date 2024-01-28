@@ -19,30 +19,30 @@ export class QuestBook {
     constructor() {
         this._quests = [];
 
-        this._quests.push(new QuestStruct("Reading The Crowd")
+        /* this._quests.push(new QuestStruct("Reading The Crowd")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.DISCARD, [4]))
             .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.HIDE, [4]))
-            .setTurnsRemaining(2)
-        );
-        this._quests.push(new QuestStruct("Perfect Delivery")
+            .setTurnsRemaining(1)
+        ); */
+        /* this._quests.push(new QuestStruct("Perfect Delivery")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.EXACT, 6))
-            .addRewardForSuccess(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.X_MORE_TURNS_TO_COMPLETE, [1, 1]))
-            .setTurnsRemaining(2)
-        );
+            .addRewardForSuccess(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.X_MORE_TURNS_TO_COMPLETE, [1, 2]))
+            .setTurnsRemaining(1)
+        ); */
         this._quests.push(new QuestStruct("Irresistible Duo")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
-            .addRewardForSuccess(new QuestReward(QuestRewardTarget.MAIN_QUEST, QuestRewardType.X_MULT_FOR_Y_TURNS, [2, 1]))
-            .setTurnsRemaining(3)
+            .addRewardForSuccess(new QuestReward(QuestRewardTarget.MAIN_QUEST, QuestRewardType.X_MULT_FOR_Y_TURNS, [2, 2]))
+            .setTurnsRemaining(6)
         );
-        this._quests.push(new QuestStruct("Inspiring Monologue")
+        /* this._quests.push(new QuestStruct("Inspiring Monologue")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SCORE, 13))
             .addRewardForSuccess(new QuestReward(QuestRewardTarget.ALL_NON_QUEST_CHARS, QuestRewardType.EXTRA_X_DICE_FOR_Y_TURNS, [1, 1]))
-            .setTurnsRemaining(2)
-        );
+            .setTurnsRemaining(1)
+        ); */
         /* this._quests.push(new QuestStruct("Test Random Exact")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.EXACT, -1))
             .setTurnsRemaining(2)
