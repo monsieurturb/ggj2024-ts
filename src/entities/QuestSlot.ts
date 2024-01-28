@@ -11,7 +11,8 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     protected _background: Phaser.GameObjects.Sprite;
     protected _text: Phaser.GameObjects.Text;
     protected _subText: Phaser.GameObjects.Text;
-    protected _check: Phaser.GameObjects.Sprite;
+    protected _check: Phaser.GameObjects.Image;
+    protected _pictoSame: Phaser.GameObjects.Image;
 
     protected _requirement: QuestRequirement;
     protected _allRequirements: Array<QuestRequirement>;
@@ -77,7 +78,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             .setAlign('center')
             .setOrigin(0.5, 0.5);
 
-        this._check = new Phaser.GameObjects.Sprite(
+        this._check = new Phaser.GameObjects.Image(
             this.scene,
             0, 0,
             'ui',
@@ -85,6 +86,14 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         )
             .setTintFill(checkColor)
             .setScale(1.5)
+            .setVisible(false);
+
+        this._pictoSame = new Phaser.GameObjects.Image(
+            this.scene,
+            -this._background.width * 0.555, 0,
+            'ui',
+            'Picto_Egal.png',
+        )
             .setVisible(false);
 
         this._zone = new Phaser.GameObjects.Zone(
@@ -100,24 +109,10 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             this._text,
             this._subText,
             this._check,
+            this._pictoSame,
             this._zone,
         ]);
     }
-
-    /* getRequirementPicto() {
-        if (this._belongsToMainQuest || this._requirement.done)
-            return "";
-
-        let s = (() => {
-            switch (this._requirement.mode) {
-                case QuestRequirementMode.EVEN: return "";
-                case QuestRequirementMode.ODD: return "";
-                case QuestRequirementMode.SAME: return "?";
-                default: return this._requirement.value.toFixed();
-            }
-        })();
-        return s;
-    } */
 
     getRequirementValue() {
         if (this._belongsToMainQuest || this._requirement.done)
@@ -131,6 +126,10 @@ export class QuestSlot extends Phaser.GameObjects.Container {
                 default: return this._requirement.value.toFixed();
             }
         })();
+
+        if (this._requirement.mode === QuestRequirementMode.SAME && this.isLastOfAll())
+            this._pictoSame?.setVisible(true);
+
         return s;
     }
 
@@ -146,7 +145,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
                 case QuestRequirementMode.MAX: return "MAX";
                 case QuestRequirementMode.MIN: return "MIN";
                 case QuestRequirementMode.ODD: return "ODD";
-                case QuestRequirementMode.SAME: return "SAME";
+                // case QuestRequirementMode.SAME: return "SAME";
                 case QuestRequirementMode.SCORE: return "REACH";
                 default: return "";
             }
@@ -158,6 +157,16 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         this._text.text = this.getRequirementValue();
         this._subText.text = this.getRequirementText();
         this._check.setVisible(this._requirement.done);
+
+        if (this._subText.text === "")
+            this._text.y = 0;
+        else
+            this._text.y = 10 * Config.DPR;
+
+        if (this._text.text === "")
+            this._subText.y = 0;
+        else
+            this._subText.y = -40 * Config.DPR;
     }
 
     isDiceValid(dice: Dice) {
@@ -200,6 +209,10 @@ export class QuestSlot extends Phaser.GameObjects.Container {
 
     protected isFirstOfAll() {
         return this._allRequirements[0].uuid === this._requirement.uuid;
+    }
+
+    protected isLastOfAll() {
+        return this._allRequirements[this._allRequirements.length - 1].uuid === this._requirement.uuid;
     }
 
     protected getValueFromOtherSlots(): number {

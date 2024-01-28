@@ -68,7 +68,7 @@ export class QuestBook {
             .setTurnsRemaining(1)
         );
         // 8
-        this._quests.push(new QuestStruct("Working Out")
+        this._quests.push(new QuestStruct("Troup Rehearsal")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.SCORE, 21))
             .setTurnsRemaining(3)
         );
@@ -88,7 +88,7 @@ export class QuestBook {
         this._quests.push(new QuestStruct("Style Clash")
             .addRequirement(new QuestRequirement(CharType.MIMO, QuestRequirementMode.ODD, -1))
             .addRequirement(new QuestRequirement(CharType.POET, QuestRequirementMode.EVEN, -1))
-            .setTurnsRemaining(2)
+            .setTurnsRemaining(1)
         );
         // 12
         this._quests.push(new QuestStruct("Comic Opera")
@@ -125,7 +125,7 @@ export class QuestBook {
 
     public pickOne(): QuestStruct {
         if (!import.meta.env.PROD)
-            return this._quests[13].clone();
+            return this._quests[0].clone();
 
         return Random.getInstance().pick(this._quests).clone();
     }

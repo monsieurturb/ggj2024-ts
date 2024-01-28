@@ -49,6 +49,8 @@ export class Game extends Scene {
     private _endTurnButton: Button | undefined;
     private _fameDisplay: FameDisplay | undefined;
     private _turnsDisplay: TurnsDisplay | undefined;
+    private _bitsTitle: Phaser.GameObjects.Text | undefined;
+    private _jokesTitle: Phaser.GameObjects.Text | undefined;
 
     public mask: Phaser.GameObjects.Rectangle | undefined;
 
@@ -104,6 +106,30 @@ export class Game extends Scene {
                 70 * Config.DPR
             );
 
+        // Bits title
+        this._bitsTitle = new Phaser.GameObjects.Text(
+            this,
+            90 * Config.DPR, Config.questCard.startY,
+            "Refined Bits",
+            Fonts.getStyle(64, Colors.WHITE_HEX, Fonts.MAIN),
+        )
+            .setAlign('center')
+            .setAlpha(0.5)
+            .setOrigin(0.5, 0.5)
+            .setRotation(-Math.PI * 0.5);
+
+        // Jokes title
+        this._jokesTitle = new Phaser.GameObjects.Text(
+            this,
+            Config.screen.width - 90 * Config.DPR, Config.questCard.startY,
+            "Quick Jokes",
+            Fonts.getStyle(64, Colors.WHITE_HEX, Fonts.MAIN),
+        )
+            .setAlign('center')
+            .setAlpha(0.5)
+            .setOrigin(0.5, 0.5)
+            .setRotation(Math.PI * 0.5);
+
         // End turn button
         this._endTurnButton = new Button(this, "End turn", 38, Colors.WHITE_HEX, Colors.CHECK_BARD)
             .setPosition(Config.screen.width - 120 * Config.DPR, Config.screen.height - 60 * Config.DPR)
@@ -127,6 +153,8 @@ export class Game extends Scene {
 
         // Add to UI layer
         this._uiLayer.add([
+            this._bitsTitle,
+            this._jokesTitle,
             this._fameDisplay,
             this._turnsDisplay,
             this._useAllDiceButton,
@@ -147,23 +175,6 @@ export class Game extends Scene {
             this._audience,
             this._curtains,
         ]);
-
-        // NOTE Debug scene name
-        let t = this.add.text(
-            Config.screen.width * 0.5,
-            Config.screen.height * Config.DPR,
-            'Game', {
-            fontFamily: 'Arial Black', fontSize: 32 * Config.DPR, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8 * Config.DPR,
-            align: 'center'
-        })
-            .setOrigin(0.5, 1)
-            .setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                Game.score = this._stageBar?.score || 0;
-                this.scene.start('GameOver');
-            });
-        this._uiLayer.add(t);
 
         // Listen to "end turn" event
         EventManager.on(Events.END_TURN, this.onEndTurn.bind(this));
@@ -200,7 +211,7 @@ export class Game extends Scene {
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
             .setTurnsRemaining(30);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
-            .setPosition(Config.screen.width * 0.75, Config.questCard.startY);
+            .setPosition(Config.screen.width * 0.785, Config.questCard.startY);
         this._questsLayer?.add(this._mainQuestCard);
 
         // Place button
@@ -248,7 +259,7 @@ export class Game extends Scene {
         // Reset target positions
         for (let i = 0; i < this._questCards.length; i++) {
             const card = this._questCards[i];
-            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.31 + i * (-50 * Config.DPR), Config.questCard.startY);
+            card.targetPosition = new Phaser.Geom.Point(Config.screen.width * 0.31 + i * (-40 * Config.DPR), Config.questCard.startY);
         }
 
         const card = this._questCards[0];
