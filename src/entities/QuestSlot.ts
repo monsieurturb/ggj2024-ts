@@ -61,7 +61,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
 
         this._text = new Phaser.GameObjects.Text(
             this.scene,
-            0, -10,
+            0, 10 * Config.DPR,
             this.getRequirementValue(),
             Fonts.getStyle(72, Colors.BLACK_HEX, Fonts.MAIN),
         )
@@ -70,7 +70,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
 
         this._subText = new Phaser.GameObjects.Text(
             this.scene,
-            0, 50,
+            0, -40 * Config.DPR,
             this.getRequirementText(),
             Fonts.getStyle(26, Colors.BLACK_HEX, Fonts.TEXT),
         )
@@ -104,11 +104,34 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         ]);
     }
 
+    /* getRequirementPicto() {
+        if (this._belongsToMainQuest || this._requirement.done)
+            return "";
+
+        let s = (() => {
+            switch (this._requirement.mode) {
+                case QuestRequirementMode.EVEN: return "";
+                case QuestRequirementMode.ODD: return "";
+                case QuestRequirementMode.SAME: return "?";
+                default: return this._requirement.value.toFixed();
+            }
+        })();
+        return s;
+    } */
+
     getRequirementValue() {
         if (this._belongsToMainQuest || this._requirement.done)
             return "";
 
-        return this._requirement.value.toFixed();
+        let s = (() => {
+            switch (this._requirement.mode) {
+                case QuestRequirementMode.EVEN: return "";
+                case QuestRequirementMode.ODD: return "";
+                case QuestRequirementMode.SAME: return "?";
+                default: return this._requirement.value.toFixed();
+            }
+        })();
+        return s;
     }
 
     getRequirementText() {
@@ -119,9 +142,11 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             switch (this._requirement.mode) {
                 case QuestRequirementMode.EVEN: return "EVEN";
                 case QuestRequirementMode.EXACT: return "EXACTLY";
+                case QuestRequirementMode.EXCEPT: return "EXCEPT";
                 case QuestRequirementMode.MAX: return "MAX";
                 case QuestRequirementMode.MIN: return "MIN";
                 case QuestRequirementMode.ODD: return "ODD";
+                case QuestRequirementMode.SAME: return "SAME";
                 case QuestRequirementMode.SCORE: return "REACH";
                 default: return "";
             }
@@ -171,6 +196,10 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         }
 
         return isTypeValid && isValueValid;
+    }
+
+    protected isFirstOfAll() {
+        return this._allRequirements[0].uuid === this._requirement.uuid;
     }
 
     protected getValueFromOtherSlots(): number {

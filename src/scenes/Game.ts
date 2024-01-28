@@ -198,7 +198,7 @@ export class Game extends Scene {
         // Create main quest
         const mainQuest = new MainQuestStruct()
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
-            .setTurnsRemaining(2);
+            .setTurnsRemaining(30);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
             .setPosition(Config.screen.width * 0.75, Config.questCard.startY);
         this._questsLayer?.add(this._mainQuestCard);

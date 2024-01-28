@@ -19,29 +19,98 @@ export class QuestBook {
     constructor() {
         this._quests = [];
 
-        /* this._quests.push(new QuestStruct("Reading The Crowd")
+        // 0
+        this._quests.push(new QuestStruct("Reading The Crowd")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
-            .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.DISCARD, [4]))
-            .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.HIDE, [4]))
-            .setTurnsRemaining(1)
-        ); */
-        /* this._quests.push(new QuestStruct("Perfect Delivery")
+            // .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.DISCARD, [4]))
+            // .addRewardForFail(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.HIDE, [4]))
+            .setTurnsRemaining(3)
+        );
+        // 1
+        this._quests.push(new QuestStruct("Perfect Delivery")
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.EXACT, 6))
-            .addRewardForSuccess(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.X_MORE_TURNS_TO_COMPLETE, [1, 2]))
-            .setTurnsRemaining(1)
-        ); */
+            // .addRewardForSuccess(new QuestReward(QuestRewardTarget.NEXT_X_QUESTS, QuestRewardType.X_MORE_TURNS_TO_COMPLETE, [1, 2]))
+            .setTurnsRemaining(2)
+        );
+        // 2
         this._quests.push(new QuestStruct("Irresistible Duo")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.MIN, 3))
             .addRewardForSuccess(new QuestReward(QuestRewardTarget.MAIN_QUEST, QuestRewardType.X_MULT_FOR_Y_TURNS, [2, 2]))
-            .setTurnsRemaining(6)
+            .setTurnsRemaining(2)
         );
-        /* this._quests.push(new QuestStruct("Inspiring Monologue")
+        // 3
+        this._quests.push(new QuestStruct("Inspiring Monologue")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.SCORE, 13))
             .addRewardForSuccess(new QuestReward(QuestRewardTarget.ALL_NON_QUEST_CHARS, QuestRewardType.EXTRA_X_DICE_FOR_Y_TURNS, [1, 1]))
+            .setTurnsRemaining(2)
+        );
+        // 4
+        this._quests.push(new QuestStruct("Drawing a Blank")
+            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.EXACT, 1))
+            .setTurnsRemaining(2)
+        );
+        // 5
+        this._quests.push(new QuestStruct("Great Punchline")
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 5))
             .setTurnsRemaining(1)
+        );
+        // 6
+        this._quests.push(new QuestStruct("Hilarious One-Liner")
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.EXACT, 1))
+            .setTurnsRemaining(2)
+        );
+        // 7
+        this._quests.push(new QuestStruct("Tight Five")
+            .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.EXACT, 5))
+            .setTurnsRemaining(1)
+        );
+        // 8
+        this._quests.push(new QuestStruct("Working Out")
+            .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.SCORE, 21))
+            .setTurnsRemaining(3)
+        );
+        // 9
+        this._quests.push(new QuestStruct("Musical Interlude")
+            .addRequirement(new QuestRequirement(CharType.POET, QuestRequirementMode.MAX, 3))
+            .addRequirement(new QuestRequirement(CharType.BARD, QuestRequirementMode.MAX, 3))
+            .setTurnsRemaining(3)
+        );
+        // 10
+        this._quests.push(new QuestStruct("Burlesque Bit")
+            .addRequirement(new QuestRequirement(CharType.BARD, QuestRequirementMode.MAX, 2))
+            .addRequirement(new QuestRequirement(CharType.MIMO, QuestRequirementMode.MIN, 5))
+            .setTurnsRemaining(2)
+        );
+        // 11
+        this._quests.push(new QuestStruct("Style Clash")
+            .addRequirement(new QuestRequirement(CharType.MIMO, QuestRequirementMode.ODD, -1))
+            .addRequirement(new QuestRequirement(CharType.POET, QuestRequirementMode.EVEN, -1))
+            .setTurnsRemaining(2)
+        );
+        // 12
+        this._quests.push(new QuestStruct("Comic Opera")
+            .addRequirement(new QuestRequirement(CharType.BARD, QuestRequirementMode.SCORE, 9))
+            .setTurnsRemaining(1)
+        );
+        // 13
+        this._quests.push(new QuestStruct("Double Entendre")
+            .addRequirement(new QuestRequirement(CharType.POET, QuestRequirementMode.SAME, -1))
+            .addRequirement(new QuestRequirement(CharType.POET, QuestRequirementMode.SAME, -1))
+            .setTurnsRemaining(3)
+        );
+        // 14
+        this._quests.push(new QuestStruct("Slapstick Master")
+            .addRequirement(new QuestRequirement(CharType.MIMO, QuestRequirementMode.EXCEPT, 4))
+            .setTurnsRemaining(1)
+        );
+        /* this._quests.push(new QuestStruct("Elaborate Pun")
+            .addRequirement(new QuestRequirement(CharType.FIRST, QuestRequirementMode.EXACT, 1))
+            .addRequirement(new QuestRequirement(CharType.SECOND, QuestRequirementMode.EXACT, 2))
+            .addRequirement(new QuestRequirement(CharType.THIRD, QuestRequirementMode.EXACT, 3))
+            .setTurnsRemaining(3)
         ); */
         /* this._quests.push(new QuestStruct("Test Random Exact")
             .addRequirement(new QuestRequirement(CharType.RANDOM, QuestRequirementMode.EXACT, -1))
@@ -55,12 +124,11 @@ export class QuestBook {
     }
 
     public pickOne(): QuestStruct {
+        // return this._quests[13].clone();
         return Random.getInstance().pick(this._quests).clone();
     }
 }
 /*
-
-// TODO Deck of cards for quests: colored back for colored quests, colorless for non-colored quests, special color for hidden quests
 
 Perfect Delivery
 Req: EXACT 6
