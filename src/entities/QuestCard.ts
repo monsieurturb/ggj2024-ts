@@ -24,7 +24,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
     protected _subText: Phaser.GameObjects.Text | undefined;
     protected _slots: Array<QuestSlot> = [];
     protected _turnsText: Phaser.GameObjects.Text | undefined;
-    protected _turnsIcon: Phaser.GameObjects.Sprite | undefined;
+    protected _turnsIcon: Phaser.GameObjects.Image | undefined;
     protected _turnsCircle: Phaser.GameObjects.Ellipse | undefined;
 
     protected _facingUp: boolean;
@@ -84,7 +84,7 @@ export class QuestCard extends Phaser.GameObjects.Container {
             .setOrigin(0.5, 0.5)
             .setVisible(this._facingUp);
 
-        this._turnsIcon = new Phaser.GameObjects.Sprite(
+        this._turnsIcon = new Phaser.GameObjects.Image(
             this.scene,
             this._turnsText.x - 40 * Config.DPR, this._turnsText.y,
             'ui',

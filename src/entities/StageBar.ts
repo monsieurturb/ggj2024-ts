@@ -13,11 +13,11 @@ export class StageBar extends Phaser.GameObjects.Container {
 
     protected _stageLevel: number = 0;
     protected _stage: StageStruct;
+    protected _totalScore: number = 0;
+    public get score() { return this._totalScore; }
 
     constructor(scene: Phaser.Scene) {
         super(scene);
-
-        // TODO One stage after the other, with always one lock at the end and [n-1] locks placed evenly
 
         // Base graphics
         this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0);
@@ -29,6 +29,8 @@ export class StageBar extends Phaser.GameObjects.Container {
             this._bar,
             this._locksLayer,
         ]);
+
+        this._totalScore = 0;
 
         // Init first stage
         this._stageLevel = 3;
@@ -97,7 +99,8 @@ export class StageBar extends Phaser.GameObjects.Container {
     }
 
     onMainQuestProgress(value: number) {
-        this._stage.add(value);
+        const added = this._stage.add(value);
+        this._totalScore += added;
 
         if (this._stage.isComplete) {
             console.log('STAGE_COMPLETED');
@@ -115,6 +118,7 @@ export class StageStruct {
     private _total: number;
     public get total() { return this._total; }
     private _current: number;
+    public get score() { return this._current };
     public get progress() { return clamp(0, 1, this._current / this._total); };
     public get isComplete() { return !this.getCurrentLock() && this._current >= this._total; };
 
@@ -162,12 +166,16 @@ export class StageStruct {
         return false;
     }
 
-    add(value: number) {
+    add(value: number): number {
+        const prevScore = this._current;
+
         const lock = this.getCurrentLock();
         if (lock)
             this._current = clamp(0, lock.cap, this._current + value);
         else
             this._current += value;
+
+        return this._current - prevScore;
     }
 
     decrementLock() {

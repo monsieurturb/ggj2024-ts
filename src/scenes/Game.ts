@@ -16,6 +16,8 @@ import { QuestReward, QuestRewardTarget, QuestRewardType } from '../struct/Quest
 import { Random } from '../managers/Random';
 import { Curtains } from '../entities/Curtains';
 import { Audience } from '../entities/Audience';
+import { TurnsDisplay } from '../entities/TurnsDisplay';
+import { FameDisplay } from '../entities/FameDisplay';
 
 export class Game extends Scene {
     static preventAllInteractions: boolean = true;
@@ -25,14 +27,13 @@ export class Game extends Scene {
     private _chars: Array<Char> = [];
     public get chars() { return this._chars; }
     private _questCards: Array<QuestCard> = [];
-    private _bossBar: StageBar | undefined;
+    private _stageBar: StageBar | undefined;
     private _audience: Audience | undefined;
     private _curtains: Curtains | undefined;
 
     // Data
     private _mainQuestCard: MainQuestCard | undefined;
     public get mainQuestCard() { return this._mainQuestCard; }
-    private _turnsRemaining: number = 10;
 
     // Layers
     private _audienceLayer: Phaser.GameObjects.Container | undefined;
@@ -44,7 +45,8 @@ export class Game extends Scene {
     // UI
     private _useAllDiceButton: Phaser.GameObjects.Text | undefined;
     private _endTurnButton: Phaser.GameObjects.Text | undefined;
-    private _turnText: Phaser.GameObjects.Text | undefined;
+    private _fameDisplay: FameDisplay | undefined;
+    private _turnsDisplay: TurnsDisplay | undefined;
 
     public mask: Phaser.GameObjects.Rectangle | undefined;
 
@@ -60,7 +62,6 @@ export class Game extends Scene {
         // Reset data
         this._chars = [];
         this._questCards = [];
-        this._turnsRemaining = 10;
     }
 
     preload() { }
@@ -84,18 +85,24 @@ export class Game extends Scene {
         // Setup rewards manager
         Rewards.getInstance().setup(this);
 
+        // Fame display
+        this._fameDisplay = new FameDisplay(this)
+            .setPosition(
+                110 * Config.DPR,
+                70 * Config.DPR
+            );
+
         // Turns display
-        this._turnText = this.add.text(
-            10, 10,
-            "", {
-            fontFamily: 'Arial Black', fontSize: 32, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
+        this._turnsDisplay = new TurnsDisplay(this)
+            .setPosition(
+                Config.screen.width - 110 * Config.DPR,
+                70 * Config.DPR
+            );
 
         // End turn button
         this._endTurnButton = this.add.text(
-            Config.screen.width - 40, Config.screen.height - 40,
+            Config.screen.width - 40 * Config.DPR,
+            Config.screen.height - 40 * Config.DPR,
             "End turn",
             Fonts.getStyle(38, Colors.WHITE_HEX, Fonts.MAIN)
         )
@@ -110,7 +117,8 @@ export class Game extends Scene {
 
         // Use all dice button
         this._useAllDiceButton = this.add.text(
-            Config.screen.width - 40, Config.screen.height - 120,
+            Config.screen.width - 40 * Config.DPR,
+            Config.screen.height - 120 * Config.DPR,
             "Use all dice",
             Fonts.getStyle(42, Colors.WHITE_HEX, Fonts.MAIN),
         )
@@ -124,15 +132,16 @@ export class Game extends Scene {
             });
 
         // Boss bar
-        this._bossBar = new StageBar(this)
-            .setPosition(Config.screen.width * 0.5, 30);
+        this._stageBar = new StageBar(this)
+            .setPosition(Config.screen.width * 0.5, 30 * Config.DPR);
 
         // Add to UI layer
         this._uiLayer.add([
-            this._turnText,
+            this._fameDisplay,
+            this._turnsDisplay,
             this._useAllDiceButton,
             this._endTurnButton,
-            this._bossBar,
+            this._stageBar,
         ]);
 
         // Audience
@@ -225,7 +234,7 @@ export class Game extends Scene {
         // Create main quest
         const mainQuest = new MainQuestStruct()
             .addRequirement(new QuestRequirement(CharType.ANY, QuestRequirementMode.MIN, 1))
-            .setTurnsRemaining(9999);
+            .setTurnsRemaining(99);
         this._mainQuestCard = new MainQuestCard(this, mainQuest)
             .setPosition(Config.screen.width * 0.75, Config.questCard.startY);
         this._questsLayer?.add(this._mainQuestCard);
@@ -252,7 +261,6 @@ export class Game extends Scene {
     }
 
     private endTurn() {
-        this._turnsRemaining--;
         EventManager.emit(Events.END_TURN);
     }
 
@@ -365,9 +373,11 @@ export class Game extends Scene {
         }
 
         // Update UI
-        this._bossBar?.update();
-        if (this._turnText)
-            this._turnText.text = "Turns remaining: " + this._turnsRemaining;
+        this._stageBar?.update();
+        if (this._stageBar)
+            this._fameDisplay?.updateValue(this._stageBar.score);
+        if (this._mainQuestCard)
+            this._turnsDisplay?.updateValue(this._mainQuestCard.quest.turnsRemaining);
     }
 
     private getQuestCardFromUUID(uuid: string): QuestCard | undefined {
