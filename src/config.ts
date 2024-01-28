@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser';
-import { clamp } from './utils';
 
 export class Config {
     static DEBUG: boolean = false;
