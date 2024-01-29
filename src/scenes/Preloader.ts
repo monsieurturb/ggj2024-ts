@@ -7,7 +7,7 @@ export class Preloader extends Scene {
     }
 
     init() {
-        this.cameras.main.setBackgroundColor('#1d1d2e');
+        // this.cameras.main.setBackgroundColor('#1d1d2e');
 
         const h = 30 * Config.DPR;
 

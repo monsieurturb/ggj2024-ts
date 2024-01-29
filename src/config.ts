@@ -20,7 +20,7 @@ export class Config {
 export class Colors {
     static BLACK_HEX: string = '#000000';
     static WHITE_HEX: string = '#FFFFFF';
-    static BACKGROUND_HEX: string = '#00303C';
+    static BACKGROUND_HEX: string = '#1d1d2e';
     static DARK_HEX: string = '#097F89';
     static LIGHT_HEX: string = '#FFCD96';
     static PINK_HEX: string = '#FF7777';
