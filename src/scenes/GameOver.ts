@@ -19,11 +19,11 @@ export class GameOver extends Scene {
             .setAlign('center')
             .setOrigin(0.5, 0.5);
 
-        this.sound.stopAll();
+        // this.sound.stopAll();
 
         this.input.once('pointerdown', () => {
-            this.sound.setVolume(0.666);
-            this.sound.play('main_theme', { loop: true });
+            // this.sound.setVolume(0.666);
+            // this.sound.play('main_theme', { loop: true });
             this.scene.start('Game');
         });
     }
