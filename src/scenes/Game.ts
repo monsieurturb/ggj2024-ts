@@ -215,7 +215,7 @@ export class Game extends Scene {
         this._questsLayer?.add(this._mainQuestCard);
 
         // Place button
-        this._useAllDiceButton.setPosition(this._mainQuestCard.x, this._mainQuestCard.y + 210);
+        this._useAllDiceButton.setPosition(this._mainQuestCard.x, this._mainQuestCard.y + 210 * Config.DPR);
 
         // Activate main quest
         this._mainQuestCard.activate(true);
