@@ -5,6 +5,7 @@ import { QuestRequirement, QuestRequirementMode } from "../struct/QuestRequireme
 import { Dice } from "./Dice";
 import { clamp } from "../utils";
 import DissolvePipelinePlugin from "phaser3-rex-plugins/plugins/dissolvepipeline-plugin";
+import { Game } from "../scenes/Game";
 
 export class QuestSlot extends Phaser.GameObjects.Container {
     protected _zone: Phaser.GameObjects.Zone;
@@ -17,6 +18,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     protected _requirement: QuestRequirement;
     protected _allRequirements: Array<QuestRequirement>;
     protected _belongsToMainQuest: boolean;
+    public get belongsToMainQuest() { return this._belongsToMainQuest; };
 
     protected _diceHistory: Array<DiceSnapshot>;
     public get diceHistory() { return this._diceHistory; }
@@ -170,6 +172,12 @@ export class QuestSlot extends Phaser.GameObjects.Container {
     }
 
     isDiceValid(dice: Dice) {
+        if (this._belongsToMainQuest) {
+            const gameScene = this.scene.scene.get("Game") as Game;
+            if (gameScene.stageBar?.stage.isLockedAndMaxed())
+                return false;
+        }
+
         if (this._requirement.done)
             return false;
 
@@ -223,8 +231,7 @@ export class QuestSlot extends Phaser.GameObjects.Container {
         return -1;
     }
 
-    addDice(dice: Dice) {
-        // NOTE Maybe remove this since we already check it before calling addDice
+    addDice(dice: Dice): boolean {
         if (!this.isDiceValid(dice))
             return false;
 
@@ -266,6 +273,8 @@ export class QuestSlot extends Phaser.GameObjects.Container {
             EventManager.emit(Events.REQUIREMENT_COMPLETED, this._requirement.uuid);
         else
             EventManager.emit(Events.REQUIREMENT_PROGRESS, this._requirement.uuid);
+
+        return true;
     }
 
     clearHistory() {

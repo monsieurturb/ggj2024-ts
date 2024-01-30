@@ -4,6 +4,7 @@ import { Colors, Config, Fonts } from '../config';
 export class Button extends Phaser.GameObjects.Container {
     protected _background: RoundRectangle;
     protected _label: Phaser.GameObjects.Text;
+    protected _enabled: boolean;
 
     constructor(scene: Phaser.Scene, text: string, fontSize: number, color: string, bgColor: number) {
         super(scene);
@@ -39,5 +40,18 @@ export class Button extends Phaser.GameObjects.Container {
             ),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
         }, Phaser.Geom.Rectangle.Contains);
+
+        this._enabled = true;
+    }
+
+    enable(enabled: boolean) {
+        if (enabled === this._enabled)
+            return;
+
+        this._enabled = enabled;
+        if (this.input)
+            this.input.enabled = this._enabled;
+
+        this.setAlpha(this._enabled ? 1 : 0.25);
     }
 }

@@ -23,13 +23,14 @@ import { Button } from '../entities/Button';
 export class Game extends Scene {
     static score: number = 0;
     static preventAllInteractions: boolean = true;
-    static firstTimeUsedDice = 3;
+    static firstTimeUsedDice = 0;
 
     // Entities
     private _chars: Array<Char> = [];
     public get chars() { return this._chars; }
     private _questCards: Array<QuestCard> = [];
     private _stageBar: StageBar | undefined;
+    public get stageBar() { return this._stageBar; }
     private _audience: Audience | undefined;
     private _curtains: Curtains | undefined;
 
@@ -73,8 +74,6 @@ export class Game extends Scene {
     create() {
         Game.score = 0;
         Game.preventAllInteractions = true;
-
-        // gsap.globalTimeline.resume();
 
         // Create all layers
         this._audienceLayer = this.add.container();
@@ -352,10 +351,16 @@ export class Game extends Scene {
 
         // Update UI
         this._stageBar?.update(time);
-        if (this._stageBar)
+        if (this._stageBar) {
+            // Update fame display
             this._fameDisplay?.updateValue(this._stageBar.score);
-        if (this._mainQuestCard)
+            // Update "Use all dice" button
+            this._useAllDiceButton?.enable(!this._stageBar.stage.isLockedAndMaxed());
+        }
+        if (this._mainQuestCard) {
+            // Update turns display
             this._turnsDisplay?.updateValue(this._mainQuestCard.quest.turnsRemaining);
+        }
     }
 
     private getQuestCardFromUUID(uuid: string): QuestCard | undefined {
@@ -414,6 +419,10 @@ export class Game extends Scene {
                 Game.preventAllInteractions = true;
             },
             onComplete: () => {
+                // If stage bar is now locked, vibrate lock
+                if (this._stageBar?.stage.isLockedAndMaxed())
+                    EventManager.emit(Events.VIBRATE_LOCK);
+
                 Game.preventAllInteractions = false;
             },
         });
@@ -429,9 +438,15 @@ export class Game extends Scene {
                         // Deactivate dice
                         if (dice.input)
                             dice.input.enabled = false;
+                        // Hack the dragPosition property to store the starting position
+                        dice.tweenStartPosition.setTo(dice.x, dice.y);
                     },
                     onComplete: () => {
-                        slot.addDice(dice);
+                        const added = slot.addDice(dice);
+                        console.log('added:', added, dice.tweenStartPosition);
+
+                        if (!added)
+                            dice.moveBackToPosition(dice.tweenStartPosition.x, dice.tweenStartPosition.y);
                     },
                 },
                 "<0.1"

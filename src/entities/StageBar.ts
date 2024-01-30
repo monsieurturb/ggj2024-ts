@@ -1,9 +1,13 @@
+import { gsap, Bounce, Elastic } from "gsap";
+// import { RoughEase } from "gsap/EasePack";
 import { Colors, Config, Fonts } from "../config";
 import { EventManager, Events } from "../managers/Events";
 import { Random } from "../managers/Random";
 import { clamp, ilerp, lerp } from "../utils";
 import { StageBarIcon } from "./StageBarIcon";
 import { StageLock, StageLockStruct } from "./StageLock";
+
+// gsap.registerPlugin(RoughEase);
 
 export class StageBar extends Phaser.GameObjects.Container {
     // Graphics objects
@@ -16,6 +20,7 @@ export class StageBar extends Phaser.GameObjects.Container {
 
     protected _stageLevel: number = 0;
     protected _stage: StageStruct;
+    public get stage() { return this._stage; }
     protected _totalScore: number = 0;
     public get score() { return this._totalScore; }
 
@@ -26,12 +31,19 @@ export class StageBar extends Phaser.GameObjects.Container {
         this._nameText = new Phaser.GameObjects.Text(
             this.scene,
             0,
-            -65 * Config.DPR,
+            -70 * Config.DPR,
             "",
             Fonts.getStyle(32, Colors.WHITE_HEX, Fonts.MAIN)
         )
             .setAlign('center')
             .setOrigin(0.5, 0);
+
+        if (!import.meta.env.PROD) {
+            this._nameText.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                console.log('change scene');
+                this.scene.scene.start('GameOver');
+            })
+        }
 
         this._background = new Phaser.GameObjects.Rectangle(this.scene, 0, 0);
         this._bar = new Phaser.GameObjects.Rectangle(this.scene, 0, 0);
@@ -58,6 +70,8 @@ export class StageBar extends Phaser.GameObjects.Container {
         // Listen to quest events
         EventManager.on(Events.MAIN_QUEST_PROGRESS, this.onMainQuestProgress.bind(this));
         EventManager.on(Events.QUEST_COMPLETED, this.onQuestCompleted.bind(this));
+        // Listen to lock event
+        EventManager.on(Events.VIBRATE_LOCK, this.onVibrateLock.bind(this));
     }
 
     resetGraphics() {
@@ -101,8 +115,6 @@ export class StageBar extends Phaser.GameObjects.Container {
     }
 
     startNextStage() {
-        console.log('startNextStage');
-
         this._stageLevel++;
         this._stage = new StageStruct(this._stageLevel);
         this.resetGraphics();
@@ -123,9 +135,36 @@ export class StageBar extends Phaser.GameObjects.Container {
         // this._icon.update(time);
     }
 
+    onVibrateLock() {
+        for (const lock of this._locks) {
+            if (!lock.lock.isOpen) {
+                gsap.from(lock, {
+                    scale: 1.666,
+                    duration: 1,
+                    ease: Bounce.easeOut,
+                });
+                break;
+            }
+        }
+    }
+
     onQuestCompleted() {
         const wasComplete = this._stage.isComplete;
-        this._stage.decrementLock();
+        const lockStruct = this._stage.decrementLock();
+
+        if (lockStruct) {
+            for (const lock of this._locks) {
+                if (lock.lock.uuid === lockStruct.uuid) {
+                    gsap.from(lock, {
+                        scale: 1.5,
+                        rotation: Math.PI * 0.5,
+                        duration: 1.5,
+                        ease: Elastic.easeOut,
+                    });
+                    break;
+                }
+            }
+        }
 
         if (!wasComplete && this._stage.isComplete)
             EventManager.emit(Events.STAGE_COMPLETED);
@@ -172,7 +211,9 @@ export class StageStruct {
         // Calculate mult
         this._level = Math.max(level, 0);
         const mult = this._level < StageStruct.levels.length ?
+            // Use defined levels if in the expected range
             StageStruct.levels[this._level] :
+            // Use a constant formula if over the expected range
             StageStruct.levels[StageStruct.levels.length - 1] + 4 * (this._level - StageStruct.levels.length + 1);
 
         // Get name
@@ -189,7 +230,7 @@ export class StageStruct {
 
     setupLocks() {
         const count = this._level + 1;
-        const extra = 0;//2
+        const extra = 1;//2
 
         // Add the progress locks
         if (count > 1) {
@@ -200,6 +241,11 @@ export class StageStruct {
 
         // Add the last lock
         this._locks.push(new StageLockStruct(this._level + extra, this._total));
+    }
+
+    public isLockedAndMaxed() {
+        const lock = this.getCurrentLock();
+        return lock && this._current === lock.cap;
     }
 
     getCurrentLock() {
@@ -226,5 +272,6 @@ export class StageStruct {
         const lock = this.getCurrentLock();
         if (lock)
             lock.updateCount();
+        return lock;
     }
 }

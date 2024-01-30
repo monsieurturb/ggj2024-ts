@@ -36,7 +36,7 @@ export class MainQuestCard extends QuestCard {
             0,
             -75 * Config.DPR,
             "",
-            Fonts.getStyle(28, Colors.WHITE_HEX, Fonts.TEXT),
+            Fonts.getStyle(26, Colors.WHITE_HEX, Fonts.TEXT),
         )
             .setAlign('center')
             .setOrigin(0.5, 0.5)
@@ -90,14 +90,20 @@ export class MainQuestCard extends QuestCard {
     update(time: number) {
         super.update(time);
 
-        // this.setRotation(0);
-        // this.setScale(1);
+        let title = "The audience listens...";
+        let subtitle = "Use Dice here to get easy laughs!";
+
+        const gameScene = this.scene.scene.get("Game") as Game;
+        if (gameScene.stageBar?.stage.isLockedAndMaxed()) {
+            title = "No more Quick Jokes!";
+            subtitle = "The crowd wants some Honed Bits.";
+        }
 
         if (this._text)
-            this._text.text = this._quest.name;
+            this._text.text = title;
 
         if (this._subText)
-            this._subText.text = this._quest.subtitle;
+            this._subText.text = subtitle;
     }
 
     onEndTurn() { }

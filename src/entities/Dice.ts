@@ -21,6 +21,7 @@ export class Dice extends Phaser.GameObjects.Container {
     private _shiftKey: Phaser.Input.Keyboard.Key | undefined;
     private _isBeingDragged = false;
     private _dragPosition = new Phaser.Geom.Point(0, 0);
+    public tweenStartPosition = new Phaser.Geom.Point(0, 0);
 
     constructor(scene: Phaser.Scene, dice: DiceStruct) {
         super(scene);
@@ -195,7 +196,9 @@ export class Dice extends Phaser.GameObjects.Container {
         const slot = target.parentContainer as QuestSlot;
         const p = slot.getLocalPoint(this.x, this.y);
 
-        if (this.isValidTarget(target) && slot.isDiceValid(this)) {
+        const isDiceValidForSlot = slot.isDiceValid(this);
+
+        if (this.isValidTarget(target) && isDiceValidForSlot) {
             gsap.to(this, {
                 x: `-=${p.x}`,
                 y: `-=${p.y}`,
@@ -215,25 +218,33 @@ export class Dice extends Phaser.GameObjects.Container {
             });
         }
         else {
-            gsap.to(this, {
-                x: this.input?.dragStartX,
-                y: this.input?.dragStartY,
-                scaleX: 1,
-                scaleY: 1,
-                rotation: this.rotation * 0.5,
-                duration: 0.2,
-                ease: Power3.easeOut,
-                overwrite: true,
-                onStart: () => {
-                    if (this.input)
-                        this.input.enabled = false;
-                },
-                onComplete: () => {
-                    if (this.input)
-                        this.input.enabled = true;
-                },
-            });
+            // Is main quest is not accepting dice, vibrate lock
+            if (!isDiceValidForSlot && slot.belongsToMainQuest)
+                EventManager.emit(Events.VIBRATE_LOCK);
+
+            this.moveBackToPosition(this.input?.dragStartX, this.input?.dragStartY);
         }
+    }
+
+    moveBackToPosition(posX: number = 0, posY: number = 0) {
+        gsap.to(this, {
+            x: posX,
+            y: posY,
+            scaleX: 1,
+            scaleY: 1,
+            rotation: this.rotation * 0.5,
+            duration: 0.2,
+            ease: Power3.easeOut,
+            overwrite: true,
+            onStart: () => {
+                if (this.input)
+                    this.input.enabled = false;
+            },
+            onComplete: () => {
+                if (this.input)
+                    this.input.enabled = true;
+            },
+        });
     }
 
     private isValidTarget(target: Phaser.GameObjects.GameObject) {
